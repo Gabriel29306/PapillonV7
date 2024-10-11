@@ -122,11 +122,12 @@ const LessonDocument: Screen<"LessonDocument"> = ({ route, navigation }) => {
             >
               <Text
                 style={{
-                  fontSize: 25,
-                  lineHeight: 42,
-                  textAlign: "center",
                   width: "100%",
-                  marginLeft: 2
+                  height: "100%",
+                  fontSize: 25,
+                  textAlign: "center",
+                  textAlignVertical: "center",
+                  includeFontPadding: false,
                 }}
               >
                 {subjectData.emoji}
