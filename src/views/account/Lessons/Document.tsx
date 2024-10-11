@@ -26,6 +26,7 @@ const getDuration = (minutes: number): string => {
 
 const LessonDocument: Screen<"LessonDocument"> = ({ route, navigation }) => {
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
 
   const lesson = route.params.lesson as unknown as TimetableClass;
 
@@ -105,7 +106,10 @@ const LessonDocument: Screen<"LessonDocument"> = ({ route, navigation }) => {
   ];
 
   return (
-    <>
+    <View style={{
+      height: "100%",
+      marginTop: insets.top
+    }}>
       <PapillonModernHeader outsideNav={true} startLocation={0.6} height={110}>
         <View style={{flexDirection: "row", alignItems: "center", gap: 10}}>
           <View style={{backgroundColor: theme.colors.background, borderRadius: 100}}>
@@ -149,7 +153,7 @@ const LessonDocument: Screen<"LessonDocument"> = ({ route, navigation }) => {
         contentContainerStyle={{
           padding: 16,
           paddingTop: 70 + 16,
-          paddingBottom: useSafeAreaInsets().bottom + 16,
+          paddingBottom: insets.bottom + 16,
         }}
         style={{flex: 1}}
       >
@@ -187,7 +191,7 @@ const LessonDocument: Screen<"LessonDocument"> = ({ route, navigation }) => {
           );
         })}
       </ScrollView>
-    </>
+    </View>
   );
 };
 
