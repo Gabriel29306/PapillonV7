@@ -55,6 +55,7 @@ export default [
     headerTitle: "Cours",
     presentation: "modal",
     headerShown: false,
+    animation: "slide_from_bottom"
   }),
   createScreen("HomeworksDocument", HomeworksDocument, {
     headerTitle: "Devoir",
