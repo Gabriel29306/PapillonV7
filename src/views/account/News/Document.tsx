@@ -169,7 +169,7 @@ const NewsItem = ({route, navigation}) => {
                   chevron={false}
                   onPress={() => Linking.openURL(attachment.url)}
                   icon={
-                    typeof attachment.type === "file" ? (
+                    attachment.type === "file" ? (
                       <FileIcon />
                     ) : (
                       <Link />
