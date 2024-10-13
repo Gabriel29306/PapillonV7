@@ -25,16 +25,12 @@ import {
 import { PressableScale } from "react-native-pressable-scale";
 import Reanimated, {
   FadeIn,
-  FadeOut,
-  FadeInUp,
-  FadeOutDown,
-  LinearTransition,
+  FadeOut, LinearTransition,
   ZoomIn,
-  ZoomOut,
+  ZoomOut
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { defaultTabs } from "@/consts/DefaultTabs";
-import { animPapillon } from "@/utils/ui/animations";
 import { log } from "@/utils/logger/logger";
 
 // Types for Tab and Account
@@ -169,10 +165,11 @@ const SettingsTabs = () => {
     void (async () => {
       const newTabs = [...tabs];
       const homeIndex = newTabs.findIndex((tab) => tab.tab === "Home");
+      const tabsEnabled = newTabs.filter(tab => tab.enabled).length - 1;
 
-      if (homeIndex > 4) {
+      if (homeIndex > tabsEnabled) {
         const homeTab = newTabs.splice(homeIndex, 1)[0];
-        newTabs.splice(4, 0, homeTab);
+        newTabs.splice(tabsEnabled, 0, homeTab);
         setTabs(newTabs);
       }
     })();
@@ -266,8 +263,8 @@ const SettingsTabs = () => {
                         }}
                         onPress={() => {
                           setPreviewIndex(index);
-                          lottieRefs.current[index].current?.reset();
-                          lottieRefs.current[index].current?.play();
+                          lottieRefs.current[index]?.current?.reset();
+                          lottieRefs.current[index]?.current?.play();
                         }}
                       >
                         <Reanimated.View
