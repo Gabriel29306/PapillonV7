@@ -75,7 +75,7 @@ export default [
     presentation: "modal",
   }),
   createScreen("Chat", Chat, {
-    headerTitle: "",
     presentation: "modal",
+    headerShown: false
   }),
 ] as const;
