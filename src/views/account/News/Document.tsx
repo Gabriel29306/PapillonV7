@@ -16,19 +16,21 @@ import {View, Dimensions, Linking, TouchableOpacity} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import RenderHtml from "react-native-render-html";
-import { PapillonModernHeader} from "@/components/Global/PapillonModernHeader";
-import {LinearGradient} from "expo-linear-gradient";
-import {setNewsRead} from "@/services/news";
-import {useCurrentAccount} from "@/stores/account";
+import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
+import { LinearGradient } from "expo-linear-gradient";
+import { setNewsRead } from "@/services/news";
+import { useCurrentAccount } from "@/stores/account";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import PapillonPicker from "@/components/Global/PapillonPicker";
 import parse_initials from "@/utils/format/format_pronote_initials";
 
 const NewsItem = ({route, navigation, isED}) => {
-  let message = route.params.message && JSON.parse(route.params.message) as Information;
+  let message = JSON.parse(route.params.message) as Information;
   const important = route.params.important;
   const account = useCurrentAccount((store) => store.account!);
 
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -62,7 +64,10 @@ const NewsItem = ({route, navigation, isED}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{
+      flex: 1,
+      marginTop: insets.top
+    }}>
       <PapillonModernHeader outsideNav={true}>
         <View style={{flexDirection: "row", gap: 10, alignItems: "center"}}>
           <InitialIndicator
