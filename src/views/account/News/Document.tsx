@@ -24,10 +24,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import PapillonPicker from "@/components/Global/PapillonPicker";
 import parse_initials from "@/utils/format/format_pronote_initials";
 import { selectColorSeed } from "@/utils/format/select_color_seed";
+import { Screen } from "@/router/helpers/types";
 
-const NewsItem = ({route, navigation, isED}) => {
+const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
   let message = JSON.parse(route.params.message) as Information;
   const important = route.params.important;
+  const isED = route.params.isED;
   const account = useCurrentAccount((store) => store.account!);
 
   const theme = useTheme();
