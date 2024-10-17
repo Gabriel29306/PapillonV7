@@ -1,6 +1,6 @@
 import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
 import React, { useEffect, useState } from "react";
-import {View, ScrollView, Text, TouchableOpacity, Alert, Platform} from "react-native";
+import { View, ScrollView, Text, TouchableOpacity, Alert, Platform } from "react-native";
 import { Homework, HomeworkReturnType } from "@/services/shared/Homework";
 import { getSubjectData } from "@/services/shared/Subject";
 
@@ -11,14 +11,15 @@ import { FileText, Link, Paperclip } from "lucide-react-native";
 import * as WebBrowser from "expo-web-browser";
 import { useTheme } from "@react-navigation/native";
 import RenderHTML from "react-native-render-html";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
-import {PapillonModernHeader} from "@/components/Global/PapillonModernHeader";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
 import { useCurrentAccount } from "@/stores/account";
 import { AccountService } from "@/stores/account/types";
 import getAndOpenFile from "@/utils/files/getAndOpenFile";
 
 const HomeworksDocument = ({ route }) => {
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
 
   const homework: Homework = route.params.homework || {};
   const account = useCurrentAccount(store => store.account!);
@@ -49,7 +50,10 @@ const HomeworksDocument = ({ route }) => {
   }, [homework.subject]);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{
+      flex: 1,
+      marginTop: insets.top,
+    }}>
       <PapillonModernHeader outsideNav={true} startLocation={0.6} height={110}>
         <View style={{flexDirection: "row", alignItems: "center", gap: 10}}>
           <View style={{backgroundColor: theme.colors.background, borderRadius: 100}}>
@@ -134,7 +138,7 @@ const HomeworksDocument = ({ route }) => {
         contentContainerStyle={{
           padding: 16,
           paddingTop: 70 + 16,
-          paddingBottom: useSafeAreaInsets().bottom + 16,
+          paddingBottom: insets.bottom + 16,
         }}
         style={{flex: 1}}
       >
