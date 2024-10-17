@@ -39,7 +39,8 @@ export interface Personalization {
   showTabBackground: boolean,
   transparentTabBar: boolean,
   hideTabBar: boolean,
-  magicEnabled?: boolean,
+  MagicNews?: boolean,
+  MagicHomeworks?: boolean,
   icalURLs: PapillonIcalURL[],
   tabs: Tab[],
   subjects: {

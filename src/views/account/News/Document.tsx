@@ -12,7 +12,7 @@ import {
   MoreHorizontal,
 } from "lucide-react-native";
 import React, { useEffect, useLayoutEffect } from "react";
-import {View, Dimensions, Linking, TouchableOpacity} from "react-native";
+import { View, Dimensions, Linking, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import RenderHtml from "react-native-render-html";
@@ -23,6 +23,7 @@ import { useCurrentAccount } from "@/stores/account";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import PapillonPicker from "@/components/Global/PapillonPicker";
 import parse_initials from "@/utils/format/format_pronote_initials";
+import { selectColorSeed } from "@/utils/format/select_color_seed";
 
 const NewsItem = ({route, navigation, isED}) => {
   let message = JSON.parse(route.params.message) as Information;
@@ -68,13 +69,13 @@ const NewsItem = ({route, navigation, isED}) => {
       flex: 1,
       marginTop: insets.top
     }}>
-      <PapillonModernHeader outsideNav={true}>
+      <PapillonModernHeader native height={110} outsideNav={true}>
         <View style={{flexDirection: "row", gap: 10, alignItems: "center"}}>
           <InitialIndicator
             initial={parse_initials(message.author)}
-            color={theme.colors.primary}
+            color={selectColorSeed(message.author)}
           />
-          <View style={{flex: 1}}>
+          <View style={{flex: 1, gap: 3}}>
             <NativeText variant="title" numberOfLines={1}>{message.title === "" ? message.author : message.title}</NativeText>
             <NativeText variant="subtitle" numberOfLines={1}>{message.title === "" ? formatDate(message.date) : message.author}</NativeText>
           </View>
@@ -122,7 +123,7 @@ const NewsItem = ({route, navigation, isED}) => {
         }}
         contentContainerStyle={{
           paddingBottom: 16,
-          paddingTop: 96,
+          paddingTop: 106,
         }}
       >
         <View style={{paddingHorizontal: 16}}>

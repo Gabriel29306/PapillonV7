@@ -13,6 +13,7 @@ import parse_initials from "@/utils/format/format_pronote_initials";
 import formatDate from "@/utils/format/format_date_complets";
 import InitialIndicator from "@/components/News/InitialIndicator";
 import RenderHTML from "react-native-render-html";
+import { selectColorSeed } from "@/utils/format/select_color_seed";
 
 const NewsListItem = ({ index, message, navigation, parentMessages, isED }) => {
   const theme = useTheme();
@@ -30,7 +31,7 @@ const NewsListItem = ({ index, message, navigation, parentMessages, isED }) => {
       leading={
         <InitialIndicator
           initial={parse_initials(message.author)}
-          color={theme.colors.primary}
+          color={selectColorSeed(message.author)}
         />
       }
       separator={index !== parentMessages.length - 1}
@@ -71,18 +72,7 @@ const NewsListItem = ({ index, message, navigation, parentMessages, isED }) => {
           opacity: 0.8,
         }}
       >
-        <RenderHTML
-          contentWidth={Dimensions.get("window").width - (16 * 3)}
-          source={{
-            html: message.content,
-          }}
-          ignoredStyles={["fontFamily", "fontSize"]}
-          baseStyle={{
-            fontFamily: "regular",
-            fontSize: 16,
-            color: theme.colors.text,
-          }}
-        />
+        {message.content ? parse_news_resume(message.content) : ""}
       </NativeText>
       <NativeText
         numberOfLines={1}
