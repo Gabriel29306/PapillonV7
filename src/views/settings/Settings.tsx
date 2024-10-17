@@ -200,14 +200,6 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
       label: "Projet Papillon",
       tabs: [
         {
-          icon: <HandCoins />,
-          color: "#CBA024",
-          label: "Soutenir Papillon",
-          onPress: () => {
-            Platform.OS === "android" ? openUrl("https://papillon.bzh/donate") : undefined;
-          },
-        },
-        {
           icon: <Scroll />,
           color: "#c75110",
           label: "Quoi de neuf ?",
@@ -278,6 +270,15 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
       ]
     }
   ];
+
+  if (Platform.OS === "android") {
+    tabs[3].tabs.unshift({
+      icon: <HandCoins />,
+      color: "#F4B400",
+      label: "Donnations",
+      onPress: () => openUrl("https://papillon.bzh/donate"),
+    })
+  }
 
   const translationY = useSharedValue(0);
   const [scrolled, setScrolled] = useState(false);
