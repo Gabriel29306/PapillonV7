@@ -166,13 +166,16 @@ const SettingsTabs = () => {
   useEffect(() => {
     log("Ensuring Home tab is in the correct position.", "SettingsTabs");
     void (async () => {
-      const newTabs = [...tabs];
+      let newTabs = [...tabs];
       const homeIndex = newTabs.findIndex((tab) => tab.tab === "Home");
       const tabsEnabled = newTabs.filter(tab => tab.enabled).length - 1;
 
       if (homeIndex > tabsEnabled) {
         const homeTab = newTabs.splice(homeIndex, 1)[0];
         newTabs.splice(tabsEnabled, 0, homeTab);
+      }
+      newTabs = newTabs.sort((x, y) => {return (x.enabled === y.enabled)? 0 : x.enabled? -1 : 1});
+      if (JSON.stringify(tabs) != JSON.stringify(newTabs)) {
         setTabs(newTabs);
       }
       setLoading(false);
