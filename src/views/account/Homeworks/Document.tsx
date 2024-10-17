@@ -69,11 +69,13 @@ const HomeworksDocument = ({ route }) => {
             >
               <Text
                 style={{
+                  width: "100%",
+                  height: "100%",
                   fontSize: 25,
                   lineHeight: 42,
                   textAlign: "center",
-                  width: "100%",
-                  marginLeft: 2
+                  textAlignVertical: "center",
+                  includeFontPadding: false,
                 }}
               >
                 {subjectData.emoji}
