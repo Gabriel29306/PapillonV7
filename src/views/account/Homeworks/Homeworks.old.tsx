@@ -38,7 +38,7 @@ const HomeworkList: React.FC<HomeworkListProps> = React.memo(({ groupedHomework,
   return (
     <>
       {Object.keys(groupedHomework).map((day, index) => (
-        <View key={index}>
+        <View key={"homework_" + day[0] + index}>
           <NativeListHeader label={day} />
           <NativeList>
             {groupedHomework[day].map((homework, idx) => (
@@ -224,7 +224,7 @@ const HomeworksScreen: Screen<"Homeworks"> = ({ navigation }) => {
           PageComponent={
             ({index, isActive}) => (<View style={{height: "100%"}}>
               <HomeworksPage
-                key={index}
+                key={"homework_page_" + index}
                 index={index}
                 isActive={true}
                 loaded={true}

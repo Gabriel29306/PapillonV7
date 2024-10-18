@@ -214,7 +214,7 @@ const ChangelogScreen = ({ route, navigation }) => {
               {changelog.features.map((feature: Feature, index) => {
                 return (
                   <ChangelogFeature
-                    key={index}
+                    key={"ChangelogFeature_" + index}
                     feature={feature}
                     navigation={navigation}
                     theme={theme}
@@ -246,7 +246,7 @@ const ChangelogScreen = ({ route, navigation }) => {
               {changelog.bugfixes.map((feature: Feature, index) => {
                 return (
                   <ChangelogFeature
-                    key={index}
+                    key={"ChangelogFeature_bugfixe_" + index}
                     feature={feature}
                     navigation={navigation}
                     theme={theme}

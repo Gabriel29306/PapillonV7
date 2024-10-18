@@ -1,9 +1,9 @@
-import {NativeItem, NativeList, NativeListHeader, NativeText} from "@/components/Global/NativeComponents";
-import {useAccounts, useCurrentAccount} from "@/stores/account";
-import {defaultProfilePicture} from "@/utils/ui/default-profile-picture";
-import {useIsFocused, useTheme} from "@react-navigation/native";
-import {PlusIcon} from "lucide-react-native";
-import {useEffect, useState} from "react";
+import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
+import { useAccounts, useCurrentAccount } from "@/stores/account";
+import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
+import { useIsFocused, useTheme } from "@react-navigation/native";
+import { PlusIcon } from "lucide-react-native";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -14,7 +14,7 @@ import {
   TouchableHighlight,
   View
 } from "react-native";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as SplashScreen from "expo-splash-screen";
 
 import PapillonAvatar from "@/components/Global/PapillonAvatar";
@@ -31,11 +31,11 @@ import Reanimated, {
   useScrollViewOffset,
   ZoomIn,
 } from "react-native-reanimated";
-import {LinearGradient} from "expo-linear-gradient";
-import {animPapillon} from "@/utils/ui/animations";
-import {Screen} from "@/router/helpers/types";
+import { LinearGradient } from "expo-linear-gradient";
+import { animPapillon } from "@/utils/ui/animations";
+import { Screen } from "@/router/helpers/types";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
-import {PressableScale} from "react-native-pressable-scale";
+import { PressableScale } from "react-native-pressable-scale";
 
 import datasets from "@/consts/datasets.json";
 
@@ -347,7 +347,7 @@ const AccountSelector: Screen<"AccountSelector"> = ({ navigation }) => {
               {accounts.map((account, index) => {
                 return !account.isExternal && (
                   <NativeItem
-                    key={index}
+                    key={"account_" + index}
                     leading={
                       <PapillonAvatar
                         source={account.personalization.profilePictureB64 ? { uri: account.personalization.profilePictureB64 } : defaultProfilePicture(account.service)}

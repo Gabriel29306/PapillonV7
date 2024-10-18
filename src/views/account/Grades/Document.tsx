@@ -130,13 +130,13 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
       <GradeTitle grade={grade} subjectData={subjectData} />
 
       {lists.map((list, index) => (
-        <View key={index}>
+        <View key={"grade_document_info_view_" + index}>
           <NativeListHeader label={list.title} />
 
           <NativeList>
-            {list.items.map((item, index) => item && (
+            {list.items.map((item, index1) => item && (
               <NativeItem
-                key={index}
+                key={"grade_document_info_item_" + index + index1}
                 icon={item.icon}
                 trailing={
                   <View

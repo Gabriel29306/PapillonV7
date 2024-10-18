@@ -143,7 +143,7 @@ const Header: React.FC<{
 
                 return (
                   <HeaderButton
-                    key={index}
+                    key={"home_diabled_tab_" + tab.name}
                     index={index}
                     icon={<LottieView
                       loop={false}
@@ -242,7 +242,7 @@ const Header: React.FC<{
           >
             {Widgets.map((widget, index) => (
               <Widget
-                key={index}
+                key={"home_widget_" + index}
                 widget={widget}
                 navigation={navigation}
               />
@@ -250,7 +250,7 @@ const Header: React.FC<{
 
             {addons.map((addon, index) => (
               <Widget
-                key={index}
+                key={"home_addon_" + index}
                 widget={forwardRef(() => (
                   <View style={{flex: 1}} onLayout={() => {
                     let temp = addonsTitle;

@@ -123,7 +123,7 @@ const ContextMenu: React.FC<{
             >
               {accounts.map((account, index) => !account.isExternal && (
                 <Pressable
-                  key={index}
+                  key={"account_pressable_" + index}
                   onPress={() => {
                     switchTo(account);
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);

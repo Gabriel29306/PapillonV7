@@ -10,7 +10,7 @@ function AddonLogs ({navigation, route}): Screen<"AddonLogs"> {
         <NativeList>
           {logs.map((log, index) => (
             <NativeItem
-              key={index}
+              key={"log_" + index}
               leading={
                 <View>
                   {log.type === "log" && (

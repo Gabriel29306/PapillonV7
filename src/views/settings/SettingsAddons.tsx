@@ -4,7 +4,7 @@ import {
   NativeListHeader,
   NativeText
 } from "@/components/Global/NativeComponents";
-import type {Screen} from "@/router/helpers/types";
+import type { Screen } from "@/router/helpers/types";
 import {
   View,
   ScrollView,
@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import React from "react";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Calendar,
   Camera, Carrot, Clock,
@@ -31,11 +31,11 @@ import {
   User,
   UserCog,
 } from "lucide-react-native";
-import {get_addons_list} from "@/addons/addons";
-import {PressableScale} from "react-native-pressable-scale";
+import { get_addons_list } from "@/addons/addons";
+import { PressableScale } from "react-native-pressable-scale";
 import * as Linking from "expo-linking";
 import * as FileSystem from "expo-file-system";
-import {AddonManifest} from "@/addons/types";
+import { AddonManifest } from "@/addons/types";
 
 const SettingsAddons: Screen<"SettingsAddons"> = () => {
   let [ opened, setOpened ] = React.useState(false);
@@ -152,7 +152,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
                 <View style={{display: "flex", gap: 10, flexDirection: "row", paddingHorizontal: 16}}>
                   {selectedAddons.screenshot.map((screenshot, index) => (
                     <Image
-                      key={index}
+                      key={"selectedAddons_screenshot_" + index}
                       source={{uri: screenshot}}
                       style={{
                         width: 120,
@@ -271,7 +271,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
         <NativeList>
           {storageAddons.map((addon, index) => (
             <NativeItem
-              key={index}
+              key={"storageAddons_" + index}
               onPress={addon.error ? () => {} : () => {
                 setSelectedAddons(addon);
                 setOpened(true);

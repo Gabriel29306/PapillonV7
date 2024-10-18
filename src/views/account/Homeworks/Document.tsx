@@ -1,6 +1,6 @@
 import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
 import React, { useEffect, useState } from "react";
-import {View, ScrollView, Text, TouchableOpacity, Alert, Platform} from "react-native";
+import { View, ScrollView, Text, TouchableOpacity, Alert, Platform } from "react-native";
 import { Homework, HomeworkReturnType } from "@/services/shared/Homework";
 import { getSubjectData } from "@/services/shared/Subject";
 
@@ -11,8 +11,8 @@ import { FileText, Link, Paperclip } from "lucide-react-native";
 import * as WebBrowser from "expo-web-browser";
 import { useTheme } from "@react-navigation/native";
 import RenderHTML from "react-native-render-html";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
-import {PapillonModernHeader} from "@/components/Global/PapillonModernHeader";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
 import { useCurrentAccount } from "@/stores/account";
 import { AccountService } from "@/stores/account/types";
 import getAndOpenFile from "@/utils/files/getAndOpenFile";
@@ -154,7 +154,7 @@ const HomeworksDocument = ({ route }) => {
             <NativeList>
               {homework.attachments.map((attachment, index) => (
                 <NativeItem
-                  key={index}
+                  key={"homework_attachement_" + index}
                   onPress={() => openUrl(attachment.url)}
                   icon={
                     attachment.type === "file" ?

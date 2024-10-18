@@ -18,9 +18,7 @@ import Reanimated, {
 
 import {
   Bell,
-  Cable,
-  HandCoins,
-  Info,
+  Cable, Info,
   Laptop,
   LogOut,
   Palette,
@@ -39,9 +37,9 @@ import { NativeIcon, NativeItem, NativeList, NativeListHeader, NativeText } from
 import ModalHandle from "@/components/Modals/ModalHandle";
 import AccountContainerCard from "@/components/Settings/AccountContainerCard";
 import { useTheme } from "@react-navigation/native";
-import {get_settings_widgets} from "@/addons/addons";
+import { get_settings_widgets } from "@/addons/addons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {AddonPlacementManifest} from "@/addons/types";
+import { AddonPlacementManifest } from "@/addons/types";
 import { useFlagsStore } from "@/stores/flags";
 import { useAlert } from "@/providers/AlertProvider";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
@@ -322,7 +320,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
               <NativeList>
                 {addons.map((addon, index) => (
                   <NativeItem
-                    key={index}
+                    key={"addons" + index}
                     onPress={() => navigation.navigate("AddonSettingsPage", { addon, from: "Settings" })}
                     leading={
                       <Image
@@ -347,18 +345,18 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
             </>
         }
         {tabs.map((tab, index) => (
-          <View key={index}>
+          <View key={"tab_view" + index}>
             {tab.label &&
           <NativeListHeader
-            key={index}
+            key={"tab_header_" + index}
             label={tab.label}
           />
             }
             <NativeList>
               {tab.tabs.map((subtab, index) => (
-                (Platform.OS === "android" && "android" in subtab && !subtab.android) ? <View key={index} /> :
+                (Platform.OS === "android" && "android" in subtab && !subtab.android) ? <View key={"tab_invisible_view_" + index} /> :
                   <NativeItem
-                    key={index}
+                    key={"tab_tab_" + index}
                     onPress={subtab.onPress}
                     disabled={"disabled" in subtab && subtab.disabled}
                     leading={

@@ -31,7 +31,7 @@ const GradesLatestList = (props: GradesLatestListProps) => {
         }}
       >
         {latestGrades.map((grade, index) => (
-          <GradesLatestItem key={index} grade={grade} i={index} navigation={navigation} allGrades={allGrades} />
+          <GradesLatestItem key={"last_grade_" + index} grade={grade} i={index} navigation={navigation} allGrades={allGrades} />
         ))}
       </Reanimated.ScrollView>
     </>

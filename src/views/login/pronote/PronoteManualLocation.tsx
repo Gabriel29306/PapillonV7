@@ -213,7 +213,7 @@ const PronoteManualLocation: Screen<"PronoteManualLocation"> = ({ navigation }) 
                   entering={FlipInXDown.springify().delay(100 * index)}
                   exiting={FadeOutDown.duration(150).delay(100 * index)}
                   layout={LinearTransition}
-                  key={index}
+                  key={"municipalities_" + index}
                 >
                   <DuoListPressable
                     text={`${municipality.properties.name} (${municipality.properties.postcode})`}

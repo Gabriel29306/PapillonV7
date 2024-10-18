@@ -63,7 +63,7 @@ const GradesElement: React.FC = () => {
       >
         {lastThreeGrades.map((item, index) => (
           <GradeItem
-            key={index}
+            key={"lastThreeGrades_" + index}
             subject={item.subject}
             grade={item.grade}
             navigation={PapillonNavigation.current}

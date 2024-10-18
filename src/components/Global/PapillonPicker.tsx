@@ -105,9 +105,9 @@ const PapillonPicker: React.FC<PapillonPickerProps> = ({
               }) : null;
 
               return (
-                <View key={index}>
+                <View key={"Picker_item_view_" + index}>
                   <TouchableOpacity
-                    key={index}
+                    key={"Picker_item_touchable_" + index}
                     onPress={onPressItem ? () => {
                       setOpened(false);
                       onPressItem();

@@ -62,7 +62,7 @@ const Menu: Screen<"Menu"> = ({
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
       {balances ? balances.map((balance, index) => (
         <RestaurantCard
-          key={index}
+          key={"RestaurantCard_" + index}
           theme={theme}
           solde={balance.amount}
           repas={balance.remaining}

@@ -148,8 +148,8 @@ const LessonDocument: Screen<"LessonDocument"> = ({ route, navigation }) => {
           }
 
           return (
-            <View key={index}>
-              <NativeListHeader label={info.title} key={index} />
+            <View key={"informations_view_" + index}>
+              <NativeListHeader label={info.title} key={"informations_head_" + index} />
 
               <NativeList>
                 {info.informations.map((item, index) => {
@@ -159,7 +159,7 @@ const LessonDocument: Screen<"LessonDocument"> = ({ route, navigation }) => {
 
                   return (
                     <NativeItem
-                      key={index}
+                      key={"informations_" + index}
                       icon={item.icon}
                     >
                       <NativeText variant="subtitle">

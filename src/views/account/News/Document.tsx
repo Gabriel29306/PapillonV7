@@ -12,14 +12,14 @@ import {
   MoreHorizontal,
 } from "lucide-react-native";
 import React, { useEffect, useLayoutEffect } from "react";
-import {View, Dimensions, Linking, TouchableOpacity} from "react-native";
+import { View, Dimensions, Linking, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import RenderHtml from "react-native-render-html";
-import { PapillonModernHeader} from "@/components/Global/PapillonModernHeader";
-import {LinearGradient} from "expo-linear-gradient";
-import {setNewsRead} from "@/services/news";
-import {useCurrentAccount} from "@/stores/account";
+import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
+import { LinearGradient } from "expo-linear-gradient";
+import { setNewsRead } from "@/services/news";
+import { useCurrentAccount } from "@/stores/account";
 import PapillonPicker from "@/components/Global/PapillonPicker";
 import parse_initials from "@/utils/format/format_pronote_initials";
 import { selectColorSeed } from "@/utils/format/select_color_seed";
@@ -167,11 +167,11 @@ const NewsItem = ({route, navigation, isED}) => {
             <NativeList>
               {message.attachments.map((attachment, index) => (
                 <NativeItem
-                  key={index}
+                  key={"message_attachments_" + index}
                   chevron={false}
                   onPress={() => Linking.openURL(attachment.url)}
                   icon={
-                    typeof attachment.type === "file" ? (
+                    attachment.type === "file" ? (
                       <FileIcon />
                     ) : (
                       <Link />

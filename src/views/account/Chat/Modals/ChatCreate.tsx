@@ -49,7 +49,7 @@ const ChatCreate: Screen<"ChatCreate"> = ({
       <View>
         <NativeText>Sélectionner les destinataires :</NativeText>
         {recipients?.map((recipient, index) => (
-          <TouchableOpacity key={index}
+          <TouchableOpacity key={"chat_recipients_" + index}
             style={{
               padding: 10,
               backgroundColor: selectedRecipients.includes(recipient) ? colors.primary : colors.card,

@@ -566,7 +566,7 @@ const Home: Screen<"HomeScreen"> = ({ route, navigation }) => {
               >
                 {Elements.map((Element, index) => (Element &&
                   <Reanimated.View
-                    key={index}
+                    key={"home_element_" + index}
                     layout={animPapillon(LinearTransition)}
                     entering={animPapillon(FadeInUp)}
                     exiting={animPapillon(FadeOutDown)}

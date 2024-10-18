@@ -108,7 +108,7 @@ const SettingsDonorsList = () => {
         >
           {donors.map((donor, index) => (
             <NativeItem
-              key={index}
+              key={"donor_" + index}
               endPadding={16}
 
               leading={

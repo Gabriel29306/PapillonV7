@@ -85,7 +85,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
           {logs.map((log, index) => (
             <NativeItem
               animated
-              key={index}
+              key={"log_" + index}
               leading={
                 <NativeIcon
                   icon={

@@ -37,7 +37,7 @@ const RestaurantHistory = () => {
         <NativeText>Aucune réservation</NativeText>
       ) : (
         history.map((reservation, index) => (
-          <NativeText key={index}>{reservation.amount}{reservation.currency} le {new Date(reservation.timestamp).toLocaleString("fr-FR")}</NativeText>
+          <NativeText key={"restaurant_history_" + index}>{reservation.amount}{reservation.currency} le {new Date(reservation.timestamp).toLocaleString("fr-FR")}</NativeText>
         ))
       )}
     </View>
