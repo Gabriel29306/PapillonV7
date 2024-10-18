@@ -16,14 +16,13 @@ import Reanimated, {
   FadeOut
 } from "react-native-reanimated";
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";
 
 import { useAccounts, useCurrentAccount } from "@/stores/account";
 import { AccountService } from "@/stores/account/types";
 import { PapillonContextEnter, PapillonContextExit } from "@/utils/ui/animations";
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
-import { useTheme } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 import { Check, CirclePlus, Cog } from "lucide-react-native";
 

@@ -1,8 +1,7 @@
 import React, { useLayoutEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { RouteProp } from "@react-navigation/native";
+import { RouteProp, useTheme } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useTheme } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { NativeText } from "@/components/Global/NativeComponents";
 
