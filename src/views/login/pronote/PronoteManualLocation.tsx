@@ -217,7 +217,7 @@ const PronoteManualLocation: Screen<"PronoteManualLocation"> = ({ navigation }) 
                 >
                   <DuoListPressable
                     text={`${municipality.properties.name} (${municipality.properties.postcode})`}
-                    onPress={() => void navigation.navigate("PronoteInstanceSelector", {
+                    onPress={() => navigation.navigate("PronoteInstanceSelector", {
                       longitude: municipality.geometry.coordinates[0],
                       latitude: municipality.geometry.coordinates[1],
                     })}

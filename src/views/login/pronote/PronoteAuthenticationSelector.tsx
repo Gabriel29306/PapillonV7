@@ -35,7 +35,7 @@ const PronoteAuthenticationSelector: Screen<"PronoteAuthenticationSelector"> = (
     };
   }, []);
 
-  const playSound = () => void sound?.replayAsync();
+  const playSound = () => sound?.replayAsync();
 
   const handleConfirmation = () => {
     switch (method) {
