@@ -82,7 +82,7 @@ const SettingsAbout: Screen<"SettingsAbout"> = ({ navigation }) => {
         {teams.map((team, index) => (
           <NativeItem
             onPress={team.link ? () => Linking.openURL(team.link) : undefined}
-            chevron={team.link ? true : false}
+            chevron={Boolean(team.link)}
             key={index}
             leading={<Image
               source={{ uri: team.ppimage }}

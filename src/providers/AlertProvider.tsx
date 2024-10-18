@@ -152,14 +152,14 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
                       styles.button,
                       primary && styles.primaryButton,
                       primary && {
-                        backgroundColor: backgroundColor ? backgroundColor : colors.primary,
+                        backgroundColor: backgroundColor ?? colors.primary,
                       },
                       {
                         opacity: primary ? (pressed ? 0.6 : 1) : (pressed ? 0.3 : 0.6),
                       }
                     ]}
                   >
-                    {icon ? icon : null}
+                    {icon ?? null}
 
                     <Text style={[styles.buttonText, { color: colors.text }, primary && styles.primaryButtonText]}>
                       {title}

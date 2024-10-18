@@ -19,14 +19,14 @@ import defaultPersonalization from "@/services/ecoledirecte/default-personalizat
 import { useTheme } from "@react-navigation/native";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import BottomSheet from "@/components/Modals/PapillonBottomSheet";
-import {NativeText} from "@/components/Global/NativeComponents";
+import { NativeText } from "@/components/Global/NativeComponents";
 import Reanimated, {
   FlipInXDown,
   LinearTransition,
   useSharedValue
 } from "react-native-reanimated";
 import DuoListPressable from "@/components/FirstInstallation/DuoListPressable";
-import {SvgFromXml} from "react-native-svg";
+import { SvgFromXml } from "react-native-svg";
 import LoginView from "@/components/Templates/LoginView";
 
 const EcoleDirecteCredentials: Screen<"EcoleDirecteCredentials"> = ({ navigation }) => {
@@ -57,7 +57,7 @@ const EcoleDirecteCredentials: Screen<"EcoleDirecteCredentials"> = ({ navigation
         setCachedPassword(password);
       }
 
-      const accounts = await login(currentSession, password ? password : cachedPassword);
+      const accounts = await login(currentSession, password ?? cachedPassword);
       const account = accounts[0]; // NOTE: We only support single accounts for now. //TODO: Support multiple accounts in ED
 
       setAccessToken(currentSession, account);
