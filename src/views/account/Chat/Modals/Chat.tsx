@@ -25,7 +25,6 @@ const Chat: Screen<"Chat"> = ({
   route,
 }) => {
   const theme = useTheme();
-  const { colors } = theme;
 
   const account = useCurrentAccount(state => state.account!);
   const [messages, setMessages] = useState<ChatMessage | null>(null);

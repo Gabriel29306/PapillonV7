@@ -41,7 +41,6 @@ export const reduceIcalToCourse = (course, identityProvider, url) => {
 
       // class
       const classRegex = /\b[A-Za-z]{2}\s\d[A-Za-z](?:\d)?\s[A-Za-z]+\b/g;
-      const classes = course.summary?.value.match(classRegex);
 
       const cmRegex = /\bCM\s+\w+\b/g;
       const cm = course.summary?.value.match(cmRegex);

@@ -34,8 +34,6 @@ function TabBarContainer () {
 const AccountStackScreen: Screen<"AccountStack"> = () => {
   const account = useCurrentAccount(store => store.account);
 
-  const navigatorRef = React.useRef();
-
   const url = Linking.useURL();
   const params = url && Linking.parse(url);
 

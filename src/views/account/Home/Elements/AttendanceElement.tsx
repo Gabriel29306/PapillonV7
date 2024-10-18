@@ -6,7 +6,6 @@ import { useCurrentAccount } from "@/stores/account";
 import { useAttendanceStore } from "@/stores/attendance";
 import TotalMissed from "../../Attendance/Atoms/TotalMissed";
 import { PressableScale } from "react-native-pressable-scale";
-import { useTheme } from "@react-navigation/native";
 import RedirectButton from "@/components/Home/RedirectButton";
 import { PapillonNavigation } from "@/router/refs";
 import { log } from "@/utils/logger/logger";
@@ -16,9 +15,6 @@ const AttendanceElement: React.FC = () => {
   const account = useCurrentAccount((store) => store.account);
   const defaultPeriod = useAttendanceStore((store) => store.defaultPeriod) as string | null;
   const attendances = useAttendanceStore((store) => store.attendances) as Record<string, Attendance> | null;
-
-  const theme = useTheme();
-  const { colors } = theme;
 
   useEffect(() => {
     void (async () =>{

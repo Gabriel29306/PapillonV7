@@ -10,7 +10,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@react-navigation/native";
 
 import { Search, X, GraduationCap, } from "lucide-react-native";
-import { useAlert } from "@/providers/AlertProvider";
 import { Audio } from "expo-av";
 import type { School } from "scolengo-api/types/models/School";
 import { Skolengo } from "scolengo-api";
@@ -27,8 +26,6 @@ const SkolengoInstanceSelector: Screen<"SkolengoInstanceSelector"> = ({
 
   const {colors} = useTheme();
   const insets = useSafeAreaInsets();
-
-  const { showAlert } = useAlert();
 
   const [search, setSearch] = useState("");
   const searchInputRef = React.createRef<TextInput>();
@@ -76,8 +73,6 @@ const SkolengoInstanceSelector: Screen<"SkolengoInstanceSelector"> = ({
       }
     };
   }, []);
-
-  const playSound = () => sound?.replayAsync();
 
   useEffect(() => {
     if (params && params.pos && params.pos !== null) {

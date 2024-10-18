@@ -26,9 +26,6 @@ const HeaderCalendar: React.FC<HeaderCalendarProps> = ({
   getDateFromIndex,
   showPicker
 }) => {
-  const dims = Dimensions.get("window");
-  const tablet = dims.width > 600;
-
   return (
     <Reanimated.View
       style={[styles.header, {

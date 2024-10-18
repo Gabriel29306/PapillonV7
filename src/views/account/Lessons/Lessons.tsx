@@ -28,7 +28,6 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
 
   let loadedWeeks = useRef<Set<number>>(new Set());
   let currentlyLoadingWeeks = useRef<Set<number>>(new Set());
-  let lastAccountID = useRef<string | null>(null);
 
   useEffect(() => {
     // add all week numbers in timetables to loadedWeeks
@@ -41,7 +40,6 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
   today.setHours(0, 0, 0, 0);
 
   const [pickerDate, setPickerDate] = React.useState(new Date(today));
-  const [selectedDate, setSelectedDate] = React.useState(new Date(today));
 
   const getWeekFromDate = (date: Date) => {
     const epochWeekNumber = dateToEpochWeekNumber(date);

@@ -11,7 +11,6 @@ import { useTheme } from "@react-navigation/native";
 import Reanimated, { FadeInUp, FadeOutUp, LinearTransition } from "react-native-reanimated";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
 import { animPapillon } from "@/utils/ui/animations";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { PressableScale } from "react-native-pressable-scale";
@@ -42,7 +41,6 @@ const changelogURL = datasets.changelog.replace("[version]", currentVersion);
 
 const ChangelogScreen = ({ route, navigation }) => {
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
 
   const [changelog, setChangelog] = useState<Version|null>(null);
   const [loading, setLoading] = useState(true);

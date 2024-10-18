@@ -1,6 +1,6 @@
 import { useTheme } from "@react-navigation/native";
 import React from "react";
-import { Dimensions, TouchableOpacity, View } from "react-native";
+import { Dimensions, TouchableOpacity } from "react-native";
 import { Calendar } from "lucide-react-native";
 import Reanimated, {
   Easing,
@@ -11,8 +11,6 @@ import Reanimated, {
 import { epochWMToCalendarWeekNumber } from "@/utils/epochWeekNumber";
 
 const HeaderCalendar: React.FC<{ epochWeekNumber: number, oldPageIndex: number, showPicker: () => void, changeIndex: (index: number) => void }> = ({ epochWeekNumber, oldPageIndex, showPicker, changeIndex }) => {
-  const { colors } = useTheme();
-
   const dims = Dimensions.get("window");
   const tablet = dims.width > 600;
 

@@ -13,7 +13,6 @@ import { ChevronDown, Eye, Scale, Timer, UserX } from "lucide-react-native";
 import PapillonHeader from "@/components/Global/PapillonHeader";
 import { animPapillon } from "@/utils/ui/animations";
 import AttendanceItem from "./Atoms/AttendanceItem";
-import { getAbsenceTime } from "@/utils/format/attendance_time";
 import TotalMissed from "./Atoms/TotalMissed";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import { protectScreenComponent } from "@/router/helpers/protected-screen";
@@ -95,8 +94,6 @@ const Attendance: Screen<"Attendance"> = ({ route, navigation }) => {
     let totalDelayMinutes = 0;
 
     attendances[selectedPeriod]?.absences.forEach(absence => {
-      const missed = getAbsenceTime(absence.fromTimestamp, absence.toTimestamp);
-
       if (!absence.justified)  {
         totalUnJustifiedHours += parseInt(absence.hours.split("h")[0]);
         totalUnJustifiedMinutes += parseInt(absence.hours.split("h")[1]);

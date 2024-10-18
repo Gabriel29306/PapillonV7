@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import type { Screen } from "@/router/helpers/types";
 import { useTheme } from "@react-navigation/native";
 import { BellRing } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image, View, StyleSheet, Text } from "react-native";
 import { NativeText } from "@/components/Global/NativeComponents";
-import { useAccounts, useCurrentAccount } from "@/stores/account";
+import { useCurrentAccount } from "@/stores/account";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import BetaIndicator from "@/components/News/Beta";
 
@@ -13,12 +13,8 @@ const PriceDetectionOnboarding: Screen<"PriceDetectionOnboarding"> = ({ navigati
   const theme = useTheme();
   const { colors } = theme;
   const insets = useSafeAreaInsets();
-  const update = useAccounts(store => store.update);
-  const account = useCurrentAccount(store => store.account!);
   const mutateProperty = useCurrentAccount(store => store.mutateProperty);
   const accountID = route.params?.accountID;
-
-  const [answer, setAnswer] = useState(false);
 
   return (
     <View

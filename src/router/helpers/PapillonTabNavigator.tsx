@@ -251,10 +251,6 @@ export const LargePapillonBar: React.FC<Omit<ReturnType<typeof useNavigationBuil
 
   const bottomAnim = useSharedValue(1);
 
-  const animatedStyles = useAnimatedStyle(() => ({
-    opacity: withTiming(bottomAnim.value, { duration: 200 }),
-  }));
-
   React.useEffect(() => {
     bottomAnim.value = hideTabBar ? 0 : 1;
   }, [hideTabBar]);
@@ -317,8 +313,6 @@ export const LargePapillonBar: React.FC<Omit<ReturnType<typeof useNavigationBuil
               : options.title !== undefined
                 ? options.title
                 : route.name;
-
-            const icon = options.tabBarIcon;
 
             const isFocused = state.index === index;
 

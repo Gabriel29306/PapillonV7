@@ -1,4 +1,3 @@
-import React from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
 import type { Screen } from "@/router/helpers/types";
 import { useTheme } from "@react-navigation/native";
@@ -9,7 +8,6 @@ const SettingsTrophies: Screen<"SettingsTrophies"> = ({ navigation }) => {
   const theme = useTheme();
   const { colors } = theme;
   const insets = useSafeAreaInsets();
-  const [enabled, setEnabled] = React.useState<boolean>(false);
 
   return (
     <ScrollView>

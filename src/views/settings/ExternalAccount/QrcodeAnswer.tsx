@@ -1,6 +1,5 @@
 import React from "react";
 import type { Screen } from "@/router/helpers/types";
-import { useTheme } from "@react-navigation/native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { View, StyleSheet, Text } from "react-native";
 import Reanimated, { LinearTransition, FlipInXDown } from "react-native-reanimated";
@@ -16,8 +15,6 @@ type Props = {
 };
 
 const QrcodeAnswer: Screen<"QrcodeAnswer"> = ({ navigation, route }) => {
-  const theme = useTheme();
-  const { colors } = theme;
   const insets = useSafeAreaInsets();
   const update = useAccounts(store => store.update);
   const accountID = route.params?.accountID;

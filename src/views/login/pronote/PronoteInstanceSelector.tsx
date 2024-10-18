@@ -74,8 +74,6 @@ const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
     };
   }, []);
 
-  const playSound = () => sound?.replayAsync();
-
   useEffect(() => {
     if (params) {
       void async function () {

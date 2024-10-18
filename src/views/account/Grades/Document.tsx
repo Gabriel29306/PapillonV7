@@ -6,7 +6,6 @@ import { ScrollView, View } from "react-native";
 import { GradeTitle } from "./Atoms/GradeTitle";
 import { Asterisk, Calculator, Scale, School, UserMinus, UserPlus, Users } from "lucide-react-native";
 import { getAverageDiffGrade } from "@/utils/grades/getAverages";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { AverageDiffGrade } from "@/utils/grades/getAverages";
 import { Screen } from "@/router/helpers/types";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
@@ -17,7 +16,6 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
     allGrades = []
   } = route.params;
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
 
   const [subjectData, setSubjectData] = useState({
     color: "#888888", pretty: "Matière inconnue", emoji: "❓",

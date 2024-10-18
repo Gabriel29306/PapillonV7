@@ -33,7 +33,6 @@ const Messages: Screen<"Messages"> = ({
   route,
 }) => {
   const theme = useTheme();
-  const { colors } = theme;
 
   const account = useCurrentAccount(state => state.account!);
   const [chats, setChats] = useState<Chat[] | null>(null);

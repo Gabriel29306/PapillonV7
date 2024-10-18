@@ -11,10 +11,7 @@ import {
 
 import { WebView } from "react-native-webview";
 import type { Screen } from "@/router/helpers/types";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import MaskStars from "@/components/FirstInstallation/MaskStars";
 
@@ -33,7 +30,6 @@ import { wait } from "@/services/skolengo/data/utils";
 const SkolengoWebview: Screen<"SkolengoWebview"> = ({ route, navigation }) => {
   const { showAlert } = useAlert();
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
 
   const [showWebView, setShowWebView] = useState(false);
 

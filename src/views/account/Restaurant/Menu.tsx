@@ -36,7 +36,6 @@ const Menu: Screen<"Menu"> = ({
   const theme = useTheme();
   const { colors } = theme;
 
-  const account = useCurrentAccount(store => store.account);
   const linkedAccounts = useCurrentAccount(store => store.linkedAccounts);
 
   useLayoutEffect(() => {
