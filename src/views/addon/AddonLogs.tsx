@@ -1,7 +1,6 @@
-import {NativeItem, NativeList, NativeText} from "@/components/Global/NativeComponents";
-import {ScrollView, View} from "react-native";
-import {CircleAlert, CircleX, Code, Frown, MessageCircle, Scroll, TriangleAlert} from "lucide-react-native";
-import {Circle} from "react-native-svg";
+import { NativeItem, NativeList, NativeText } from "@/components/Global/NativeComponents";
+import { ScrollView, View } from "react-native";
+import { CircleAlert, CircleX, Code, TriangleAlert } from "lucide-react-native";
 
 function AddonLogs ({navigation, route}): Screen<"AddonLogs"> {
   const logs: AddonLogs[] = route.params.logs;

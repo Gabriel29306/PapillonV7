@@ -1,5 +1,4 @@
 import { expoGoWrapper } from "@/utils/native/expoGoAlert";
-import notifee from "@notifee/react-native";
 
 const registerBackgroundTasks = async () => {
   expoGoWrapper(async () => {

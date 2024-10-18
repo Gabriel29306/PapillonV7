@@ -1,20 +1,17 @@
 import { BottomTabView } from "@react-navigation/bottom-tabs";
 import {
   createNavigatorFactory,
-  ParamListBase,
-  TabNavigationState,
   TabRouter,
   useNavigationBuilder,
+  useTheme
 } from "@react-navigation/native";
-import { Text } from "react-native";
 
 import React, { useEffect, useRef } from "react";
-import { View, Dimensions } from "react-native";
+import { Text, View, Dimensions } from "react-native";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useCurrentAccount } from "@/stores/account";
-import { useTheme } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
 import { PressableScale } from "react-native-pressable-scale";
 

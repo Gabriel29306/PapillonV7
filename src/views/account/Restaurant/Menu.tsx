@@ -7,15 +7,12 @@ import {
   StyleSheet,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import * as WebBrowser from "expo-web-browser";
 import {
-  X,
   Clock2,
   QrCode,
   ChevronLeft,
   ChevronRight,
-  Calendar,
-  Wallet,
+  Calendar
 } from "lucide-react-native";
 
 import type { Screen } from "@/router/helpers/types";
@@ -28,7 +25,6 @@ import {
   NativeText,
 } from "@/components/Global/NativeComponents";
 import { useCurrentAccount } from "@/stores/account";
-import { AccountService } from "@/stores/account/types";
 import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
 import { Balance } from "@/services/shared/Balance";
 import { balanceFromExternal } from "@/services/balance";

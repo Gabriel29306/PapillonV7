@@ -1,5 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
-import { Image, View, StyleSheet, Text } from "react-native";
+import { Image } from "react-native";
 
 import type { Screen } from "@/router/helpers/types";
 import { ScrollView } from "react-native-gesture-handler";

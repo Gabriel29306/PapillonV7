@@ -1,11 +1,10 @@
 import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
 import { getSubjectData } from "@/services/shared/Subject";
-import { icones } from "@/utils/data/icones";
 import { getCourseSpeciality } from "@/utils/format/format_cours_name";
 import { getAverageDiffGrade } from "@/utils/grades/getAverages";
 import { User, UserMinus, UserPlus, Users } from "lucide-react-native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { View, ScrollView } from "react-native";
 
 const GradeSubjectScreen = ({ route, navigation }) => {
   const { subject, allGrades } = route.params;

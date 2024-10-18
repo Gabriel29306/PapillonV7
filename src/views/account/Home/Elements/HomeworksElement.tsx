@@ -1,7 +1,6 @@
 import { NativeList, NativeListHeader } from "@/components/Global/NativeComponents";
 import { useCurrentAccount } from "@/stores/account";
-import { AccountService } from "@/stores/account/types";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useHomeworkStore } from "@/stores/homework";
 import { toggleHomeworkState, updateHomeworkForWeekInCache } from "@/services/homework";
 import HomeworkItem from "../../Homeworks/Atoms/Item";

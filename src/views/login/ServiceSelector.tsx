@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { Image, View, StyleSheet, Text } from "react-native";
+import { Image, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Reanimated, { LinearTransition, FlipInXDown } from "react-native-reanimated";
 
@@ -14,9 +14,7 @@ import { Audio } from "expo-av";
 import { useTheme } from "@react-navigation/native";
 import GetV6Data from "@/utils/login/GetV6Data";
 import { Check, School, Undo2 } from "lucide-react-native";
-import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
-import { sr } from "date-fns/locale";
 
 const ServiceSelector: Screen<"ServiceSelector"> = ({ navigation }) => {
   const theme = useTheme();

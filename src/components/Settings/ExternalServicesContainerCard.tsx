@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from "react";
-import type { Screen } from "@/router/helpers/types";
-
-import { ScrollView, Image, Text, View } from "react-native";
+import { View } from "react-native";
 import LottieView from "lottie-react-native";
 import { NativeItem, NativeList, NativeText } from "../Global/NativeComponents";
 

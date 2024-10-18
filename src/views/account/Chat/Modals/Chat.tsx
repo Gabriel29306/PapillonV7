@@ -1,29 +1,21 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Alert,
   ScrollView,
-  TouchableOpacity,
   View,
 } from "react-native";
-import { Link, useTheme } from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 
 import type { Screen } from "@/router/helpers/types";
 import {
   NativeItem,
   NativeList,
-  NativeListHeader,
   NativeText,
 } from "@/components/Global/NativeComponents";
 import { useCurrentAccount } from "@/stores/account";
-import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
 import type { ChatMessage } from "@/services/shared/Chat";
 import { getChatMessages } from "@/services/chats";
 import RenderHTML from "react-native-render-html";
 import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
-import { HomeworkReturnType } from "@/services/shared/Homework";
-import { formatDistance } from "date-fns";
-import { fr } from "date-fns/locale";
-import { Paperclip, FileText } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import InitialIndicator from "@/components/News/InitialIndicator";
 import parse_initials from "@/utils/format/format_pronote_initials";

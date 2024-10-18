@@ -1,13 +1,11 @@
-import {protectScreenComponent} from "@/router/helpers/protected-screen";
-import type {Screen} from "@/router/helpers/types";
-import {useCurrentAccount} from "@/stores/account";
+import { protectScreenComponent } from "@/router/helpers/protected-screen";
+import type { Screen } from "@/router/helpers/types";
+import { useCurrentAccount } from "@/stores/account";
 import getCorners from "@/utils/ui/corner-radius";
-import {useTheme} from "@react-navigation/native";
-import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
+import { useTheme } from "@react-navigation/native";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import PackageJSON from "../../../../package.json";
 import {
-  ActivityIndicator,
-  Button,
   Dimensions,
   Platform,
   Pressable,
@@ -28,7 +26,7 @@ import Reanimated, {
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { defaultTabs } from "@/consts/DefaultTabs";
@@ -47,18 +45,16 @@ import {
   stylezAnim
 } from "./Animations/HomeAnimations";
 
-import {NativeItem, NativeList, NativeText} from "@/components/Global/NativeComponents";
-import {Gift, Sparkles, WifiOff} from "lucide-react-native";
+import { NativeItem, NativeList, NativeText } from "@/components/Global/NativeComponents";
+import { Gift, WifiOff } from "lucide-react-native";
 
 import NetInfo from "@react-native-community/netinfo";
-import {getErrorTitle} from "@/utils/format/get_papillon_error_title";
-import {Elements} from "./ElementIndex";
-import {animPapillon} from "@/utils/ui/animations";
-import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
+import { getErrorTitle } from "@/utils/format/get_papillon_error_title";
+import { Elements } from "./ElementIndex";
+import { animPapillon } from "@/utils/ui/animations";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useFlagsStore } from "@/stores/flags";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
-import { th } from "date-fns/locale";
-import MissingItem from "@/components/Global/MissingItem";
 
 let headerHeight = Dimensions.get("window").height / 2.75;
 if (headerHeight < 275) {

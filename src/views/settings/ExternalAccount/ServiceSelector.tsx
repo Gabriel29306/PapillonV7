@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import type { Screen } from "@/router/helpers/types";
 import { useTheme } from "@react-navigation/native";
-import { CircleDashed, Star } from "lucide-react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Image, View, StyleSheet, StatusBar, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { CircleDashed } from "lucide-react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { Image, View, StyleSheet } from "react-native";
 import Reanimated, { LinearTransition, FlipInXDown } from "react-native-reanimated";
 import PapillonShineBubble from "@/components/FirstInstallation/PapillonShineBubble";
-import {
-  NativeItem,
-  NativeList,
-  NativeText,
-} from "@/components/Global/NativeComponents";
 import { AccountService } from "@/stores/account/types";
 import { useCurrentAccount } from "@/stores/account";
 import DuoListPressable from "@/components/FirstInstallation/DuoListPressable";

@@ -2,15 +2,12 @@ import { useTheme } from "@react-navigation/native";
 import React from "react";
 import { Dimensions, Modal, Platform, Pressable, Text, TouchableOpacity, View } from "react-native";
 
-import { Calendar, X } from "lucide-react-native";
+import { X } from "lucide-react-native";
 
 import Reanimated, {
-  Easing,
   FadeInDown,
   FadeOutDown,
-  LinearTransition,
-  ZoomIn,
-  ZoomOut
+  LinearTransition
 } from "react-native-reanimated";
 
 import RNDateTimePicker from "@react-native-community/datetimepicker";

@@ -1,9 +1,7 @@
-import { NativeItem, NativeList, NativeText } from "@/components/Global/NativeComponents";
-import { getSubjectData } from "@/services/shared/Subject";
+import { NativeList, NativeText } from "@/components/Global/NativeComponents";
 import { getCourseSpeciality } from "@/utils/format/format_cours_name";
 import { useTheme } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 
 export const GradeTitle = ({ grade, subjectData }) => {
   const theme = useTheme();

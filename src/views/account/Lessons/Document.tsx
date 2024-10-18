@@ -1,19 +1,16 @@
 import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import {View, ScrollView, Text, TouchableOpacity, Alert} from "react-native";
-import { Homework, HomeworkReturnType } from "@/services/shared/Homework";
+import { View, ScrollView, Text } from "react-native";
 import { getSubjectData } from "@/services/shared/Subject";
 import { Screen } from "@/router/helpers/types";
 
 import { formatDistance } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Clock, DoorOpen, FileText, Hourglass, Info, Link, Paperclip, PersonStanding } from "lucide-react-native";
+import { Clock, DoorOpen, Hourglass, Info, PersonStanding } from "lucide-react-native";
 
-import * as WebBrowser from "expo-web-browser";
 import { useTheme } from "@react-navigation/native";
-import RenderHTML from "react-native-render-html";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
-import {PapillonModernHeader} from "@/components/Global/PapillonModernHeader";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
 import { TimetableClass } from "@/services/shared/Timetable";
 
 const lz = (num: number) => (num < 10 ? `0${num}` : num);

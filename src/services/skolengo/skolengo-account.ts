@@ -1,10 +1,9 @@
-import { ReanimatedGraphPublicMethods } from "@birdwingo/react-native-reanimated-graph";
 import { Skolengo, OID_CLIENT_ID, OID_CLIENT_SECRET, BASE_URL } from "scolengo-api";
 import { SkolengoAuthConfig, SkolengoJWT, SkolengoTokenSet, authTokenToSkolengoTokenSet } from "./skolengo-types";
 import { DiscoveryDocument } from "expo-auth-session";
 import { SkolengoAccount, AccountService } from "@/stores/account/types";
 import axios from "axios";
-import { decode as b64decode, encode as b64encode} from "js-base64";
+import { decode as b64decode, encode as b64encode } from "js-base64";
 import { Alert } from "react-native";
 import { decode as htmlDecode } from "html-entities";
 import { useCurrentAccount } from "@/stores/account";

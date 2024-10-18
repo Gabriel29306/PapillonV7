@@ -2,7 +2,7 @@ import createScreen from "@/router/helpers/create-screen";
 import Settings from "@/views/settings/Settings";
 import SettingsNotifications from "@/views/settings/SettingsNotifications";
 import SettingsProfile from "@/views/settings/SettingsProfile";
-import SettingsTrophies  from "@/views/settings/SettingsTrophies";
+import SettingsTrophies from "@/views/settings/SettingsTrophies";
 import SettingsAbout from "@/views/settings/SettingsAbout";
 import SettingsIcons from "@/views/settings/SettingsIcons";
 import SettingsSubjects from "@/views/settings/SettingsSubjects";
@@ -10,7 +10,6 @@ import SettingsExternalServices from "@/views/settings/SettingsExternalServices"
 import SettingsMagic from "@/views/settings/SettingsMagic";
 import SettingsAddons from "@/views/settings/SettingsAddons";
 import AddonPage from "@/views/addon/AddonPage";
-import { create } from "lodash";
 import ExternalAccountSelectMethod from "@/views/settings/ExternalAccount/SelectMethod";
 import SettingsFlags from "@/views/settings/SettingsFlags";
 import SettingsDevLogs from "@/views/settings/SettingsDevLogs";

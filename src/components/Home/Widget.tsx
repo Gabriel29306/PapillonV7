@@ -1,4 +1,4 @@
-import React, { ForwardRefExoticComponent, type FunctionComponent, RefAttributes, useRef, useState } from "react";
+import React, { type FunctionComponent, RefAttributes, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
 
 import { useTheme } from "@react-navigation/native";
