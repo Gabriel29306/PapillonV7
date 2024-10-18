@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer, Theme } from "@react-navigation/native";
-import {Platform, StatusBar, View, useColorScheme } from "react-native";
+import { Platform, StatusBar, View, useColorScheme } from "react-native";
 import * as Linking from "expo-linking";
 import screens from "@/router/screens";
 import type { RouteParameters } from "@/router/helpers/types";
@@ -15,7 +15,7 @@ import * as SystemUI from "expo-system-ui";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useCurrentAccount } from "@/stores/account";
 import { navigatorScreenOptions } from "./helpers/create-screen";
-import {navigate} from "@/utils/logger/logger";
+import { navigate } from "@/utils/logger/logger";
 import { PapillonNavigation } from "./refs";
 
 export const Stack = createNativeStackNavigator<RouteParameters>();
@@ -76,8 +76,8 @@ const Router: React.FC = () => {
         <GestureHandlerRootView>
           <NavigationContainer linking={linking} theme={theme} ref={PapillonNavigation}
             onStateChange={(state) => {
-              var str = "";
-              var view = state;
+              let str = "";
+              let view = state;
               while (view?.routes) {
                 str += "/" + view.routes[view.index].name;
                 view = view.routes[view.index].state;

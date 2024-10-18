@@ -55,8 +55,8 @@ const AddonsWebview: React.FC<AddonsWebviewProps> = ({
 
   function get_plugin_path () {
     let path = url.split("/");
-    var res = "";
-    for (var i = 0; i < path.length - 1; i++) {
+    let res = "";
+    for (let i = 0; i < path.length - 1; i++) {
       res += path[i] + "/";
       if (path[i] === "addons")
       {

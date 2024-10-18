@@ -1,8 +1,8 @@
 import AddonsWebview from "@/components/Addons/AddonsWebview";
-import {Alert, View} from "react-native";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
+import { Alert, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React from "react";
-import {AddonPlacementManifest} from "@/addons/types";
+import { AddonPlacementManifest } from "@/addons/types";
 
 function AddonPage ({navigation, route}): Screen<"AddonPage"> {
   const addon: AddonPlacementManifest = route.params.addon;
@@ -28,8 +28,8 @@ function AddonPage ({navigation, route}): Screen<"AddonPage"> {
         data={data}
         requestNavigate={(url, data) => {
           //find the placement
-          var index = -1;
-          for(var i = 0; i < addon.manifest.placement.length; i++){
+          let index = -1;
+          for(let i = 0; i < addon.manifest.placement.length; i++){
             if(addon.manifest.placement[i].name == url){
               index = i;
               break;
