@@ -113,7 +113,7 @@ const BasePapillonBar: React.FC<Omit<ReturnType<typeof useNavigationBuilder>, "N
                 ? options.title
                 : route.name;
 
-          const icon = options.tabBarIcon && options.tabBarIcon;
+          const icon = options.tabBarIcon;
 
           const isFocused = state.index === index;
 
@@ -321,7 +321,7 @@ export const LargePapillonBar: React.FC<Omit<ReturnType<typeof useNavigationBuil
                 ? options.title
                 : route.name;
 
-            const icon = options.tabBarIcon && options.tabBarIcon;
+            const icon = options.tabBarIcon;
 
             const isFocused = state.index === index;
 

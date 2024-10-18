@@ -95,7 +95,7 @@ const PapillonPicker: React.FC<PapillonPickerProps> = ({
               const isNotString = typeof item !== "string";
 
               const label = isNotString ? item.label : item;
-              const icon = isNotString ? item.icon && item.icon : null;
+              const icon = isNotString ? (item.icon ?? null) : null;
 
               const onPressItem = isNotString ? item.onPress : null;
 

@@ -80,7 +80,7 @@ const ChangelogScreen = ({ route, navigation }) => {
           onPress={() => navigation.goBack()}
           style={{
             width: 32,
-            aspectRatio: 1 / 1,
+            aspectRatio: 1,
             backgroundColor: theme.colors.text + "18",
             alignItems: "center",
             justifyContent: "center",
