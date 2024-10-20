@@ -45,7 +45,6 @@ const NewsScreen: Screen<"News"> = ({ route, navigation }) => {
   }, [account]);
 
   useEffect(() => {
-    navigation.addListener("focus", () => fetchData(true));
     if (account.service === AccountService.EcoleDirecte) setIsED(true);
     if (sortedMessages.length === 0) {
       navigation.addListener("focus", () => fetchData(true));
