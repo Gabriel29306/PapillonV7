@@ -55,7 +55,7 @@ const NewsScreen: Screen<"News"> = ({ route, navigation }) => {
 
   useEffect(() => {
     if (informations) {
-      if (account.personalization?.magicEnabled) {
+      if (account.personalization.MagicNews) {
         const { importantMessages, normalMessages } = categorizeMessages(informations);
         setImportantMessages(importantMessages.map(message => ({ ...message, date: message.date.toString() })));
         setSortedMessages(normalMessages.map(message => ({ ...message, date: message.date.toString() })).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
@@ -64,7 +64,7 @@ const NewsScreen: Screen<"News"> = ({ route, navigation }) => {
         setSortedMessages(informations.map(info => ({ ...info, date: info.date.toString(), title: info.title || "" })).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
       }
     }
-  }, [informations, account.personalization?.magicEnabled]);
+  }, [informations, account.personalization.MagicNews]);
 
   const renderItem: ListRenderItem<NewsItem> = useCallback(({ item, index }) => (
     <NewsListItem
