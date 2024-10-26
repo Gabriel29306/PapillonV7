@@ -310,7 +310,7 @@ const PronoteWebview: Screen<"PronoteWebview"> = ({ route, navigation }) => {
                     throw error;
                   }
                 });
-          
+
                 if (!refresh) throw pronote.AuthenticateError;
 
                 const user = session.user.resources[0];

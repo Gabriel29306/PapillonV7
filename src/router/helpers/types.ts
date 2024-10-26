@@ -1,9 +1,8 @@
-import { AddonPlacementManifest } from "@/addons/types";
+import { AddonLogs as AddonLog, AddonPlacementManifest } from "@/addons/types";
 import type { Chat } from "@/services/shared/Chat";
-import type { Grade } from "@/services/shared/Grade";
+import type { Grade, GradesPerSubject } from "@/services/shared/Grade";
 import { Homework } from "@/services/shared/Homework";
 import type { AccountService } from "@/stores/account/types";
-import { Log } from "@/utils/logger/logger";
 import type { CurrentPosition } from "@/utils/native/location";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type pronote from "pawnote";
@@ -77,7 +76,10 @@ export type RouteParameters = {
   Homeworks?: { outsideNav?: boolean };
   HomeworksDocument: { homework: Homework };
 
-  News?: { outsideNav?: boolean };
+  News?: {
+    outsideNav?: boolean,
+    isED: boolean
+  };
   NewsItem: {
     message: string,
     important: boolean,
@@ -85,7 +87,7 @@ export type RouteParameters = {
   };
 
   Grades?: { outsideNav?: boolean };
-  GradeSubject: undefined;
+  GradeSubject: { subject: GradesPerSubject, allGrades: Grade[] };
   GradeDocument: {
     grade: Grade,
     allGrades?: Grade[]
@@ -129,20 +131,25 @@ export type RouteParameters = {
   ExternalAccountSelector: undefined;
   ExternalTurboselfLogin: undefined
   ExternalArdLogin: undefined
-  QrcodeAnswer: undefined
+  QrcodeAnswer: { accountID: string }
   QrcodeScanner: { accountID: string }
-  PriceDetectionOnboarding: undefined
-  PriceBeforeScan: undefined
+  PriceDetectionOnboarding: { accountID: string }
+  PriceBeforeScan: { accountID: string }
+  PriceAfterScan: { accountID: string }
 
   AddonSettingsPage: {
     addon: AddonPlacementManifest
     from: keyof RouteParameters
   };
   AddonLogs: {
-    logs: Log[],
+    logs: AddonLog[],
     name: string
   };
-  AddonPage: undefined;
+  AddonPage: {
+    addon: AddonPlacementManifest
+    from: string
+    data: any
+  };
 };
 
 export type RouterScreenProps<ScreenName extends keyof RouteParameters> =

@@ -70,7 +70,7 @@ const NextCourseWidget = forwardRef(({ hidden, setHidden, loading, setLoading }:
       setLoading(false);
     }();
   }, [account.instance, timetables]);
-  
+
   useEffect(() => {
     setLoading(true);
     updateNextCourse();
@@ -149,7 +149,7 @@ const NextCourseLesson: React.FC<{
       return setTimeout(updateRemainingTime, delay);
     };
 
-    let timeout = updateRemainingTime();
+    const timeout = updateRemainingTime();
 
     return () => clearTimeout(timeout);
   }, [nextCourse, setWidgetTitle]);

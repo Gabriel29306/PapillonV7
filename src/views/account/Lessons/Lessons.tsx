@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FlatList, View, Dimensions } from "react-native";
-import { StyleSheet } from "react-native";
-
+import { FlatList, View, Dimensions, ViewToken } from "react-native";
+import { Button, StyleSheet } from "react-native";
 import type { Screen } from "@/router/helpers/types";
 import { useCurrentAccount } from "@/stores/account";
 import { useTimetableStore } from "@/stores/timetable";
@@ -61,7 +60,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
     loadTimetableWeek(getWeekFromDate(new Date()), true);
   }, [account.personalization.icalURLs]);
 
-  const [loadingWeeks, setLoadingWeeks] = useState([]);
+  const [loadingWeeks, setLoadingWeeks] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -110,7 +109,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
     return day;
   };
 
-  const flatListRef = useRef(null);
+  const flatListRef = useRef<FlatList | null>(null);
   const [data, setData] = useState(() => {
     const today = new Date();
     return Array.from({ length: 100 }, (_, i) => {
@@ -119,55 +118,51 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
       return date;
     });
   });
-
-  const renderItem = useCallback(
-    ({ item: date }) => {
-      const weekNumber = getWeekFromDate(date);
-      return (
-        <View style={{ width: Dimensions.get("window").width }}>
-          <Page
-            paddingTop={outsideNav ? 80 : insets.top + 56}
-            current={date.getTime() === pickerDate.getTime()}
-            date={date}
-            day={getAllLessonsForDay(date)}
-            weekExists={
-              timetables[weekNumber] && timetables[weekNumber].length > 0
-            }
-            refreshAction={() => loadTimetableWeek(weekNumber, true)}
-            loading={loadingWeeks.includes(weekNumber)}
-          />
-        </View>
-      );
-    },
-    [
-      pickerDate,
-      timetables,
-      loadingWeeks,
-      outsideNav,
-      insets,
-      getAllLessonsForDay,
-      loadTimetableWeek,
-    ],
+  const renderItem = useCallback(({ item: date }: { item: Date }) => {
+    const weekNumber = getWeekFromDate(date);
+    return (
+      <View style={{ width: Dimensions.get("window").width }}>
+        <Page
+          paddingTop={outsideNav ? 80 : insets.top + 56}
+          current={date.getTime() === pickerDate.getTime()}
+          date={date}
+          day={getAllLessonsForDay(date)}
+          weekExists={
+            timetables[weekNumber] && timetables[weekNumber].length > 0
+          }
+          refreshAction={() => loadTimetableWeek(weekNumber, true)}
+          loading={loadingWeeks.includes(weekNumber)}
+        />
+      </View>
+    );
+  },
+  [
+    pickerDate,
+    timetables,
+    loadingWeeks,
+    outsideNav,
+    insets,
+    getAllLessonsForDay,
+    loadTimetableWeek,
+  ],
   );
 
-  const onViewableItemsChanged = useCallback(
-    ({ viewableItems }) => {
-      if (viewableItems.length > 0) {
-        const newDate = viewableItems[0].item;
-        setPickerDate(newDate);
-        loadTimetableWeek(getWeekFromDate(newDate), false);
-      }
-    },
-    [loadTimetableWeek],
+  const onViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: ViewToken<Date>[] }) => {
+    if (viewableItems.length > 0) {
+      const newDate = viewableItems[0].item;
+      setPickerDate(newDate);
+      loadTimetableWeek(getWeekFromDate(newDate), false);
+    }
+  },
+  [loadTimetableWeek],
   );
 
-  const getItemLayout = useCallback(
-    (_, index) => ({
-      length: Dimensions.get("window").width,
-      offset: Dimensions.get("window").width * index,
-      index,
-    }),
-    [],
+  const getItemLayout = useCallback((_: any, index: number) => ({
+    length: Dimensions.get("window").width,
+    offset: Dimensions.get("window").width * index,
+    index,
+  }),
+  [],
   );
 
   return (
@@ -233,9 +228,9 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
               icon: <CalendarPlus />,
               label: "Importer un iCal",
               onPress: () => {
-                navigation.navigate("LessonsImportIcal");
-              },
-            },
+                navigation.navigate("LessonsImportIcal", {});
+              }
+            }
           ]}
         >
           <PapillonHeaderAction
@@ -276,7 +271,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
         setShowDatePicker={setShowDatePicker}
         currentDate={pickerDate}
         onDateSelect={(date) => {
-          const newDate = new Date(date);
+          const newDate = new Date(date || 0);
           newDate.setHours(0, 0, 0, 0);
           setPickerDate(newDate);
           const index = data.findIndex(

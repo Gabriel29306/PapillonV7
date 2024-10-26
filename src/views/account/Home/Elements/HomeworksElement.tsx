@@ -10,8 +10,14 @@ import { debounce } from "lodash";
 import { PapillonNavigation } from "@/router/refs";
 import RedirectButton from "@/components/Home/RedirectButton";
 import { dateToEpochWeekNumber } from "@/utils/epochWeekNumber";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {RouteParameters} from "@/router/helpers/types";
 
-const HomeworksElement = ({ navigation }) => {
+interface HomeworksElementProps {
+  navigation: NativeStackNavigationProp<RouteParameters, "HomeScreen", undefined>
+}
+
+const HomeworksElement = ({ navigation }: HomeworksElementProps) => {
   const account = useCurrentAccount(store => store.account!);
   const homeworks = useHomeworkStore(store => store.homeworks);
 
@@ -48,10 +54,10 @@ const HomeworksElement = ({ navigation }) => {
   const startTime = Date.now() / 1000; // Convertir en millisecondes
   const endTime = startTime + 7 * 24 * 60 * 60 * 1000; // Ajouter 7 jours en millisecondes
 
-  const hwFinalList = homeworks[(new Date().getDay() === 6 || new Date().getDay() === 0) ? dateToEpochWeekNumber(actualDay) + 1 : dateToEpochWeekNumber(actualDay)]?.filter(hw => hw.due / 1000 >= startTime && hw.due / 1000 <= endTime);
-  const hwFinalList2 = homeworks[(new Date().getDay() === 5 || new Date().getDay() === 6 || new Date().getDay() === 0) ? dateToEpochWeekNumber(actualDay) + 2 : dateToEpochWeekNumber(actualDay) + 1]?.filter(hw => hw.due / 1000 >= startTime && hw.due / 1000 <= endTime);
+  const hwFinalList = homeworks[(new Date().getDay() === 6 || new Date().getDay() === 0) ? dateToEpochWeekNumber(actualDay) + 1 : dateToEpochWeekNumber(actualDay)]?.filter(hw => hw.due / 1000 >= startTime && hw.due / 1000 <= endTime) || [];
+  const hwFinalList2 = homeworks[(new Date().getDay() === 5 || new Date().getDay() === 6 || new Date().getDay() === 0) ? dateToEpochWeekNumber(actualDay) + 2 : dateToEpochWeekNumber(actualDay) + 1]?.filter(hw => hw.due / 1000 >= startTime && hw.due / 1000 <= endTime) || [];
 
-  if(hwFinalList.length === 0) {
+  if (!hwFinalList || hwFinalList.length === 0) {
     return null;
   }
 

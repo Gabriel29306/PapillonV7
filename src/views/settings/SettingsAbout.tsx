@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Image, StyleSheet } from "react-native";
+import { ScrollView, Image, StyleSheet, View } from "react-native";
 import type { Screen } from "@/router/helpers/types";
 import { useTheme } from "@react-navigation/native";
-import { Euro, MessageCircle } from "lucide-react-native";
+import { Euro, Github, MapPin, MessageCircle } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { NativeList, NativeItem, NativeListHeader } from "@/components/Global/NativeComponents";
 import { NativeIcon } from "@/components/Global/NativeComponents";
@@ -18,6 +18,7 @@ import { getContributors, Contributor } from "@/utils/GetRessources/GetContribs"
 const SettingsAbout: Screen<"SettingsAbout"> = ({ navigation }) => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const { colors } = theme;
 
   const [clickedOnVersion, setClickedOnVersion] = useState<number>(0);
   const [contributors, setContributors] = useState<Contributor[]>([]);
@@ -66,11 +67,18 @@ const SettingsAbout: Screen<"SettingsAbout"> = ({ navigation }) => {
           <NativeText variant="subtitle">Voir la liste des donateurs</NativeText>
         </NativeItem>
         <NativeItem
-          onPress={() => Linking.openURL("https://discord.gg/KjhVvMgTeJ")}
+          onPress={() => Linking.openURL("https://go.papillon.bzh/discord")}
           leading={<NativeIcon icon={<MessageCircle />} color="#5865F2" />}
         >
           <NativeText variant="title">Serveur Discord</NativeText>
           <NativeText variant="subtitle">Rejoindre le serveur Discord</NativeText>
+        </NativeItem>
+        <NativeItem
+          onPress={() => Linking.openURL("https://github.com/PapillonApp/Papillon")}
+          leading={<NativeIcon icon={<Github />} color="#555555" />}
+        >
+          <NativeText variant="title">Projet GitHub</NativeText>
+          <NativeText variant="subtitle">Contribuer au projet sur GitHub</NativeText>
         </NativeItem>
       </NativeList>
 
@@ -94,7 +102,41 @@ const SettingsAbout: Screen<"SettingsAbout"> = ({ navigation }) => {
             />}
           >
             <NativeText variant="title">{team.name}</NativeText>
-            <NativeText variant="subtitle">{team.description}</NativeText>
+
+            <NativeText variant="subtitle"
+              style={{
+                opacity: 0.5,
+                fontFamily: "semibold",
+              }}
+            >{team.description}</NativeText>
+
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 4,
+                marginTop: 2,
+              }}
+            >
+              <Github size={18} color={colors.text} opacity={0.7} />
+
+              <NativeText variant="subtitle">
+                {team.github?.split("/").pop()?.toLowerCase()}
+              </NativeText>
+            </View>
+
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 4,
+                marginTop: 2,
+              }}
+            >
+              <MapPin size={18} color={colors.text} opacity={0.7} />
+
+              <NativeText variant="subtitle">
+                {team.location}
+              </NativeText>
+            </View>
           </NativeItem>
         ))}
       </NativeList>

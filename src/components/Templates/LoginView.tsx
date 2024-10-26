@@ -97,6 +97,7 @@ const LoginView: React.FC<{
             flexDirection: "row",
             gap: 14,
             margin: 4,
+            alignItems: "center",
           }}
         >
           <Image
@@ -107,7 +108,12 @@ const LoginView: React.FC<{
               borderRadius: 80,
             }}
           />
-          <View>
+          <View
+            style={{
+              flex: 1,
+              gap: 2,
+            }}
+          >
             <NativeText
               style={{
                 fontSize: 16,

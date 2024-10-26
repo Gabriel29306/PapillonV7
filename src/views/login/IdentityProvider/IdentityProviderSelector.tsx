@@ -60,7 +60,7 @@ const IdentityProviderSelector: Screen<"IdentityProviderSelector"> = ({ navigati
           <NativeItem
             key={identityProvider.name}
             onPress={() => identityProvider.navigate()}
-            leading={<Image source={identityProvider.image} style={{ width: 40, height: 40, borderRadius: 300 }} />}
+            leading={<Image source={identityProvider.image} style={{ width: 40, height: 40, borderRadius: 10 }} />}
           >
             <NativeText variant="title">{identityProvider.title}</NativeText>
             <NativeText variant="subtitle">
@@ -77,7 +77,7 @@ const IdentityProviderSelector: Screen<"IdentityProviderSelector"> = ({ navigati
           <NativeItem
             key={identityProvider.name}
             onPress={() => identityProvider.navigate()}
-            leading={<Image source={identityProvider.image} style={{ width: 40, height: 40, borderRadius: 300 }} />}
+            leading={<Image source={identityProvider.image} style={{ width: 40, height: 40, borderRadius: 10 }} />}
           >
             <NativeText variant="title">{identityProvider.title}</NativeText>
             <NativeText variant="subtitle">

@@ -13,7 +13,7 @@ export async function getContributors (): Promise<Contributor[]> {
 
     const teamGithubUsernames = new Set(
       teams
-        .filter((team): team is { name: string; description: string; link: string; ppimage: string; github: string } => Boolean(team.github))
+        .filter((team): team is { name: string; description: string; link: string; ppimage: string; github: string, location: string } => Boolean(team.github))
         .map(({ github }) => github.split("/").pop()?.toLowerCase() ?? "")
     );
 

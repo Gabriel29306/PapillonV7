@@ -1,9 +1,8 @@
-import { ReanimatedGraphPublicMethods } from "@birdwingo/react-native-reanimated-graph";
 import { Skolengo, OID_CLIENT_ID, OID_CLIENT_SECRET, BASE_URL } from "scolengo-api";
 import { SkolengoAuthConfig, SkolengoJWT, SkolengoTokenSet, authTokenToSkolengoTokenSet } from "./skolengo-types";
 import { DiscoveryDocument } from "expo-auth-session";
 import { SkolengoAccount, AccountService } from "@/stores/account/types";
-import axios from "axios";
+import axios, { type AxiosResponse } from "axios";
 import { decode as b64decode, encode as b64encode} from "js-base64";
 import { Alert } from "react-native";
 import { decode as htmlDecode } from "html-entities";
@@ -16,8 +15,7 @@ const getSkolengoAxiosInstance = () => {
     baseURL: BASE_URL
   });
 
-
-  axioss.interceptors.response.use(r=>r, (error)=>{
+  axioss.interceptors.response.use((r: AxiosResponse) => r, (error)=>{
     if(error.response?.data?.errors?.find((e:any)=>e.title.includes("PRONOTE_RESOURCES"))) return Promise.resolve(error);
 
     if(__DEV__) {

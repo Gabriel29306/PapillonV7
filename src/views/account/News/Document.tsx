@@ -12,9 +12,8 @@ import {
   MoreHorizontal,
 } from "lucide-react-native";
 import React, { useEffect, useLayoutEffect } from "react";
-import { View, Dimensions, Linking, TouchableOpacity } from "react-native";
+import { View, Dimensions, Linking, TouchableOpacity, type GestureResponderEvent } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-
 import RenderHtml from "react-native-render-html";
 import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
 import { LinearGradient } from "expo-linear-gradient";
@@ -22,6 +21,7 @@ import { setNewsRead } from "@/services/news";
 import { useCurrentAccount } from "@/stores/account";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import PapillonPicker from "@/components/Global/PapillonPicker";
+import { AttachmentType } from "@/services/shared/Attachment";
 import parse_initials from "@/utils/format/format_pronote_initials";
 import { selectColorSeed } from "@/utils/format/select_color_seed";
 import { Screen } from "@/router/helpers/types";
@@ -56,7 +56,7 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
     },
   };
 
-  function onPress (event, href) {
+  function onPress (event: GestureResponderEvent, href: string) {
     Linking.openURL(href);
   }
 
@@ -79,7 +79,7 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
           />
           <View style={{flex: 1, gap: 3}}>
             <NativeText variant="title" numberOfLines={1}>{message.title === "" ? message.author : message.title}</NativeText>
-            <NativeText variant="subtitle" numberOfLines={1}>{message.title === "" ? formatDate(message.date) : message.author}</NativeText>
+            <NativeText variant="subtitle" numberOfLines={1}>{message.title === "" ? formatDate(message.date.toDateString()) : message.author}</NativeText>
           </View>
           {isED && <PapillonPicker
             animated
@@ -164,7 +164,7 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
             borderColor: theme.colors.border,
             marginTop: 16,
           }}>
-            <NativeText>{formatDate(message.date)}</NativeText>
+            <NativeText>{formatDate(message.date.toDateString())}</NativeText>
           </View>
         </ScrollView>}
 
@@ -178,7 +178,7 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
                   chevron={false}
                   onPress={() => Linking.openURL(attachment.url)}
                   icon={
-                    attachment.type === "file" ? (
+                    attachment.type === AttachmentType.File ? (
                       <FileIcon />
                     ) : (
                       <Link />

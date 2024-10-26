@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer, Theme } from "@react-navigation/native";
+import {NavigationContainer, NavigationState, PartialState, Theme} from "@react-navigation/native";
 import {Platform, StatusBar, View, useColorScheme } from "react-native";
 import * as Linking from "expo-linking";
 import screens from "@/router/screens";
@@ -76,10 +76,12 @@ const Router: React.FC = () => {
         <GestureHandlerRootView>
           <NavigationContainer linking={linking} theme={theme} ref={PapillonNavigation}
             onStateChange={(state) => {
-              var str = "";
-              var view = state;
+              let str = "";
+              let view: NavigationState | PartialState<NavigationState> | undefined = state;
               while (view?.routes) {
+                // @ts-expect-error (view is not undefined here bc of while condition, but ts think it can be)
                 str += "/" + view.routes[view.index].name;
+                // @ts-expect-error (same)
                 view = view.routes[view.index].state;
               }
               navigate(str);
