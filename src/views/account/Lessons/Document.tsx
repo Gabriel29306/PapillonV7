@@ -6,6 +6,8 @@ import {
 } from "@/components/Global/NativeComponents";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View, ScrollView, Text, Platform } from "react-native";
+import { WebBrowserPresentationStyle, openBrowserAsync } from "expo-web-browser";
+import { RenderHTML } from "react-native-render-html";
 
 import { getSubjectData } from "@/services/shared/Subject";
 import { Screen } from "@/router/helpers/types";
@@ -48,8 +50,8 @@ const LessonDocument: Screen<"LessonDocument"> = ({ route, navigation }) => {
     ) {
       getAndOpenFile(account, url);
     } else {
-      WebBrowser.openBrowserAsync(url, {
-        presentationStyle: WebBrowser.WebBrowserPresentationStyle.FORM_SHEET,
+      openBrowserAsync(url, {
+        presentationStyle: WebBrowserPresentationStyle.FORM_SHEET,
         controlsColor: theme.colors.primary,
       });
     }
@@ -127,7 +129,7 @@ const LessonDocument: Screen<"LessonDocument"> = ({ route, navigation }) => {
         {
           icon: <DoorOpen />,
           text: "Salle de classe",
-          value: lesson.room?.split(', ').join('\n'),
+          value: lesson.room?.split(", ").join("n"),
           enabled: lesson.room != null,
         },
         {

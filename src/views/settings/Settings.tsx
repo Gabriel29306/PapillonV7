@@ -285,7 +285,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
       color: "#F4B400",
       label: "Donnations",
       onPress: () => openUrl("https://papillon.bzh/donate"),
-    })
+    });
   }
 
   const translationY = useSharedValue(0);

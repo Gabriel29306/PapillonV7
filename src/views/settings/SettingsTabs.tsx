@@ -171,7 +171,7 @@ const SettingsTabs = () => {
         const homeTab = newTabs.splice(homeIndex, 1)[0];
         newTabs.splice(tabsEnabled, 0, homeTab);
       }
-      newTabs = newTabs.sort((x, y) => {return (x.enabled === y.enabled)? 0 : x.enabled? -1 : 1});
+      newTabs = newTabs.sort((x, y) => {return (x.enabled === y.enabled)? 0 : x.enabled? -1 : 1;});
       if (JSON.stringify(tabs) != JSON.stringify(newTabs)) {
         setTabs(newTabs);
       }

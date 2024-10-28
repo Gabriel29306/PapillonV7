@@ -2,8 +2,8 @@ function upperFirst (str: string): string {
   let result = str.split(/[-\s]/);
   result.forEach((value: string, index: number) => {
     result[index] = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-  })
-  return result.join(' ');
+  });
+  return result.join(" ");
 }
 
 function upperName (name: string): string {
