@@ -1,11 +1,11 @@
-import ecoledirecte, {AttendanceItem, AttendanceItemKind} from "pawdirecte";
+import ecoledirecte, { AttendanceItem, AttendanceItemKind } from "pawdirecte";
 import type { EcoleDirecteAccount } from "@/stores/account/types";
 import { ErrorServiceUnauthenticated } from "../shared/errors";
 import type { Attendance } from "../shared/Attendance";
-import {dateStringAsTimeInterval, getDuration} from "@/services/ecoledirecte/time-interval";
-import {Punishment} from "@/services/shared/Punishment";
-import {Absence} from "@/services/shared/Absence";
-import {Delay} from "@/services/shared/Delay";
+import { dateStringAsTimeInterval, getDuration } from "@/services/ecoledirecte/time-interval";
+import { Punishment } from "@/services/shared/Punishment";
+import { Absence } from "@/services/shared/Absence";
+import { Delay } from "@/services/shared/Delay";
 
 const decodeDelay = (item: AttendanceItem): Delay => {
   const timeInterval = dateStringAsTimeInterval(item.displayDate);
@@ -44,19 +44,19 @@ const decodePunishment = (item: AttendanceItem): Punishment => {
     id: item.id.toString(),
     duration,
     givenBy: item.teacher,
-    timestamp: item.date.getTime(),
+    timestamp: new Date(timeInterval?.start ?? item.date.getTime()).getTime(),
     // TODO
     duringLesson: false,
     exclusion: false,
     homework: {
       documents: [],
-      text: ""
+      text: item.todo ? "Fait" : "À faire"
     },
     nature: "",
     reason: {
-      circumstances: item.reason,
+      circumstances: "",
       documents: [],
-      text: []
+      text: [item.reason]
     },
     schedulable: false,
     schedule: []
