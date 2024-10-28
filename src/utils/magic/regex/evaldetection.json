@@ -1,6 +1,7 @@
 {
   "Évaluations": [
-    "\\b(?:DS|devoir\\s(?:sur\\stable|surveillé|commun|blanc|écrit|oral|partiel|final|de\\sfin\\sde\\ssemestre|de\\srattrapage|de\\smi\\ssemestre|de\\smi\\strimestre|de\\sfin\\sd'année))\\b",
+    "\\b(?:DS|devoir\\s(?:sur\\stable|surveillé(?:\\ssur\\s(?:le|la|les)\\schapitre\\s\\d+(?:\\s\\([^\\)]+\\))?)?|commun|blanc|écrit|oral|partiel|final|de\\sfin\\sde\\ssemestre|de\\srattrapage|de\\smi\\ssemestre|de\\smi\\strimestre|de\\sfin\\sd'année))\\b",
+    "\\bdevoir\\s(?:surveillé)\\s(?:sur\\s(?:le|la|les)\\schapitre\\s\\d+(?:\\s\\([^\\)]+\\))?)\\b",
     "\\bdevoir\\s(?:à\\sfaire\\sen\\sclasse|en\\sclasse\\ssurveillé|sur\\stable|écrit|oral|noté|évalué|corrigé|important|final|partiel|de\\sfin\\sde\\ssemestre|de\\srattrapage|de\\smi\\ssemestre|de\\smi\\strimestre|de\\sfin\\sd'année)\\b",
     "\\bdevoir\\s(?:noté|évalué|corrigé)\\s(?:en\\sclasse|surveillé|important|final|partiel|de\\sfin\\sde\\ssemestre|de\\srattrapage|de\\smi\\ssemestre|de\\smi\\strimestre|de\\sfin\\sd'année)\\b",
     "\\bcomposition\\s(?:surveillée|notée|trimestrielle|semestrielle|écrite|orale|finale|partielle|de\\sfin\\sde\\ssemestre|de\\srattrapage|de\\smi\\ssemestre|de\\smi\\strimestre|de\\sfin\\sd'année)\\b",

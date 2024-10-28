@@ -1,32 +1,47 @@
-import type React from "react";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { NativeListHeader } from "@/components/Global/NativeComponents";
 import { updateGradesPeriodsInCache } from "@/services/grades";
 import { useCurrentAccount } from "@/stores/account";
 import { useAttendanceStore } from "@/stores/attendance";
 import TotalMissed from "../../Attendance/Atoms/TotalMissed";
 import { PressableScale } from "react-native-pressable-scale";
-import { useTheme } from "@react-navigation/native";
 import RedirectButton from "@/components/Home/RedirectButton";
 import { PapillonNavigation } from "@/router/refs";
 import { log } from "@/utils/logger/logger";
-import type { Attendance } from "@/services/shared/Attendance";
 
-const AttendanceElement: React.FC = () => {
+interface Attendance {
+  absences: {
+    hours: string;
+    justified: boolean;
+  }[];
+}
+
+const AttendanceElement: React.FC<{onImportance: (input: number) => void}> = ({onImportance}) => {
   const account = useCurrentAccount((store) => store.account);
   const defaultPeriod = useAttendanceStore((store) => store.defaultPeriod) as string | null;
   const attendances = useAttendanceStore((store) => store.attendances) as Record<string, Attendance> | null;
 
-  const theme = useTheme();
-  const { colors } = theme;
+  const ImportanceHandler = () => {
+    if (attendances && defaultPeriod) {
+      let totalMissed = formatTotalMissed(attendances[defaultPeriod]);
+      if (totalMissed.total.hours > 0 || totalMissed.total.minutes > 0) {
+        onImportance(3);
+      } else {
+        onImportance(0);
+      }
+    } else {
+      onImportance(0);
+    }
+  };
 
   useEffect(() => {
-    void (async () =>{
+    void async function () {
       log("update grades periods in cache", "attendance:updateGradesPeriodsInCache");
       if (account?.instance) {
         await updateGradesPeriodsInCache(account);
       }
-    } );
+      ImportanceHandler();
+    }();
   }, [account?.instance]);
 
   const totalMissed = attendances && defaultPeriod ? attendances[defaultPeriod] : null;
@@ -42,19 +57,12 @@ const AttendanceElement: React.FC = () => {
     const totalHours = data.absences.reduce((sum, absence) => {
       const [hours, minutes] = absence.hours.split("h").map(Number);
       return sum + hours + (minutes || 0) / 60;
-    }, 0) + data.delays.reduce((sum, delays) => {
-      return sum + (delays.duration || 0) / 60;
     }, 0);
 
     const unJustifiedHours = data.absences.reduce((sum, absence) => {
       if (!absence.justified) {
         const [hours, minutes] = absence.hours.split("h").map(Number);
         return sum + hours + (minutes || 0) / 60;
-      }
-      return sum;
-    }, 0) + data.delays.reduce((sum, delays) => {
-      if (!delays.justified) {
-        return sum + (delays.duration || 0) / 60;
       }
       return sum;
     }, 0);

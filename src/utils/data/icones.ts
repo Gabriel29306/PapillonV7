@@ -131,7 +131,7 @@ export const icones = {
       isPremium: false,
     },
   ],
-  Communauté: [
+  "Concours de la communauté": [
     {
       id: "AppIcon_Community_Gradient",
       name: "Dégradé",

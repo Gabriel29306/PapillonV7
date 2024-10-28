@@ -11,7 +11,7 @@ import { updateTimetableForWeekInCache } from "@/services/timetable";
 import MissingItem from "@/components/Global/MissingItem";
 import { TimetableItem } from "../../Lessons/Atoms/Item";
 
-const TimetableElement = () => {
+const TimetableElement: React.FC<{onImportance: (input: number) => void}> = ({onImportance}) => {
   const account = useCurrentAccount((store) => store.account!);
   const timetables = useTimetableStore((store) => store.timetables);
 
@@ -19,6 +19,18 @@ const TimetableElement = () => {
   const [hidden, setHidden] = useState(true);
   const [loading, setLoading] = useState(false);
   const currentWeekNumber = useMemo(() => dateToEpochWeekNumber(new Date()), []);
+
+  const ImportanceHandler = (nextCourses: TimetableClass[]) => {
+    if (nextCourses.length > 0) {
+      let difference = new Date(nextCourses[0].startTimestamp).getHours() - new Date().getHours();
+      if (difference < 0) {
+        difference = 0;
+      }
+      onImportance(6 - difference);
+    } else {
+      onImportance(0);
+    }
+  };
 
   const isToday = (timestamp: number) => {
     const today = new Date();
@@ -85,6 +97,7 @@ const TimetableElement = () => {
     const upcomingCourses = filterAndSortCourses(weekCourses);
 
     setNextCourses(upcomingCourses);
+    ImportanceHandler(upcomingCourses);
     setHidden(upcomingCourses.length === 0);
   };
 

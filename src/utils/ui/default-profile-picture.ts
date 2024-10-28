@@ -1,6 +1,6 @@
 import { AccountService } from "@/stores/account/types";
 
-export const defaultProfilePicture = (service: AccountService, accountProvider: string) => {
+export const defaultProfilePicture = (service?: AccountService, accountProvider?: string) => {
   switch (accountProvider) {
     case "Université de Rennes":
       return require("../../../assets/images/service_rennes1.png");

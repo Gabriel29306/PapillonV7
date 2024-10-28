@@ -11,7 +11,7 @@ const radiuses = [
   },
   {
     devices: "12 mini, 13 mini",
-    radius: 46.0
+    radius: 45.0
   },
   {
     devices: "12, 12 pro, 13, 13 pro, 14",
@@ -36,11 +36,15 @@ const radiuses = [
   {
     devices: "ipad (10th generation)",
     radius: 22.0
+  },
+  {
+    devices: "sm-f721b",
+    radius: 41.51
   }
 ];
 
 const getCorners = (): number => {
-  const modelName = Device.deviceName;
+  const modelName = Device.modelName;
   if (!modelName) return 0;
 
   // make device name lowercase
@@ -50,7 +54,7 @@ const getCorners = (): number => {
   device = device.replace("iphone", "");
   device = device.trim();
 
-  const corner = radiuses.find((r) => r.devices.includes(device));
+  const corner = device.length > 0 && radiuses.find((r) => r.devices.includes(device));
   return corner ? corner.radius : 0;
 };
 

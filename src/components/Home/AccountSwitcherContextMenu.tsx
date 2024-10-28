@@ -79,7 +79,9 @@ const ContextMenu: React.FC<{
               elevation: opened ? 3 : 0,
             }}
           >
-            {children}
+            {React.cloneElement(children as React.ReactElement, {
+              opened,
+            })}
           </TouchableOpacity>
         ) : (
           <TouchableNativeFeedback
@@ -99,7 +101,9 @@ const ContextMenu: React.FC<{
               }}
               pointerEvents="auto"
             >
-              {children}
+              {React.cloneElement(children as React.ReactElement, {
+                opened,
+              })}
             </View>
           </TouchableNativeFeedback>
         )}

@@ -4,8 +4,20 @@ import HomeworksElement from "./Elements/HomeworksElement";
 import TimetableElement from "./Elements/TimetableElement";
 
 export const Elements = [
-  TimetableElement,
-  GradesElement,
-  AttendanceElement,
-  HomeworksElement
+  {
+    id:  "timetable",
+    component: TimetableElement,
+  },
+  {
+    id:  "grades",
+    component: GradesElement,
+  },
+  {
+    id:  "attendance",
+    component: AttendanceElement,
+  },
+  {
+    id:  "homeworks",
+    component: HomeworksElement,
+  }
 ];

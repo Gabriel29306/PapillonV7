@@ -7,15 +7,26 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RouteParameters } from "@/router/helpers/types";
 
 interface GradeItemProps {
-  subject: { average: { subjectName: string }, grades: any[] };
+  subject: { average: { subjectName: string }; grades: any[] };
   grade: Grade;
-  navigation: NativeStackNavigationProp<RouteParameters, keyof RouteParameters>
+  navigation: NativeStackNavigationProp<RouteParameters, keyof RouteParameters>;
   index: number;
   totalItems: number;
+  allGrades: Grade[];
 }
 
-const GradeItem: React.FC<GradeItemProps> = ({ subject, grade, navigation, index, totalItems }) => {
-  const subjectData = useMemo(() => getSubjectData(subject.average.subjectName), [subject.average.subjectName]);
+const GradeItem: React.FC<GradeItemProps> = ({
+  subject,
+  grade,
+  navigation,
+  index,
+  totalItems,
+  allGrades,
+}) => {
+  const subjectData = useMemo(
+    () => getSubjectData(subject.average.subjectName),
+    [subject.average.subjectName]
+  );
 
   const formattedDate = new Date(grade.timestamp).toLocaleDateString("fr-FR", {
     weekday: "long",
@@ -24,14 +35,15 @@ const GradeItem: React.FC<GradeItemProps> = ({ subject, grade, navigation, index
     year: "numeric",
   });
 
-  const gradeValue = typeof grade.student.value === "number"
-    ? grade.student.value.toFixed(2)
-    : "N. not";
+  const gradeValue =
+		typeof grade.student.value === "number"
+		  ? grade.student.value.toFixed(2)
+		  : "N. not";
 
   return (
     <NativeItem
       separator={index < totalItems - 1}
-      onPress={() => navigation.navigate("GradeDocument", { grade })}
+      onPress={() => navigation.navigate("GradeDocument", { grade, allGrades })}
       chevron={false}
       animated
       leading={
@@ -61,9 +73,7 @@ const GradeItem: React.FC<GradeItemProps> = ({ subject, grade, navigation, index
           </NativeText>
         </View>
         <View style={styles.rightContent}>
-          <NativeText style={styles.gradeValue}>
-            {gradeValue}
-          </NativeText>
+          <NativeText style={styles.gradeValue}>{gradeValue}</NativeText>
           <NativeText style={styles.maxGrade}>
             /{grade.outOf.value?.toFixed(0) ?? "??"}
           </NativeText>
