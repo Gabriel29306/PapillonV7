@@ -14,6 +14,9 @@ import Chat from "@/views/account/Chat/Modals/Chat";
 import HomeworksDocument from "@/views/account/Homeworks/Document";
 import LessonsImportIcal from "@/views/account/Lessons/Options/LessonsImportIcal";
 import LessonDocument from "@/views/account/Lessons/Document";
+import ScodocWebview from "@/views/login/IdentityProvider/actions/BackgroundIUTLannion";
+import ScodocBackgroundWebview from "@/views/login/IdentityProvider/actions/BackgroundIUTLannion";
+import BackgroundIUTLannion from "@/views/login/IdentityProvider/actions/BackgroundIUTLannion";
 
 export default [
   createScreen("NoteReaction", NoteReaction, {
@@ -74,7 +77,11 @@ export default [
     presentation: "modal",
   }),
   createScreen("Chat", Chat, {
-    headerTitle: "",
+    presentation: "modal",
+    headerShown: false,
+  }),
+  createScreen("BackgroundIUTLannion", BackgroundIUTLannion, {
+    headerTitle: "IUT de Lannion",
     presentation: "modal",
   }),
 ] as const;

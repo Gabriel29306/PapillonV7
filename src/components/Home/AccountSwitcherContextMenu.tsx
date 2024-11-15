@@ -79,7 +79,9 @@ const ContextMenu: React.FC<{
               elevation: opened ? 3 : 0,
             }}
           >
-            {children}
+            {React.cloneElement(children as React.ReactElement, {
+              opened,
+            })}
           </TouchableOpacity>
         ) : (
           <TouchableNativeFeedback
@@ -99,7 +101,9 @@ const ContextMenu: React.FC<{
               }}
               pointerEvents="auto"
             >
-              {children}
+              {React.cloneElement(children as React.ReactElement, {
+                opened,
+              })}
             </View>
           </TouchableNativeFeedback>
         )}
@@ -157,7 +161,7 @@ const ContextMenu: React.FC<{
                       }}
                     >
                       <Image
-                        source={account.personalization.profilePictureB64 ? { uri: account.personalization.profilePictureB64 } : defaultProfilePicture(account.service)}
+                        source={account.personalization.profilePictureB64 ? { uri: account.personalization.profilePictureB64 } : defaultProfilePicture(account.service, account.identityProvider?.name || "")}
                         style={{
                           width: "100%",
                           height: "100%",

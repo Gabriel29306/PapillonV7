@@ -10,7 +10,7 @@ export type AddonInfo = {
   placement: AddonPlacement[]
 };
 
-type AddonLogs = {
+export type AddonLogs = {
   type: "log" | "error" | "warn" | "info",
   message: string,
   date: Date

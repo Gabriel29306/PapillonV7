@@ -6,6 +6,7 @@ import { translateToWeekNumber } from "pawnote";
 import { pronoteFirstDate } from "./pronote/timetable";
 import { dateToEpochWeekNumber, epochWNToPronoteWN } from "@/utils/epochWeekNumber";
 import { checkIfSkoSupported } from "./skolengo/default-personalization";
+import { useClassSubjectStore } from "@/stores/classSubject";
 
 /**
  * Updates the state and cache for the homework of given week number.
@@ -31,6 +32,14 @@ export async function updateHomeworkForWeekInCache <T extends Account> (account:
         homeworks = await getHomeworkForWeek(account, weekNumber);
         break;
       }
+      case AccountService.EcoleDirecte: {
+        const { getHomeworkForWeek } = await import("./ecoledirecte/homework");
+        const weekNumber = dateToEpochWeekNumber(date);
+        let response = await getHomeworkForWeek(account, weekNumber);
+        homeworks = response.homework;
+        useClassSubjectStore.getState().pushSubjects(response.subjects);
+        break;
+      }
       case AccountService.Local: {
         homeworks = [];
         break;
@@ -42,7 +51,7 @@ export async function updateHomeworkForWeekInCache <T extends Account> (account:
     useHomeworkStore.getState().updateHomeworks(dateToEpochWeekNumber(date), homeworks);
   }
   catch (err) {
-    error("not updated, see:" + err, "updateHomeworkForWeekInCache");
+    error(`not updated, see:${err}`, "updateHomeworkForWeekInCache");
   }
 }
 
@@ -50,6 +59,11 @@ export async function toggleHomeworkState <T extends Account> (account: T, homew
   switch (account.service) {
     case AccountService.Pronote: {
       const { toggleHomeworkState } = await import("./pronote/homework");
+      await toggleHomeworkState(account, homework);
+      break;
+    }
+    case AccountService.EcoleDirecte: {
+      const { toggleHomeworkState } = await import("./ecoledirecte/homework");
       await toggleHomeworkState(account, homework);
       break;
     }

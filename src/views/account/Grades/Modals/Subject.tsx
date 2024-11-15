@@ -1,17 +1,27 @@
-import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
+import {
+  NativeItem,
+  NativeList,
+  NativeListHeader,
+  NativeText,
+} from "@/components/Global/NativeComponents";
 import { getSubjectData } from "@/services/shared/Subject";
-import { icones } from "@/utils/data/icones";
 import { getCourseSpeciality } from "@/utils/format/format_cours_name";
-import { getAverageDiffGrade } from "@/utils/grades/getAverages";
+import {AverageDiffGrade, getAverageDiffGrade} from "@/utils/grades/getAverages";
+import { useTheme } from "@react-navigation/native";
 import { User, UserMinus, UserPlus, Users } from "lucide-react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {Screen} from "@/router/helpers/types";
 
-const GradeSubjectScreen = ({ route, navigation }) => {
+
+const GradeSubjectScreen: Screen<"GradeSubject"> = ({ route, navigation }) => {
   const { subject, allGrades } = route.params;
+  const theme = useTheme();
 
   const [subjectData, setSubjectData] = useState({
-    color: "#888888", pretty: "Matière inconnue", emoji: "❓",
+    color: "#888888",
+    pretty: "Matière inconnue",
+    emoji: "❓",
   });
 
   const fetchSubjectData = async () => {
@@ -27,28 +37,30 @@ const GradeSubjectScreen = ({ route, navigation }) => {
     {
       icon: <User />,
       label: "Votre moyenne",
-      value: parseFloat(subject.average.average.value || -1).toFixed(2),
+      value: parseFloat((subject.average?.average?.value || -1).toString()).toFixed(2),
     },
     {
       icon: <Users />,
       label: "Moy. de classe",
-      value: parseFloat(subject.average.classAverage.value || -1).toFixed(2),
+      value: parseFloat((subject.average?.classAverage?.value || -1).toString()).toFixed(2),
     },
     {
       icon: <UserPlus />,
       label: "Moy. la plus haute",
-      value: parseFloat(subject.average.max.value || -1).toFixed(2),
+      value: parseFloat((subject.average?.max?.value || -1).toString()).toFixed(2),
     },
     {
       icon: <UserMinus />,
       label: "Moy. la plus basse",
-      value: parseFloat(subject.average.min.value || -1).toFixed(2),
+      value: parseFloat((subject.average?.min?.value || -1).toString()).toFixed(2) !== "-1.00"
+        ? parseFloat((subject.average?.min?.value || -1).toString()).toFixed(2)
+        : "??",
     },
   ];
 
-  const subjectOutOf = subject.average.outOf.value || 20;
+  const subjectOutOf = subject.average?.outOf?.value || 20;
 
-  const [averageDiff, setAverageDiff] = useState({
+  const [averageDiff, setAverageDiff] = useState<AverageDiffGrade>({
     difference: 0,
     with: 0,
     without: 0,
@@ -102,9 +114,7 @@ const GradeSubjectScreen = ({ route, navigation }) => {
                 flex: 1,
               }}
             >
-              <NativeText variant="overtitle">
-                {subjectData.pretty}
-              </NativeText>
+              <NativeText variant="overtitle">{subjectData.pretty}</NativeText>
 
               {getCourseSpeciality(subject.average.subjectName) && (
                 <NativeText variant="subtitle">
@@ -157,9 +167,7 @@ const GradeSubjectScreen = ({ route, navigation }) => {
                 </View>
               }
             >
-              <NativeText variant="subtitle">
-                {average.label}
-              </NativeText>
+              <NativeText variant="subtitle">{average.label}</NativeText>
             </NativeItem>
           );
         })}
@@ -175,18 +183,26 @@ const GradeSubjectScreen = ({ route, navigation }) => {
                 fontSize: 16,
                 lineHeight: 18,
                 fontFamily: "semibold",
-                color: averageDiff.difference < 0 ? "#4CAF50" : "#F44336",
+                color:
+									(averageDiff.difference || 0) < 0
+									  ? "#4CAF50"
+									  : (averageDiff.difference || 0) === 0
+									    ? theme.colors.text
+									    : "#F44336",
                 marginLeft: 12,
                 marginRight: 6,
               }}
             >
-              {averageDiff.difference > 0 ? "- " : "+ "}{averageDiff.difference.toFixed(2).replace("-", "")} pts
+              {(averageDiff.difference || 0) > 0
+                ? "- "
+                : (averageDiff.difference || 0) === 0
+                  ? "+/- "
+                  : "+ "}
+              {(averageDiff.difference || 0).toFixed(2).replace("-", "")} pts
             </NativeText>
           }
         >
-          <NativeText variant="overtitle">
-            Impact sur la moyenne
-          </NativeText>
+          <NativeText variant="overtitle">Impact sur la moyenne</NativeText>
           <NativeText variant="subtitle">
             Indique le poids de {subjectData.pretty} sur votre moyenne générale
           </NativeText>

@@ -240,6 +240,7 @@ const Header: React.FC<{
             style={{
               gap: 15,
               flexDirection: "row",
+              height: 131,
             }}
           >
             {Widgets.map((widget, index) => (

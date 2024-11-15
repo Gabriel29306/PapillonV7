@@ -13,7 +13,7 @@ import Reanimated, {
 
 import { Activity, Sofa, Utensils } from "lucide-react-native";
 import LessonsNoCourseItem from "./NoCourse";
-import { Timetable } from "@/services/shared/Timetable";
+import { Timetable, TimetableClass } from "@/services/shared/Timetable";
 import { animPapillon } from "@/utils/ui/animations";
 import LessonsLoading from "./Loading";
 import MissingItem from "@/components/Global/MissingItem";
@@ -31,7 +31,17 @@ const getDuration = (minutes: number): string => {
   return `${durationHours} h ${lz(durationRemainingMinutes)} min`;
 };
 
-export const Page = ({ day, date, current, paddingTop, refreshAction, loading, weekExists }) => {
+interface PageProps {
+  current: boolean
+  date: Date
+  day: TimetableClass[]
+  loading: boolean
+  paddingTop: number
+  refreshAction: () => unknown
+  weekExists: boolean
+}
+
+export const Page = ({ day, date, current, paddingTop, refreshAction, loading, weekExists }: PageProps) => {
   return (
     <ScrollView
       style={{
@@ -60,7 +70,7 @@ export const Page = ({ day, date, current, paddingTop, refreshAction, loading, w
             width: "100%"
           }}
         >
-          {day && day.map((item, i) => (
+          {day && day.length > 0 && day[0].type !== "vacation" && day.map((item, i) => (
             <View key={item.startTimestamp + i.toString()} style={{ gap: 10 }}>
               <TimetableItem key={item.startTimestamp} item={item} index={i} />
 
@@ -68,8 +78,8 @@ export const Page = ({ day, date, current, paddingTop, refreshAction, loading, w
                 day[i + 1].startTimestamp - item.endTimestamp > 1740000 && (
                 <SeparatorCourse
                   i={i}
-                  start={day[i + 1].startTimestamp}
-                  end={item.endTimestamp}
+                  start={item.endTimestamp}
+                  end={day[i + 1].startTimestamp}
                 />
               )}
             </View>
@@ -108,6 +118,15 @@ export const Page = ({ day, date, current, paddingTop, refreshAction, loading, w
           />
         )
       )}
+
+      {day.length === 1 && current && !loading && (day[0].type === "vacation" ? <MissingItem
+        emoji="🏝️"
+        title="C'est les vacances !"
+        description="Profitez de vos vacances, à bientôt."
+        entering={animPapillon(FadeInDown)}
+        exiting={animPapillon(FadeOut)}
+      />: <></>
+      )}
     </ScrollView>
   );
 };
@@ -119,7 +138,6 @@ const SeparatorCourse: React.FC<{
 }> = ({ i, start, end }) => {
   const { colors } = useTheme();
   const startHours = new Date(start).getHours();
-
   return (
     <Reanimated.View
       style={{
@@ -201,7 +219,7 @@ const SeparatorCourse: React.FC<{
           }}
         >
           {getDuration(
-            Math.round((start - end) / 60000)
+            Math.round((end - start) / 60000)
           )}
         </Text>
       </View>

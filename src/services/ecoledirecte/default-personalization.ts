@@ -18,9 +18,10 @@ const defaultEDTabs = [
 export default async function defaultPersonalization (account: Account): Promise<Partial<Personalization>> {
   return {
     color: colors[0],
-    magicEnabled: true,
-    profilePictureB64: account.profile_picture_url
-      ? await downloadAsBase64(account.profile_picture_url, {
+    MagicHomeworks: true,
+    MagicNews: true,
+    profilePictureB64: account.profilePictureURL
+      ? await downloadAsBase64(account.profilePictureURL, {
         Referer: ".ecoledirecte.com/",
         Pragma: "no-cache"
       })

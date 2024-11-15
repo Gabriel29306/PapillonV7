@@ -114,9 +114,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
           icon: <Cable />,
           color: "#D79400",
           label: "Services externes",
-          description: "Disponible prochainement",
           onPress: () => navigation.navigate("SettingsExternalServices"),
-          disabled: !defined("enable_external_services"),
         },
       ],
     },
@@ -210,13 +208,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
           color: "#888888",
           label: "À propos de Papillon",
           onPress: () => navigation.navigate("SettingsAbout"),
-        },
-        Platform.OS === "android" && {
-          icon: <HandCoins />,
-          color: "#CBA024",
-          label: "Soutenir Papillon",
-          onPress: () => openUrl("https://papillon.bzh/donate")
-        },
+        }
       ],
     },
     {
@@ -424,8 +416,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
             marginTop: 24,
           }}
         >
-          version {AppJSON.expo.version} {"\n"}
-          {Platform.OS} {Platform.Version} {"\n"}
+          version {AppJSON.expo.version} {Platform.OS} {"\n"}
           fabriqué avec ❤️ par les contributeurs Papillon
         </Text>
       </Reanimated.ScrollView>

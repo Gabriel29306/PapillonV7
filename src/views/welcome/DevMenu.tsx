@@ -13,7 +13,7 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
   // add button to header
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (
+      headerRight: () => __DEV__ && (
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("AccountSelector");
@@ -41,7 +41,6 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
           />
         </TouchableOpacity>
       ),
-      headerLargeTitle: true,
     });
   }, [navigation]);
 
@@ -52,38 +51,40 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
         padding: 16,
       }}
     >
-      <View
-        style={{
-          backgroundColor: colors.text + "16",
-          borderRadius: 10,
-          borderCurve: "continuous",
-          padding: 16,
-          gap: 4,
-        }}
-      >
-        <Text
+      {__DEV__ && (
+        <View
           style={{
-            color: colors.text,
-            fontSize: 18,
-            fontFamily: "bold",
+            backgroundColor: colors.text + "16",
+            borderRadius: 10,
+            borderCurve: "continuous",
+            padding: 16,
+            gap: 4,
           }}
         >
-          Menu pour les développeurs
-        </Text>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 18,
+              fontFamily: "bold",
+            }}
+          >
+            Menu pour les développeurs
+          </Text>
 
 
-        <Text
-          style={{
-            color: colors.text,
-            fontSize: 16,
-            lineHeight: 20,
-            fontFamily: "medium",
-            opacity: 0.7,
-          }}
-        >
-          Intégrez vos options et paramètres de développement ici.
-        </Text>
-      </View>
+          <Text
+            style={{
+              color: colors.text,
+              fontSize: 16,
+              lineHeight: 20,
+              fontFamily: "medium",
+              opacity: 0.7,
+            }}
+          >
+            Intégrez vos options et paramètres de développement ici.
+          </Text>
+        </View>
+      )}
 
       {__DEV__ && (
         <View>
@@ -131,7 +132,6 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
         <NativeListHeader label="Options de développement" />
 
         <NativeList>
-
           <NativeItem
             onPress={() => {
               navigation.navigate("SettingStack", {
@@ -142,6 +142,18 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
             <NativeText
             >
               Gérer les flags
+            </NativeText>
+          </NativeItem>
+          <NativeItem
+            onPress={() => {
+              navigation.navigate("SettingStack", {
+                view: "SettingsDevLogs"
+              });
+            }}
+          >
+            <NativeText
+            >
+              Logs de l'application
             </NativeText>
           </NativeItem>
         </NativeList>
@@ -155,15 +167,15 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
           <NativeItem
             onPress={() => {
               Alert.alert(
-                "Reset all data",
-                "Are you sure you want to reset all data?",
+                "Réinitialisation de Papillon",
+                "Êtes-vous sûr de vouloir réinitialiser toutes les données de l'application ?",
                 [
                   {
-                    text: "Cancel",
+                    text: "Annuler",
                     style: "cancel",
                   },
                   {
-                    text: "Reset",
+                    text: "Réinitialiser",
                     style: "destructive",
                     onPress: () => {
                       AsyncStorage.clear();
@@ -180,7 +192,10 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
                 fontFamily: "semibold",
               }}
             >
-              Erase all Papillon data and settings
+              Réinitialiser toutes les données
+            </NativeText>
+            <NativeText variant="subtitle">
+              Supprime toutes les données de l'application
             </NativeText>
           </NativeItem>
         </NativeList>

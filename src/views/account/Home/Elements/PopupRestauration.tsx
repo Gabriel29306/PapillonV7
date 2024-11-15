@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { NativeList, NativeText } from "@/components/Global/NativeComponents";
 import { useTheme } from "@react-navigation/native";
@@ -9,15 +9,30 @@ import { PapillonNavigation } from "@/router/refs";
 import { animPapillon } from "@/utils/ui/animations";
 import { FadeIn, FadeOutUp } from "react-native-reanimated";
 
+interface PopupRestaurationProps {
+  onImportance: (value: number) => unknown
+}
 
-const PopupRestauration: React.FC = () => {
+const PopupRestauration: React.FC<PopupRestaurationProps> = ({ onImportance }) => {
   const { colors } = useTheme();
   const account = useCurrentAccount(store => store.account!);
   const mutateProperty = useCurrentAccount(store => store.mutateProperty);
 
+  const ImportanceHandler = () => {
+    let hours = new Date().getHours();
+    if (hours >= 11 && hours < 14)
+      onImportance(10);
+    else
+      onImportance(2);
+  };
+
   if (account.personalization?.popupRestauration === false) {
     return null;
   }
+
+  useEffect(() => {
+    ImportanceHandler();
+  }, []);
 
   return (
     <NativeList

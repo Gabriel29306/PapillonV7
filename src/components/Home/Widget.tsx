@@ -1,4 +1,4 @@
-import React, { ForwardRefExoticComponent, type FunctionComponent, RefAttributes, useRef, useState } from "react";
+import React, { type FunctionComponent, RefAttributes, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
 
 import { useTheme } from "@react-navigation/native";
@@ -118,9 +118,8 @@ const Widget: React.FC<WidgetContainerProps> = ({ widget: DynamicWidget, navigat
 
 const styles = StyleSheet.create({
   widget: {
-    height: "100%",
     width: 200,
-    minWidth: 200,
+    height: 131,
     flexDirection: "row",
     alignItems: "center",
     gap: 12,

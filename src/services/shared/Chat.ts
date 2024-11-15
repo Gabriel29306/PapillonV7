@@ -5,7 +5,7 @@ export interface Chat {
   subject: string
   recipient: string
   creator: string
-
+  read: boolean
   /**
    * Link to the original instance.
    * You can also not use it, it all depends on the service
@@ -20,6 +20,7 @@ export interface ChatMessage {
   id: string
   content: string
   author: string
+  subject: string
   date: Date
   attachments: Attachment[]
 }

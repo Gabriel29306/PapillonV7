@@ -3,7 +3,7 @@
     "name": "Papillon",
     "slug": "papillonvex",
     "scheme": "papillon",
-    "version": "7.2.1",
+    "version": "7.5.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -13,9 +13,7 @@
       "resizeMode": "cover",
       "backgroundColor": "#32AB8E"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "appStoreUrl": "https://apps.apple.com/us/app/papillon-lappli-scolaire/id6477761165",

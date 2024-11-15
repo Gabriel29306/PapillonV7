@@ -1,31 +1,23 @@
+import { Information } from "@/services/shared/Information";
 import important_json from "@/utils/magic/regex/important.json";
 
-// Define the structure of a message
-interface Message {
-  title?: string;
-  content: string;
-  read: boolean;
-  [key: string]: any; // Allow for any additional properties
-}
-
 interface CategorizedMessages {
-  importantMessages: (Message & { matchCount: number; matchingWords: string[] })[];
-  normalMessages: Message[];
+  importantMessages: (Information & { matchCount: number; matchingWords: string[], important: true })[];
+  normalMessages: Information[];
 }
 
-export const categorizeMessages = (messages: Message[]): CategorizedMessages => {
-  const importantMessages: (Message & { matchCount: number; matchingWords: string[] })[] = [];
-  const normalMessages: Message[] = [];
-
-  messages.forEach((message) => {
+export const categorizeMessages = (messages: Information[]): CategorizedMessages => {
+  const importantMessages: CategorizedMessages["importantMessages"] = [];
+  const normalMessages: CategorizedMessages["normalMessages"] = [];
+  for (const message of messages) {
     const { title, content, read } = message;
     let matchCount = 0;
     const matchingWords: string[] = [];
 
-    Object.values(important_json).forEach((regexArray: string[]) => {
-      regexArray.forEach((regex) => {
+    for (const regexArray of Object.values(important_json)) {
+      for (const regex of regexArray) {
         const pattern = new RegExp(regex, "i");
-        const titleMatches = title && title.match(pattern);
+        const titleMatches = title?.match(pattern);
         const contentMatches = content.match(pattern);
 
         // Filter out empty strings and add only non-empty matches to matchingWords
@@ -44,11 +36,10 @@ export const categorizeMessages = (messages: Message[]): CategorizedMessages => 
             matchingWords.push(...nonEmptyContentMatches);
           }
         }
-      });
-    });
-
+      }
+    };
     if (!message.title) {
-      message.title = "Sans titre";
+      message.title = "";
     }
 
     if (matchCount > 0 && !read) {
@@ -59,7 +50,7 @@ export const categorizeMessages = (messages: Message[]): CategorizedMessages => 
     } else {
       normalMessages.push(message);
     }
-  });
+  }
 
   const limitedImportantMessages = importantMessages.slice(0, 3);
 

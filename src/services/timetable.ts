@@ -1,6 +1,6 @@
 import { type Account, AccountService } from "@/stores/account/types";
 import { useTimetableStore } from "@/stores/timetable";
-import { epochWNToPronoteWN } from "@/utils/epochWeekNumber";
+import { epochWNToPronoteWN, weekNumberToDateRange } from "@/utils/epochWeekNumber";
 import { checkIfSkoSupported } from "./skolengo/default-personalization";
 import { error } from "@/utils/logger/logger";
 import { fetchIcalData } from "./local/ical";
@@ -30,8 +30,15 @@ export async function updateTimetableForWeekInCache <T extends Account> (account
       useTimetableStore.getState().updateClasses(epochWeekNumber, timetable);
       break;
     }
-    case AccountService.UPHF: {
-      const { getTimetableForWeek } = await import("./uphf/data/timetable");
+    case AccountService.EcoleDirecte: {
+      const { getTimetableForWeek } = await import("./ecoledirecte/timetable");
+      const rangeDate = weekNumberToDateRange(epochWeekNumber);
+      const timetable = await getTimetableForWeek(account, rangeDate);
+      useTimetableStore.getState().updateClasses(epochWeekNumber, timetable);
+      break;
+    }
+    case AccountService.Multi: {
+      const { getTimetableForWeek } = await import("./multi/data/timetable");
       const timetable = await getTimetableForWeek(account, epochWeekNumber);
       useTimetableStore.getState().updateClasses(epochWeekNumber, timetable);
       break;

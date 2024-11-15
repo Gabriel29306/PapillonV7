@@ -25,6 +25,12 @@ export async function updateGradesPeriodsInCache <T extends Account> (account: T
 
       break;
     }
+    case AccountService.EcoleDirecte: {
+      const { getGradesPeriods } = await import("./ecoledirecte/grades");
+      periods = await getGradesPeriods(account);
+      defaultPeriod = getDefaultPeriod(periods);
+      break;
+    }
     case AccountService.Local: {
       periods = [
         {
@@ -75,13 +81,29 @@ export async function updateGradesAndAveragesInCache <T extends Account> (accoun
 
         break;
       }
+      case AccountService.EcoleDirecte: {
+        const { getGradesAndAverages } = await import("./ecoledirecte/grades");
+        const output = await getGradesAndAverages(account, periodName);
+        grades = output.grades;
+        averages = output.averages;
+        break;
+      }
       case AccountService.Local: {
-        grades = [];
-        averages = {
-          subjects: [],
-          overall: { value: 0, disabled: true },
-          classOverall: { value: 0, disabled: true }
-        };
+        if (account.identityProvider.identifier == "iut-lannion") {
+          const { saveIUTLanGrades } = await import("./iutlan/grades");
+          const data = await saveIUTLanGrades(account);
+
+          grades = data.grades;
+          averages = data.averages;
+        }
+        else {
+          grades = [];
+          averages = {
+            subjects: [],
+            overall: { value: 0, disabled: true },
+            classOverall: { value: 0, disabled: true }
+          };
+        }
 
         break;
       }
@@ -104,6 +126,6 @@ export async function updateGradesAndAveragesInCache <T extends Account> (accoun
     useGradesStore.getState().updateGradesAndAverages(periodName, grades, averages);
   }
   catch (err) {
-    error("not updated, see:" + err, "updateGradesAndAveragesInCache");
+    error(`not updated, see:${err}`, "updateGradesAndAveragesInCache");
   }
 }

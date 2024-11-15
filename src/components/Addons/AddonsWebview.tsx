@@ -12,6 +12,7 @@ import Reanimated, { Easing, useSharedValue, withTiming } from "react-native-rea
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RouteParameters } from "@/router/helpers/types";
 import { get_iso_date, Log } from "@/utils/logger/logger";
+import {AddonLogs} from "@/addons/types";
 
 export type AddonHomePageInfo = {
   name: string,
@@ -23,7 +24,7 @@ interface AddonsWebviewProps {
   setTitle?: (message: string) => unknown,
   addon: AddonHomePageInfo
   url: string
-  navigation: NativeStackNavigationProp<RouteParameters, "HomeScreen">
+  navigation: NativeStackNavigationProp<RouteParameters, "AddonPage" | "HomeScreen">
   scrollEnabled?: boolean
   inset?: Record<"top" | "left"| "bottom" | "right", number>
   requestNavigate?: (to: string, params: unknown) => unknown
@@ -45,7 +46,7 @@ const AddonsWebview: React.FC<AddonsWebviewProps> = ({
   let [ error, setError ] = React.useState(false);
   let [ content, setContent] = React.useState("");
   let [ injectedJS, setInjectedJS ] = React.useState("");
-  let [ logs, setLogs ] = React.useState<Log[]>([]);
+  let [ logs, setLogs ] = React.useState<AddonLogs[]>([]);
   let [ showAuthorizations, setShowAuthorizations ] = React.useState(false);
   let webview = React.useRef<WebView | null>(null);
   let title = "";
@@ -232,8 +233,8 @@ const AddonsWebview: React.FC<AddonsWebviewProps> = ({
                   let log = {
                     message: data.message,
                     type: "log",
-                    date: get_iso_date()
-                  } satisfies Log;
+                    date: new Date(get_iso_date())
+                  } satisfies AddonLogs;
                   setLogs([...logs, log]);
                 }
                 if (data.type == "error") {
@@ -241,8 +242,8 @@ const AddonsWebview: React.FC<AddonsWebviewProps> = ({
                   let log = {
                     message: data.message,
                     type: "error",
-                    date: get_iso_date()
-                  } satisfies Log;
+                    date: new Date(get_iso_date())
+                  } satisfies AddonLogs;
                   setLogs([...logs, log]);
                 }
                 if (data.type == "warn") {
@@ -250,8 +251,8 @@ const AddonsWebview: React.FC<AddonsWebviewProps> = ({
                   let log = {
                     message: data.message,
                     type: "warn",
-                    date: get_iso_date()
-                  } satisfies Log;
+                    date: new Date(get_iso_date())
+                  } satisfies AddonLogs;
                   setLogs([...logs, log]);
                 }
                 if (data.type == "info") {
@@ -259,8 +260,8 @@ const AddonsWebview: React.FC<AddonsWebviewProps> = ({
                   let log = {
                     message: data.message,
                     type: "info",
-                    date: get_iso_date()
-                  } satisfies Log;
+                    date: new Date(get_iso_date())
+                  } satisfies AddonLogs;
                   setLogs([...logs, log]);
                 }
 

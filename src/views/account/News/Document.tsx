@@ -12,20 +12,23 @@ import {
   MoreHorizontal,
 } from "lucide-react-native";
 import React, { useEffect, useLayoutEffect } from "react";
-import {View, Dimensions, Linking, TouchableOpacity} from "react-native";
+import {View, Dimensions, Linking, TouchableOpacity, type GestureResponderEvent} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-
 import RenderHtml from "react-native-render-html";
 import { PapillonModernHeader} from "@/components/Global/PapillonModernHeader";
 import {LinearGradient} from "expo-linear-gradient";
 import {setNewsRead} from "@/services/news";
 import {useCurrentAccount} from "@/stores/account";
 import PapillonPicker from "@/components/Global/PapillonPicker";
+import {Screen} from "@/router/helpers/types";
+import {AttachmentType} from "@/services/shared/Attachment";
 import parse_initials from "@/utils/format/format_pronote_initials";
+import { selectColorSeed } from "@/utils/format/select_color_seed";
 
-const NewsItem = ({route, navigation}) => {
-  let message = route.params.message && JSON.parse(route.params.message) as Information;
+const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
+  let message = JSON.parse(route.params.message) as Information;
   const important = route.params.important;
+  const isED = route.params.isED;
   const account = useCurrentAccount((store) => store.account!);
 
   const theme = useTheme();
@@ -51,7 +54,7 @@ const NewsItem = ({route, navigation}) => {
     },
   };
 
-  function onPress (event, href) {
+  function onPress (event: GestureResponderEvent, href: string) {
     Linking.openURL(href);
   }
 
@@ -63,17 +66,17 @@ const NewsItem = ({route, navigation}) => {
 
   return (
     <View style={{flex: 1}}>
-      <PapillonModernHeader outsideNav={true}>
-        <View style={{flexDirection: "row", gap: 10, alignItems: "center"}}>
+      <PapillonModernHeader native height={110} outsideNav={true}>
+        <View style={{flexDirection: "row", gap: 12, alignItems: "center"}}>
           <InitialIndicator
             initial={parse_initials(message.author)}
-            color={theme.colors.primary}
+            color={selectColorSeed(message.author)}
           />
-          <View style={{flex: 1}}>
-            <NativeText variant="title" numberOfLines={1}>{message.title}</NativeText>
-            <NativeText variant="subtitle" numberOfLines={1}>{message.author}</NativeText>
+          <View style={{flex: 1, gap: 3}}>
+            <NativeText variant="title" numberOfLines={1}>{message.title === "" ? message.author : message.title}</NativeText>
+            <NativeText variant="subtitle" numberOfLines={1}>{message.title === "" ? formatDate(message.date.toDateString()) : message.author}</NativeText>
           </View>
-          <PapillonPicker
+          {isED && <PapillonPicker
             animated
             direction="right"
             delay={0}
@@ -91,7 +94,7 @@ const NewsItem = ({route, navigation}) => {
             <TouchableOpacity>
               <MoreHorizontal size={24} color={theme.colors.text} />
             </TouchableOpacity>
-          </PapillonPicker>
+          </PapillonPicker>}
         </View>
       </PapillonModernHeader>
       {important && (
@@ -117,7 +120,7 @@ const NewsItem = ({route, navigation}) => {
         }}
         contentContainerStyle={{
           paddingBottom: 16,
-          paddingTop: 96,
+          paddingTop: 106,
         }}
       >
         <View style={{paddingHorizontal: 16}}>
@@ -137,7 +140,7 @@ const NewsItem = ({route, navigation}) => {
           />
         </View>
 
-        <ScrollView horizontal={true} contentContainerStyle={{gap: 5, paddingHorizontal: 16}}>
+        {isED && <ScrollView horizontal={true} contentContainerStyle={{gap: 5, paddingHorizontal: 16}}>
           <View style={{
             padding: 4,
             paddingHorizontal: 12,
@@ -156,9 +159,9 @@ const NewsItem = ({route, navigation}) => {
             borderColor: theme.colors.border,
             marginTop: 16,
           }}>
-            <NativeText>{formatDate(message.date)}</NativeText>
+            <NativeText>{formatDate(message.date.toDateString())}</NativeText>
           </View>
-        </ScrollView>
+        </ScrollView>}
 
         {message.attachments.length > 0 && (
           <View style={{paddingHorizontal: 16}}>
@@ -170,7 +173,7 @@ const NewsItem = ({route, navigation}) => {
                   chevron={false}
                   onPress={() => Linking.openURL(attachment.url)}
                   icon={
-                    typeof attachment.type === "file" ? (
+                    attachment.type === AttachmentType.File ? (
                       <FileIcon />
                     ) : (
                       <Link />
