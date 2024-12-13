@@ -13,31 +13,39 @@ jobs:
     # 1. Récupérer le code depuis le repo cible
     - name: Checkout Action Repository
       uses: actions/checkout@v3
+    
+    # 2. Configurer Java 17
+    - name: Set up Java 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin' # Distribution Temurin (privilégiée)
+        java-version: '17'
       
+    # 3. Télécharger le repo Papillon
     - name: Checkout Target Repository
       run: |
         git clone https://github.com/PapillonApp/Papillon.git target-repo
         cd target-repo
         git checkout main
 
-    # 2. Installer les dépendances et builder
+    # 4. Installer les dépendances et builder
     - name: Install Dependencies
       run: |
         cd target-repo
         npm install
 
-    # 3. Prebuil l'app avec Expo
+    # 5. Prebuil l'app avec Expo
     - name: Prepare Android Build
       run: |
         cd target-repo
         npx expo prebuild -p android
   
-    # 4. Configurer gradle.properties pour générer des APKs par architecture
+    # 6. Configurer gradle.properties pour générer des APKs par architecture
     - name: Configure Gradle for Split APKs
       run: |
         echo "enableSeparateBuildPerCPUArchitecture=true" >> target-repo/android/gradle.properties
 
-    # 5. Obtension de la dernière version postée, ou 7.7.0
+    # 7. Obtension de la dernière version postée, ou 7.7.0
     - name: Get Latest Release
       id: get_latest_release
       uses: actions/github-script@v6
@@ -54,21 +62,21 @@ jobs:
             core.setOutput("version", "7.7.0");
           }
     
-    # 6. Incrémentation de la version
+    # 8. Incrémentation de la version
     - name: Increment Version Based on Release
       run: |
         LATEST_VERSION=${{ steps.get_latest_release.outputs.version }}
         NEW_VERSION=$(echo "$LATEST_VERSION" | awk -F'.' '{print $1"."$2"."$3+1}')
         sed -i "s/versionCode .*/versionCode ${NEW_VERSION}/" target-repo/android/app/build.gradle
   
-    # 7. Build des apks
+    # 9. Build des apks
     - name: Build Release APK
       run: |
         cd target-repo/android
         # Étape 3 : Build release avec Gradle
         ./gradlew :app:assembleRelease
 
-    # 6. Publier les APKs dans une préversion
+    # 10. Publier les APKs dans une préversion
     - name: Create Pre-Release with APKs
       uses: ncipollo/release-action@v1
       with:
