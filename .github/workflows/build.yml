@@ -28,9 +28,9 @@ jobs:
 
     # 3. Prebuil l'app avec Expo
     - name: Prepare Android Build
-    run: |
-      cd target-repo
-      npx expo prebuild -p android
+      run: |
+        cd target-repo
+        npx expo prebuild -p android
   
     # 4. Configurer gradle.properties pour générer des APKs par architecture
     - name: Configure Gradle for Split APKs
