@@ -74,6 +74,7 @@ jobs:
         sed -i "s/versionCode [0-9]*/versionCode ${NEW_VERSION}/" android/app/build.gradle
         # Vérification de la modification
         grep "versionCode" android/app/build.gradle
+        echo "VERSION_CODE=${NEW_VERSION}" >> $GITHUB_ENV
   
     # 9. Build des apks
     - name: Build Release APK
@@ -86,11 +87,11 @@ jobs:
     - name: Create Pre-Release with APKs
       uses: ncipollo/release-action@v1
       with:
-        tag: "v$(date +'%Y%m%d')"
-        name: "Weekly Build $(date +'%Y-%m-%d')"
+        tag: "v${{ env.VERSION_CODE }}"
+        name: "Weekly Build v${{ env.VERSION_CODE }}"
         body: "Build automatique hebdomadaire pour Android."
         prerelease: true
-        files: |
+        artifacts: |
           target-repo/android/app/build/outputs/apk/release/*-arm64-v8a-release.apk
           target-repo/android/app/build/outputs/apk/release/*-armeabi-v7a-release.apk
           target-repo/android/app/build/outputs/apk/release/*-x86-release.apk
