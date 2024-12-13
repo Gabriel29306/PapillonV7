@@ -25,17 +25,27 @@ jobs:
       run: |
         echo "enableSeparateBuildPerCPUArchitecture=true" >> target-repo/android/gradle.properties
 
-    # 3. Auto-incrémentation de la version (build number)
-    - name: Increment Version
+    - name: Get Latest Release
+      id: get_latest_release
+      uses: actions/github-script@v6
+      with:
+        script: |
+          try {
+            const latestRelease = await github.rest.repos.getLatestRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            core.setOutput("version", latestRelease.data.tag_name.replace("v", ""));
+          } catch (error) {
+            console.log("No release found, using default version.");
+            core.setOutput("version", "7.7.0");
+          }
+      
+    - name: Increment Version Based on Release
       run: |
-        cd target-repo
-        VERSION_CODE=$(grep "versionCode" android/app/build.gradle | awk '{print $2}')
-        NEW_VERSION_CODE=$((VERSION_CODE + 1))
-        sed -i "s/versionCode $VERSION_CODE/versionCode $NEW_VERSION_CODE/" android/app/build.gradle
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git commit -am "Auto-increment version to $NEW_VERSION_CODE"
-        git push
+        LATEST_VERSION=${{ steps.get_latest_release.outputs.version }}
+        NEW_VERSION=$(echo "$LATEST_VERSION" | awk -F'.' '{print $1"."$2"."$3+1}')
+        sed -i "s/versionCode .*/versionCode ${NEW_VERSION}/" target-repo/android/app/build.gradle
 
     # 4. Installer les dépendances et builder
     - name: Install Dependencies
