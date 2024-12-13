@@ -82,6 +82,7 @@ jobs:
         cd target-repo/android
         # Étape 3 : Build release avec Gradle
         ./gradlew :app:assembleRelease
+        tree target-repo/android/app/build/
 
     # 10. Publier les APKs dans une préversion
     - name: Create Pre-Release with APKs
