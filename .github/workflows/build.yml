@@ -20,11 +20,24 @@ jobs:
         cd target-repo
         git checkout main
 
-    # 2. Configurer gradle.properties pour générer des APKs par architecture
+    # 2. Installer les dépendances et builder
+    - name: Install Dependencies
+      run: |
+        cd target-repo
+        npm install
+
+    # 3. Prebuil l'app avec Expo
+    - name: Prepare Android Build
+    run: |
+      cd target-repo
+      npx expo prebuild -p android
+  
+    # 4. Configurer gradle.properties pour générer des APKs par architecture
     - name: Configure Gradle for Split APKs
       run: |
         echo "enableSeparateBuildPerCPUArchitecture=true" >> target-repo/android/gradle.properties
 
+    # 5. Obtension de la dernière version postée, ou 7.7.0
     - name: Get Latest Release
       id: get_latest_release
       uses: actions/github-script@v6
@@ -40,34 +53,31 @@ jobs:
             console.log("No release found, using default version.");
             core.setOutput("version", "7.7.0");
           }
-      
+    
+    # 6. Incrémentation de la version
     - name: Increment Version Based on Release
       run: |
         LATEST_VERSION=${{ steps.get_latest_release.outputs.version }}
         NEW_VERSION=$(echo "$LATEST_VERSION" | awk -F'.' '{print $1"."$2"."$3+1}')
         sed -i "s/versionCode .*/versionCode ${NEW_VERSION}/" target-repo/android/app/build.gradle
+  
+  # 7. Build des apks
+  - name: Build Release APK
+    run: |
+      cd target-repo/android
+      # Étape 3 : Build release avec Gradle
+      ./gradlew :app:assembleRelease
 
-    # 4. Installer les dépendances et builder
-    - name: Install Dependencies
-      run: |
-        cd target-repo
-        npm install
-
-    - name: Build APKs
-      run: |
-        cd target-repo
-        npm run build:android # Assure-toi que cette commande existe dans ton projet
-
-    # 5. Publier les APKs dans une préversion
-    - name: Create Pre-Release with APKs
-      uses: ncipollo/release-action@v1
-      with:
-        tag: "v$(date +'%Y%m%d')"
-        name: "Weekly Build $(date +'%Y-%m-%d')"
-        body: "Build automatique hebdomadaire pour Android."
-        prerelease: true
-        files: |
-          target-repo/android/app/build/outputs/apk/release/*-arm64-v8a-release.apk
-          target-repo/android/app/build/outputs/apk/release/*-armeabi-v7a-release.apk
-          target-repo/android/app/build/outputs/apk/release/*-x86-release.apk
-          target-repo/android/app/build/outputs/apk/release/*-x86_64-release.apk
+  # 6. Publier les APKs dans une préversion
+  - name: Create Pre-Release with APKs
+    uses: ncipollo/release-action@v1
+    with:
+      tag: "v$(date +'%Y%m%d')"
+      name: "Weekly Build $(date +'%Y-%m-%d')"
+      body: "Build automatique hebdomadaire pour Android."
+      prerelease: true
+      files: |
+        target-repo/android/app/build/outputs/apk/release/*-arm64-v8a-release.apk
+        target-repo/android/app/build/outputs/apk/release/*-armeabi-v7a-release.apk
+        target-repo/android/app/build/outputs/apk/release/*-x86-release.apk
+        target-repo/android/app/build/outputs/apk/release/*-x86_64-release.apk
