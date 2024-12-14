@@ -53,29 +53,39 @@ jobs:
             } \
         }' target-repo/android/app/build.gradle
 
-    # 7. Obtension de la dernière version postée, ou 7.7.0
-    - name: Get Latest Release
+    # Étape 7 : Récupérer la dernière version distante, y compris les pré-releases
+    - name: Get Latest Release Version
       id: get_latest_release
       uses: actions/github-script@v6
       with:
         script: |
           try {
-            const latestRelease = await github.rest.repos.getLatestRelease({
+            // Liste des releases, incluant les pré-releases
+            const releases = await github.rest.repos.listReleases({
               owner: context.repo.owner,
-              repo: context.repo.repo
+              repo: context.repo.repo,
+              per_page: 1 // On ne prend que la première release
             });
-            const tagVersion = parseInt(latestRelease.data.tag_name, 10);
-            if (isNaN(tagVersion)) {
-              console.log("Invalid tag found. Using default versionCode 7601.");
-              core.setOutput("versionCode", 7601);
+            
+            if (releases.data.length > 0) {
+              const latestRelease = releases.data[0]; // La dernière release ou pré-release
+              const tagVersion = parseInt(latestRelease.tag_name.replace("v", ""), 10);
+              
+              if (isNaN(tagVersion)) {
+                console.log("Invalid tag format in latest release. Using default versionCode 100.");
+                core.setOutput("versionCode", 100);
+              } else {
+                console.log(`Latest version code (including pre-release): ${tagVersion}`);
+                core.setOutput("versionCode", tagVersion);
+              }
             } else {
-              console.log(`Latest version code: ${tagVersion}`);
-              core.setOutput("versionCode", tagVersion);
+              console.log("No release found. Using default versionCode 100.");
+              core.setOutput("versionCode", 100);
             }
           } catch (error) {
-            console.log(error);
-            console.log("No release found. Using default versionCode 7601.");
-            core.setOutput("versionCode", 7601);
+            console.log("Error fetching releases: ", error);
+            console.log("Using default versionCode 100.");
+            core.setOutput("versionCode", 100);
           }
     
     # 8. Incrémentation de la version
