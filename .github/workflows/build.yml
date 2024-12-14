@@ -73,7 +73,7 @@ jobs:
               core.setOutput("versionCode", tagVersion);
             }
           } catch (error) {
-            console.log(erro);
+            console.log(error);
             console.log("No release found. Using default versionCode 7601.");
             core.setOutput("versionCode", 7601);
           }
