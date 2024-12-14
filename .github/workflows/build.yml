@@ -78,27 +78,17 @@ jobs:
           }
     
     # 8. Incrémentation de la version
-    - name: Increment Version Based on Release
+    - name: Increment Version Code
       run: |
         cd target-repo
-        # Récupérer la version du tag
-        BASE_VERSION="${{ steps.get_latest_release.outputs.version }}"
-        echo "Base version: ${BASE_VERSION}"
-
-        # Rechercher la versionCode actuelle ou utiliser 1 par défaut
-        CURRENT_VERSION=$(grep -oP '(?<=versionCode )\d+' android/app/build.gradle || echo "1")
-        echo "Current versionCode: ${CURRENT_VERSION}"
-
-        # Calculer la nouvelle version
-        NEW_VERSION=$((CURRENT_VERSION + 1))
-        echo "New versionCode: ${NEW_VERSION}"
-
+        # Récupérer la dernière versionCode à partir de la sortie précédente
+        BASE_VERSION_CODE="${{ steps.get_latest_release.outputs.versionCode }}"
+        echo "Base versionCode: $BASE_VERSION_CODE"
+        NEW_VERSION_CODE=$((BASE_VERSION_CODE + 1))
+        echo "New versionCode: $NEW_VERSION_CODE"
         # Mettre à jour versionCode dans build.gradle
-        sed -i "s/versionCode [0-9]*/versionCode ${NEW_VERSION}/" android/app/build.gradle
-
-        # Vérification de la modification
-        grep "versionCode" android/app/build.gradle
-        echo "VERSION_CODE=${NEW_VERSION}" >> $GITHUB_ENV
+        sed -i "s/versionCode [0-9]*/versionCode ${NEW_VERSION_CODE}/" android/app/build.gradle
+        echo "VERSION_CODE=${NEW_VERSION_CODE}" >> $GITHUB_ENV
   
     # 9. Build des apks
     - name: Build Release APK
