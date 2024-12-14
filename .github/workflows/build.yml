@@ -64,10 +64,17 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo
             });
-            core.setOutput("version", latestRelease.data.tag_name.replace("v", ""));
+            const tagVersion = parseInt(latestRelease.data.tag_name, 10);
+            if (isNaN(tagVersion)) {
+              console.log("Invalid tag found. Using default versionCode 7601.");
+              core.setOutput("versionCode", 7601);
+            } else {
+              console.log(`Latest version code: ${tagVersion}`);
+              core.setOutput("versionCode", tagVersion);
+            }
           } catch (error) {
-            console.log("No release found, using default version.");
-            core.setOutput("version", "7.7.0");
+            console.log("No release found. Using default versionCode 7601.");
+            core.setOutput("versionCode", 7601);
           }
     
     # 8. Incrémentation de la version
@@ -97,14 +104,23 @@ jobs:
     - name: Build Release APK
       run: |
         cd target-repo/android
-        # Étape 3 : Build release avec Gradle
         ./gradlew :app:assembleRelease
+    
+    # 10. Renommer les apks
+    - name: Rename apks
+      run: |
+        cd target-repo/android/app/build/outputs/apk/release/
+        mv app-arm64-v8a-release.apk Papillon-arm64-v8a-release.apk
+        mv app-armeabi-v7a-release.apk Papillon-armeabi-v7a-release.apk
+        mv app-universal-release.apk Papillon-universal-release.apk
+        mv app-x86-release.apk Papillon-x86-release.apk
+        mv app-x86_64-release.apk Papillon-x86_64-release.apk
 
-    # 10. Publier les APKs dans une préversion
+    # 11. Publier les APKs dans une préversion
     - name: Create Pre-Release with APKs
       uses: ncipollo/release-action@v1
       with:
-        tag: "v${{ steps.get_latest_release.outputs.version }}"
+        tag: "${{ env.VERSION_CODE }}"
         name: "Weekly Build v${{ steps.get_latest_release.outputs.version }}"
         body: "Build automatique hebdomadaire pour Android."
         prerelease: true
