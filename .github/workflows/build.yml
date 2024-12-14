@@ -53,11 +53,6 @@ jobs:
             } \
         }' target-repo/android/app/build.gradle
 
-    - name: Verifie build.gradle
-      run: |
-        cat target-repo/android/app/build.gradle
-        exit 2
-
     # 7. Obtension de la dernière version postée, ou 7.7.0
     - name: Get Latest Release
       id: get_latest_release
