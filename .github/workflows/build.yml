@@ -105,8 +105,8 @@ jobs:
     - name: Create Pre-Release with APKs
       uses: ncipollo/release-action@v1
       with:
-        tag: "v${{ env.VERSION_CODE }}"
-        name: "Weekly Build v${{ env.VERSION_CODE }}"
+        tag: "v${{ steps.get_latest_release.outputs.version }}"
+        name: "Weekly Build v${{ steps.get_latest_release.outputs.version }}"
         body: "Build automatique hebdomadaire pour Android."
         prerelease: true
         artifacts: |
