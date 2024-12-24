@@ -28,6 +28,11 @@ jobs:
         cd target-repo
         git checkout main
 
+    - name: Repare file name
+      continue-on-error: true
+      run: |
+        mv target-repo/assets/images/service_alise.png target-repo/assets/images/service_alise.jpg
+
     # 4. Installer les dépendances et builder
     - name: Install Dependencies
       run: |
