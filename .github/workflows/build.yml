@@ -52,6 +52,7 @@ jobs:
                 universalApk true \
             } \
         }' target-repo/android/app/build.gradle
+        sed -i '/buildToolsVersion/d' target-repo/android/app/build.gradle
 
     # Étape 7 : Récupérer la dernière version distante, y compris les pré-releases
     - name: Get Latest Release Version
