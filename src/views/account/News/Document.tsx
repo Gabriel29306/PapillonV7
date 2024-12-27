@@ -95,10 +95,6 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
     <View style={{ flex: 1 }}>
       <PapillonModernHeader native height={110} outsideNav={true}>
         <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
-          <InitialIndicator
-            initial={parse_initials(message.author)}
-            color={selectColorSeed(message.author)}
-          />
           <View style={{flex: 1, gap: 3}}>
             <NativeText variant="title" numberOfLines={1}>{message.title === "" ? message.author : message.title}</NativeText>
             <NativeText variant="subtitle" numberOfLines={1}>{message.title === "" ? formatDate(message.date.toString()) : message.author}</NativeText>
@@ -194,6 +190,9 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
               >
                 <NativeText variant="body">
                   J'ai lu et pris connaissance
+                </NativeText>
+                <NativeText variant="subtitle">
+                  Vous confirmez avoir lu et votre établissement peut en être notifié.
                 </NativeText>
               </NativeItem>
             </NativeList>
