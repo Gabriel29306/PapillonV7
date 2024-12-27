@@ -28,13 +28,6 @@ jobs:
         cd target-repo
         git checkout main
 
-    - name: Repare file name
-      continue-on-error: true
-      run: |
-        cd target-repo
-        mv assets/images/service_alise.png assets/images/service_alise.jpg
-        find . -type f -exec sed -i 's/service_alise\.png/service_alise\.jpg/g' {} +
-
     # 4. Installer les dépendances et builder
     - name: Install Dependencies
       run: |
