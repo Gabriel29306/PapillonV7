@@ -2,7 +2,7 @@ name: Weekly Expo Build for Android
 
 on:
   schedule:
-    - cron: "0 12 * * 1" # Tous les lundis à 12h UTC
+    - cron: "0 0 * * 1" # Tous les lundis à 00h00 UTC
   workflow_dispatch: # Permet d'exécuter manuellement le workflow
 
 jobs:
