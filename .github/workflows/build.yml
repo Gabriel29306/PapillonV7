@@ -34,12 +34,6 @@ jobs:
         cd target-repo
         npm install
 
-    # 4. Installer les dépendances et builder
-    - name: 📥 Update Pawnote
-      run: |
-        cd target-repo
-        npm update pawnote
-
     # 5. Prebuil l'app avec Expo
     - name: ⚙️ Prepare Android Build
       run: |
