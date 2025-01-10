@@ -41,7 +41,7 @@
       }
     },
     "android": {
-      "versionCode": 7701,
+      "versionCode": 7710,
       "playStoreUrl": "https://play.google.com/store/apps/details?id=xyz.getpapillon.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/launch/adaptive-icon-foreground.png",
