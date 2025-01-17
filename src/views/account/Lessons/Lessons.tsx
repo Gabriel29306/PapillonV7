@@ -332,7 +332,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
             },
             {
               icon: showTeachers ? <EyeOff /> : <Eye />,
-              label: (showTeachers ? "Masquer" : "Afficher") + " les professeur",
+              label: (showTeachers ? "Masquer" : "Afficher") + " les professeurs",
               onPress: () => {
                 setShowTeachers(!showTeachers);
               }
