@@ -39,10 +39,11 @@ interface PageProps {
   loading: boolean
   paddingTop: number
   refreshAction: () => unknown
-  weekExists: boolean
+  weekExists: boolean,
+  showTeachers: boolean,
 }
 
-export const Page = ({ day, date, current, paddingTop, refreshAction, loading, weekExists }: PageProps) => {
+export const Page = ({ day, date, current, paddingTop, refreshAction, loading, weekExists, showTeachers }: PageProps) => {
   return (
     <ScrollView
       style={{
@@ -73,7 +74,7 @@ export const Page = ({ day, date, current, paddingTop, refreshAction, loading, w
         >
           {day && day.length > 0 && day[0].type !== "vacation" && day.map((item, i) => (
             <View key={item.startTimestamp + i.toString()} style={{ gap: 10 }}>
-              <TimetableItem key={item.startTimestamp} item={item} index={i} />
+              <TimetableItem key={item.startTimestamp} item={item} index={i} showTeachers={showTeachers}/>
 
               {day[i + 1] &&
                 day[i + 1].startTimestamp - item.endTimestamp > 1740000 && (

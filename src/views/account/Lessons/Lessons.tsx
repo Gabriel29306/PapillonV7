@@ -22,7 +22,7 @@ import { animPapillon } from "@/utils/ui/animations";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import AnimatedNumber from "@/components/Global/AnimatedNumber";
-import { CalendarPlus, MoreVertical } from "lucide-react-native";
+import { CalendarPlus, Eye, EyeOff, MoreVertical } from "lucide-react-native";
 import {
   PapillonHeaderAction,
   PapillonHeaderSelector,
@@ -77,6 +77,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTeachers, setShowTeachers] = useState(true);
 
   const loadTimetableWeek = async (weekNumber: number, force = false) => {
     if (
@@ -146,6 +147,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
           }
           refreshAction={() => loadTimetableWeek(weekNumber, true)}
           loading={loadingWeeks.includes(weekNumber)}
+          showTeachers={showTeachers}
         />
       </View>
     );
@@ -326,6 +328,13 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
               label: "Importer un iCal",
               onPress: () => {
                 navigation.navigate("LessonsImportIcal", {});
+              }
+            },
+            {
+              icon: showTeachers ? <EyeOff /> : <Eye />,
+              label: (showTeachers ? "Masquer" : "Afficher") + " les professeur",
+              onPress: () => {
+                setShowTeachers(!showTeachers);
               }
             }
           ]}

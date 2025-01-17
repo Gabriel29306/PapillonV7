@@ -30,7 +30,8 @@ export const TimetableItem: React.FC<{
   item: TimetableClass
   index: number
   small?: boolean
-}> = ({ item, index, small }) => {
+  showTeachers: boolean
+}> = ({ item, index, small, showTeachers }) => {
   const { colors } = useTheme();
 
   const start = useMemo(() => new Date(item.startTimestamp), [item]);
@@ -40,6 +41,7 @@ export const TimetableItem: React.FC<{
   const formattedStartTime = useMemo(() => start.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", hour12: false }), [start]);
   const formattedEndTime = useMemo(() => end.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", hour12: false }), [end]);
 
+  const teachersS = item.teacher?.includes(", ") ? "s": "";
   return (
     <Reanimated.View
       style={styles.itemContainer}
@@ -100,7 +102,10 @@ export const TimetableItem: React.FC<{
 
               {!small && (
                 <View style={{ flexDirection: "row", flex: 1 }}>
-                  <Text numberOfLines={2} style={[styles.locationText, { color: item.teacher ? colors.text : colors.text + "80" }]}>{item.teacher ?? "Professeur inconnu"}</Text>
+                  {showTeachers ?
+                    <Text numberOfLines={2} style={[styles.locationText, { color: item.teacher ? colors.text : colors.text + "80" }]}>{item.teacher ?? "Professeur inconnu"}</Text>
+                    : <Text numberOfLines={2} style={[styles.locationText, { color: colors.text + "80", fontStyle: "italic" }]}>Nom{teachersS} d{!teachersS ? "u": "es"} professeur{teachersS} masqué{teachersS}</Text>
+                  }
                   <Text style={[styles.durationText, { color: colors.text }]}>{getDuration(durationMinutes)}</Text>
                 </View>
               )}
