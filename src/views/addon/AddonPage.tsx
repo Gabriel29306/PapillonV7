@@ -33,8 +33,8 @@ const AddonPage: Screen<"AddonPage"> = ({ navigation, route }) => {
         data={data}
         requestNavigate={(url, data) => {
           //find the placement
-          var index = -1;
-          for(var i = 0; i < addon.manifest.placement.length; i++){
+          let index = -1;
+          for(let i = 0; i < addon.manifest.placement.length; i++){
             if(addon.manifest.placement[i].name == url){
               index = i;
               break;
