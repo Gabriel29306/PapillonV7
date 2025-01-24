@@ -17,7 +17,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { PressableScale } from "react-native-pressable-scale";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {Screen} from "@/router/helpers/types";
+import { Screen } from "@/router/helpers/types";
 
 interface Feature {
   title: string;
@@ -81,7 +81,7 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
           onPress={() => navigation.goBack()}
           style={{
             width: 32,
-            aspectRatio: 1 / 1,
+            aspectRatio: 1,
             backgroundColor: theme.colors.text + "18",
             alignItems: "center",
             justifyContent: "center",
