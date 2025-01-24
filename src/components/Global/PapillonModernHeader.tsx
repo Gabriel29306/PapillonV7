@@ -105,7 +105,7 @@ const NativeModernHeader: React.FC<ModernHeaderProps> = ({ children, outsideNav 
           justifyContent: "space-between",
           alignItems: "center",
           gap: 8,
-          backgroundColor: tint ? tint : theme.colors.text + "10",
+          backgroundColor: tint ?? theme.colors.text + "10",
           borderBottomColor: theme.colors.border,
           borderBottomWidth: 0.5,
         }]}
@@ -175,8 +175,8 @@ export const PapillonHeaderAction: React.FC<{
   return (
     <Reanimated.View
       layout={animated && animPapillon(LinearTransition)}
-      entering={entering && entering}
-      exiting={exiting && exiting}
+      entering={entering}
+      exiting={exiting}
     >
       <PressableScale
         activeScale={0.85}

@@ -174,7 +174,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
   const [customColor, setCustomColor] = useState("");
 
   const renderSubjectItem = useCallback(({ item: subject, index }: { item: Item, index: number }) => {
-    if (!subject[0] || !subject[1] || !subject[1].emoji || !subject[1].pretty || !subject[1].color)
+    if (!subject[0] || !subject[1]?.emoji || !subject[1]?.pretty || !subject[1]?.color)
       return null;
 
     return (
