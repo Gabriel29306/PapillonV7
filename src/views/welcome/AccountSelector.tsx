@@ -447,12 +447,7 @@ const AccountSelector: Screen<"AccountSelector"> = ({ navigation }) => {
                         {account.studentName.first} {account.studentName.last}
                       </NativeText>
                       <NativeText animated variant="subtitle" numberOfLines={1}>
-                        {account.schoolName ?
-                          account.schoolName :
-                          account.identityProvider ?
-                            account.identityProvider.name :
-                            "Compte local"
-                        }
+                        {account.schoolName ?? account.identityProvider?.name ?? "Compte local"}
                       </NativeText>
                     </Reanimated.View>
                   </NativeItem>
