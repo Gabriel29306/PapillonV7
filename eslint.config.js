@@ -47,7 +47,8 @@ module.exports = [
       "no-irregular-whitespace": "error",
       "no-unneeded-ternary": "error",
       "no-duplicate-imports": "error",
-      "no-empty": "error"
+      "no-empty": "error",
+      "no-useless-escape": "error"
     }
   }
 ];
