@@ -17,7 +17,7 @@ interface ModernHeaderProps {
   startLocation?: number,
   native? : boolean,
   tint?: string,
-};
+}
 
 export const PapillonModernHeader: React.FC<ModernHeaderProps> = (props) => {
   if (props.native) {

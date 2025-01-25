@@ -37,6 +37,7 @@ module.exports = [
       "@stylistic/quotes": ["error", "double"],
       "@stylistic/semi": ["error", "always"],
       "@stylistic/space-before-function-paren": ["error", "always"],
+      "@stylistic/no-extra-semi": "error",
       "unused-imports/no-unused-imports": "error",
       "no-unused-vars": ["error", {
         "args": "none"
