@@ -21,11 +21,14 @@ export interface GradeValue {
    */
   value: number | null;
 
+  status: string | null;
+
   /**
    * Whether the "value" should be counted
    * in the average or not.
    */
   disabled?: boolean
+
 };
 
 export interface Grade {
@@ -70,4 +73,8 @@ export interface AverageOverview {
 export interface GradesPerSubject {
   average: SubjectAverage
   grades: Array<Grade>
+  rank?: {
+    value: number;
+    outOf: number;
+  }
 }

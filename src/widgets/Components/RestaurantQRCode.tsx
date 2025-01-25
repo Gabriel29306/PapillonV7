@@ -1,12 +1,11 @@
 import { useTheme } from "@react-navigation/native";
-import { PieChart, Pizza } from "lucide-react-native";
-import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { Pizza } from "lucide-react-native";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Text, View } from "react-native";
 import Reanimated, {
   LinearTransition
 } from "react-native-reanimated";
 
-import AnimatedNumber from "@/components/Global/AnimatedNumber";
 import { WidgetProps } from "@/components/Home/Widget";
 import { useCurrentAccount } from "@/stores/account";
 import QRCode from "react-native-qrcode-svg";
@@ -28,7 +27,7 @@ const RestaurantQRCodeWidget = forwardRef(({
 
   const account = useCurrentAccount((store) => store.account);
   const linkedAccounts = useCurrentAccount(store => store.linkedAccounts);
-  const [qrcode, setQRCodes] = useState<string[] | null>(null);
+  const [qrcode, setQRCodes] = useState<Array<string | Blob> | null>(null);
   const navigation = useNavigation<NavigationProps>();
 
   useImperativeHandle(ref, () => ({
@@ -41,7 +40,7 @@ const RestaurantQRCodeWidget = forwardRef(({
     void async function () {
       setHidden(true);
       setLoading(true);
-      const qrcodes: string[] = [];
+      const qrcodes: Array<string | Blob> = [];
       const currentHour = new Date().getHours();
       for (const account of linkedAccounts) {
         if (account.service === AccountService.Turboself || account.service === AccountService.ARD) {

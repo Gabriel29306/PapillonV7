@@ -3,7 +3,7 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Alert, Image, Platform, Text, View } from "react-native";
 import { useAccounts, useCurrentAccount } from "@/stores/account";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import AppJSON from "../../../app.json";
+import PackageJSON from "../../../package.json";
 
 import Reanimated, {
   FadeIn,
@@ -232,7 +232,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
           label: "Se déconnecter",
           onPress: () => {
             if (Platform.OS === "ios") {
-              Alert.alert("Se déconnecter", "Êtes-vous sûr de vouloir vous déconnecter ?", [
+              Alert.alert("Se déconnecter", "Es-tu sûr de vouloir te déconnecter ?", [
                 {
                   text: "Annuler",
                   style: "cancel",
@@ -252,7 +252,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
             } else {
               showAlert({
                 title: "Se déconnecter",
-                message: "Êtes-vous sûr de vouloir vous déconnecter ?",
+                message: "Es-tu sûr de vouloir te déconnecter ?",
                 actions: [
                   {
                     title: "Annuler",
@@ -440,7 +440,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
             marginTop: 24,
           }}
         >
-          version {AppJSON.expo.version} {Platform.OS} {__DEV__ ? "(développeur)" : ""} {"\n"}
+          version {PackageJSON.version} {Platform.OS} {__DEV__ ? "(développeur)" : ""} {"\n"}
           fabriqué avec ❤️ par les contributeurs Papillon
         </Text>
       </Reanimated.ScrollView>

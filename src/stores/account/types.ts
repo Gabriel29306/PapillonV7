@@ -1,6 +1,6 @@
 import type pronote from "pawnote";
 import type { Account as PawdirecteAccount, Session as PawdirecteSession } from "pawdirecte";
-import type { Client as ARDClient, Client as PawrdClient } from "pawrd";
+import type { Client as ARDClient } from "pawrd";
 import { Client as TurboselfClient } from "turboself-api";
 import { Client as AliseClient, BookingDay } from "alise-api";
 import type ScolengoAPI from "scolengo-api";
@@ -40,6 +40,7 @@ export interface Personalization {
   hideProfilePicOnHomeScreen: boolean,
   hideTabTitles: boolean,
   showTabBackground: boolean,
+  showWeekFrequency: boolean,
   transparentTabBar: boolean,
   hideTabBar: boolean,
   popupRestauration?: boolean,
@@ -192,6 +193,8 @@ export interface LocalAccount extends BaseAccount {
     username: string
     password: string
   }
+
+  providers?: string[]
 }
 
 export interface TurboselfAccount extends BaseExternalAccount {
