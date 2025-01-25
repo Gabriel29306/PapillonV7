@@ -17,6 +17,7 @@ import { PressableScale } from "react-native-pressable-scale";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Screen } from "@/router/helpers/types";
+import { error } from "@/utils/logger/logger";
 
 interface Feature {
   title: string;
@@ -314,7 +315,9 @@ const ChangelogFeature: React.FC<{ feature: Feature, navigation: any, theme: any
                 navigation.goBack();
                 navigation.navigate(feature.navigation);
               }
-              catch {}
+              catch (err){
+                error("Fail with `feature.navigation`", "ChangelogScreen");
+              }
             }
           } : undefined}
         >
