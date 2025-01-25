@@ -20,9 +20,6 @@ interface ModernHeaderProps {
 };
 
 export const PapillonModernHeader: React.FC<ModernHeaderProps> = (props) => {
-  const theme = useTheme();
-  const insets = useSafeAreaInsets();
-
   if (props.native) {
     return (
       <NativeModernHeader {...props} />

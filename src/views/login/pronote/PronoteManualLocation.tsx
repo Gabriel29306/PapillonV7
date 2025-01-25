@@ -37,16 +37,13 @@ const PronoteManualLocation: Screen<"PronoteManualLocation"> = ({ navigation }) 
   const insets = useSafeAreaInsets();
   const {colors} = useTheme();
 
-  const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const keyboardDidShow = (event: KeyboardEvent) => {
-    setKeyboardOpen(true);
     setKeyboardHeight(event.endCoordinates.height);
   };
 
   const keyboardDidHide = () => {
-    setKeyboardOpen(false);
     setKeyboardHeight(0);
   };
 
