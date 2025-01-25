@@ -38,7 +38,9 @@ module.exports = [
       "@stylistic/semi": ["error", "always"],
       "@stylistic/space-before-function-paren": ["error", "always"],
       "unused-imports/no-unused-imports": "error",
-      "no-unused-vars": "error"
+      "no-unused-vars": ["error", {
+        "args": "none"
+      }]
     }
   }
 ];
