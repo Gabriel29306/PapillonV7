@@ -44,7 +44,6 @@ import {
   StatusBar,
   View
 } from "react-native";
-import Reanimated from "react-native-reanimated";
 import Animated, {
   Extrapolation,
   interpolate,
@@ -211,7 +210,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
           loading={!account.instance}
         />
       </ContextMenu>
-      <Reanimated.ScrollView
+      <Animated.ScrollView
         ref={scrollRef}
         snapToEnd={false}
         snapToStart={false}
@@ -266,7 +265,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
             />
           </Animated.View>
         </Animated.View>
-      </Reanimated.ScrollView>
+      </Animated.ScrollView>
     </View>
   );
 };

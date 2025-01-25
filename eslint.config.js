@@ -41,7 +41,9 @@ module.exports = [
       "no-unused-vars": ["error", {
         "args": "none"
       }],
-      "no-var": "error"
+      "no-var": "error",
+      "no-unneeded-ternary": "error",
+      "no-duplicate-imports": "error"
     }
   }
 ];

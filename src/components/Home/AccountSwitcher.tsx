@@ -12,7 +12,6 @@ import { useCurrentAccount } from "@/stores/account";
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
 import PapillonSpinner from "../Global/PapillonSpinner";
 import { animPapillon } from "@/utils/ui/animations";
-import Animated from "react-native-reanimated";
 import { BlurView } from "expo-blur";
 
 const ReanimatedBlurView = Reanimated.createAnimatedComponent(BlurView);
@@ -32,7 +31,7 @@ const AccountSwitcher: React.FC<{
   const shouldHideName = account.personalization.hideNameOnHomeScreen || false;
   const shouldHidePicture = account.personalization.hideProfilePicOnHomeScreen || false;
 
-  const AnimatedChevronDown = Animated.createAnimatedComponent(ChevronDown);
+  const AnimatedChevronDown = Reanimated.createAnimatedComponent(ChevronDown);
 
   return (
     <Reanimated.View

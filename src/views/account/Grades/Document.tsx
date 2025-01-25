@@ -18,8 +18,7 @@ import {
   UserPlus,
   Users,
 } from "lucide-react-native";
-import { getAverageDiffGrade } from "@/utils/grades/getAverages";
-import type { AverageDiffGrade } from "@/utils/grades/getAverages";
+import { getAverageDiffGrade, type AverageDiffGrade } from "@/utils/grades/getAverages";
 import { Screen } from "@/router/helpers/types";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import AsyncStorage from "@react-native-async-storage/async-storage";

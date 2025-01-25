@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { NativeItem, NativeList, NativeListHeader } from "@/components/Global/NativeComponents";
 import { updateGradesPeriodsInCache } from "@/services/grades";
 import { useCurrentAccount } from "@/stores/account";
