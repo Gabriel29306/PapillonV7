@@ -43,6 +43,7 @@ module.exports = [
         "args": "none"
       }],
       "no-var": "error",
+      "no-irregular-whitespace": "error",
       "no-unneeded-ternary": "error",
       "no-duplicate-imports": "error"
     }
