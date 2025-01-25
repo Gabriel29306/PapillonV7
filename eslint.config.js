@@ -40,7 +40,8 @@ module.exports = [
       "unused-imports/no-unused-imports": "error",
       "no-unused-vars": ["error", {
         "args": "none"
-      }]
+      }],
+      "no-var": "error"
     }
   }
 ];
