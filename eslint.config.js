@@ -2,6 +2,8 @@ const stylistic = require("@stylistic/eslint-plugin");
 const unusedImports = require("eslint-plugin-unused-imports");
 const typescript = require("@typescript-eslint/parser");
 
+const custom_rules = require("./eslint_rules/plugin.js");
+
 module.exports = [
   { // Ignored directory
     ignores: [
@@ -29,7 +31,8 @@ module.exports = [
     },
     plugins: {
       "@stylistic": stylistic,
-      "unused-imports": unusedImports
+      "unused-imports": unusedImports,
+      "custom": custom_rules
     },
     rules: {
       "@stylistic/indent": ["error", 2],
@@ -48,7 +51,9 @@ module.exports = [
       "no-unneeded-ternary": "error",
       "no-duplicate-imports": "error",
       "no-empty": "error",
-      "no-useless-escape": "error"
+      "no-useless-escape": "error",
+      "custom/redundant-logical": "error",
+      "custom/no-redundant-ternary": "error"
     }
   }
 ];
