@@ -37,7 +37,8 @@ module.exports = [
       "@stylistic/quotes": ["error", "double"],
       "@stylistic/semi": ["error", "always"],
       "@stylistic/space-before-function-paren": ["error", "always"],
-      "unused-imports/no-unused-imports": "error"
+      "unused-imports/no-unused-imports": "error",
+      "no-unused-vars": "error"
     }
   }
 ];
