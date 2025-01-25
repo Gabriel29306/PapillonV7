@@ -38,6 +38,7 @@ module.exports = [
       "@stylistic/semi": ["error", "always"],
       "@stylistic/space-before-function-paren": ["error", "always"],
       "@stylistic/no-extra-semi": "error",
+      "@stylistic/no-mixed-spaces-and-tabs": "error",
       "unused-imports/no-unused-imports": "error",
       "no-unused-vars": ["error", {
         "args": "none"
