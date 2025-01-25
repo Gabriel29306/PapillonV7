@@ -133,7 +133,7 @@ const ReelGallery = ({ reels }: ReelGalleryProps) => {
       {selectedReel && (
         <GradeModal
           isVisible={!!selectedReel}
-          imageBase64={selectedReel.image || ""}
+          reel={selectedReel}
           onClose={() => setSelectedReel(null)}
           DeleteGrade={() => selectedReel.id && deleteReel(selectedReel.id)}
         />
