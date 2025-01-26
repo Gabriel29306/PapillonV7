@@ -19,7 +19,7 @@ jobs:
     - name: 📥 Fetch Patch List
       id: fetch_patch_list
       run: |
-        curl -sL https://raw.githubusercontent.com/Gabriel29306/datasets/main/papillon_7_patchs.json -o patch_list.json
+        curl -sL -H "Cache-Control: no-cache, no-store" https://raw.githubusercontent.com/Gabriel29306/datasets/main/papillon_7_patchs.json -o patch_list.json
         echo $(cat patch_list.json)
 
     # 2. Extraire les informations des sources et patchs
