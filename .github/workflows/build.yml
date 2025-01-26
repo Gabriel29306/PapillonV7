@@ -55,58 +55,54 @@ jobs:
         cd target-repo
         git checkout main
 
-    # Ajout de la configuration Git
+    # 5. Ajout de la configuration Git
     - name: 🔧 Configure Git User
       run: |
         git config --global user.email "github-actions@github.com"
         git config --global user.name "GitHub Actions"
 
-    # Ajouter les upstreams
-    - name: 🔗 Add Upstreams from Sources
+    # 6. Ajouter les upstreams et appliquer les patchs
+    - name: 🔧 Add Upstreams and Merge Patches
       run: |
-        SOURCES=$(curl -s https://raw.githubusercontent.com/Gabriel29306/datasets/main/papillon_7_patchs.json | jq -r '.source | to_entries[] | @base64')
-        for source in $SOURCES; do
-          ENTRY=$(echo "$source" | base64 --decode)
-          NAME=$(echo "$ENTRY" | jq -r '.key')
-          URL=$(echo "$ENTRY" | jq -r '.value')
+        cd target-repo
+        # Ajouter chaque upstream depuis sources.txt
+        while IFS='=' read -r NAME URL; do
+          echo "Adding remote: $NAME -> $URL"
           git remote add "$NAME" "$URL"
-        done
+          git fetch "$NAME"
+        done < ../sources.txt
 
-    # Appliquer les patchs
-    - name: ⚙️ Apply Selected Patches
-      run: |
-        PATCHES="Gabriel29306/better-logs, Gabriel29306/repair-pronote"
-        for PATCH in $(echo $PATCHES | tr "," "\n"); do
-          NAME=$(echo "$PATCH" | cut -d/ -f1)
-          BRANCH=$(echo "$PATCH" | cut -d/ -f2)
-          echo "Merging patch: $PATCH"
+        # Appliquer les patchs
+        IFS=',' read -ra PATCHES <<< "$SELECTED_PATCHES"
+        for PATCH in "${PATCHES[@]}"; do
+          # Extraire nom et branche (par exemple : Gabriel29306/branch-name)
+          NAME=$(echo "$PATCH" | cut -d'/' -f1)
+          BRANCH=$(echo "$PATCH" | cut -d'/' -f2)
+          echo "Merging patch: $NAME/$BRANCH"
           git fetch "$NAME" "$BRANCH"
-          git merge "$NAME/$BRANCH" --no-commit || {
-            echo "Conflit détecté avec le patch $PATCH. Ignoré."
-            git merge --abort
-          }
+          git merge "$NAME/$BRANCH" --no-commit || exit 1
         done
 
-    # 6. Installer les dépendances
+    # 7. Installer les dépendances
     - name: 📥 Install Dependencies
       run: |
         cd target-repo
         npm install
 
-    # 7. Prebuild l'app avec Expo
+    # 8. Prebuild l'app avec Expo
     - name: ⚙️ Prepare Android Build
       run: |
         cd target-repo
         npx expo prebuild -p android
 
-    # 8. Build les APKs
+    # 9. Build les APKs
     - name: 🏗️ Build Release APK
       if: ${{ false }}
       run: |
         cd target-repo/android
         ./gradlew :app:assembleRelease
 
-    # 9. Publier les APKs
+    # 10. Publier les APKs
     - name: 📤 Publish APKs
       if: ${{ false }}
       uses: ncipollo/release-action@v1
