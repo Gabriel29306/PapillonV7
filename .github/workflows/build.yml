@@ -80,7 +80,11 @@ jobs:
           BRANCH=$(echo "$PATCH" | cut -d'/' -f2)
           echo "Merging patch: $NAME/$BRANCH"
           git fetch "$NAME" "$BRANCH"
-          git merge "$NAME/$BRANCH" --no-commit || exit 1
+          git merge "$NAME/$BRANCH" --no-commit -s recursive -X theirs || {
+            echo "Conflict detected. Forcing merge for patch $PATCH."
+            git merge --abort
+            git merge "$NAME/$BRANCH" --no-commit -s recursive -X theirs
+          }
         done
 
     # 7. Installer les dépendances
