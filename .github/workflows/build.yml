@@ -15,6 +15,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # 1. Configurer Java 17
+    - name: 🔧 Set up Java 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin' # Distribution Temurin (privilégiée)
+        java-version: '17'
+
     # 1. Récupérer le fichier JSON des sources et patchs
     - name: 📥 Fetch Patch List
       id: fetch_patch_list
@@ -99,11 +106,83 @@ jobs:
         cd target-repo
         npx expo prebuild -p android
 
-    # 9. Build les APKs
+    # 6. Configurer gradle.properties pour générer des APKs par architecture
+    - name: 🔧 Configure Build Gradle for Split APKs
+      run: |
+        sed -i '/android {/a \
+        splits { \
+            abi { \
+                enable true \
+                reset() \
+                include "armeabi-v7a", "arm64-v8a", "x86", "x86_64" \
+                universalApk true \
+            } \
+        }' target-repo/android/app/build.gradle
+        sed -i '/buildToolsVersion/d' target-repo/android/app/build.gradle
+
+    # Étape 7 : Récupérer la dernière version distante, y compris les pré-releases
+    - name: 🔍 Get Latest Release Version
+      id: get_latest_release
+      uses: actions/github-script@v6
+      with:
+        script: |
+          try {
+            // Liste des releases, incluant les pré-releases
+            const releases = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 1 // On ne prend que la première release
+            });
+            
+            if (releases.data.length > 0) {
+              const latestRelease = releases.data[0]; // La dernière release ou pré-release
+              const tagVersion = parseInt(latestRelease.tag_name.replace("v", ""), 10);
+              
+              if (isNaN(tagVersion)) {
+                console.log("Invalid tag format in latest release. Using default versionCode 100.");
+                core.setOutput("versionCode", 100);
+              } else {
+                console.log(`Latest version code (including pre-release): ${tagVersion}`);
+                core.setOutput("versionCode", tagVersion);
+              }
+            } else {
+              console.log("No release found. Using default versionCode 100.");
+              core.setOutput("versionCode", 100);
+            }
+          } catch (error) {
+            console.log("Error fetching releases: ", error);
+            console.log("Using default versionCode 100.");
+            core.setOutput("versionCode", 100);
+          }
+    
+    # 8. Incrémentation de la version
+    - name: 📈 Increment Version Code
+      run: |
+        cd target-repo
+        # Récupérer la dernière versionCode à partir de la sortie précédente
+        BASE_VERSION_CODE="${{ steps.get_latest_release.outputs.versionCode }}"
+        echo "Base versionCode: $BASE_VERSION_CODE"
+        NEW_VERSION_CODE=$((BASE_VERSION_CODE + 1))
+        echo "New versionCode: $NEW_VERSION_CODE"
+        # Mettre à jour versionCode dans build.gradle
+        sed -i "s/versionCode [0-9]*/versionCode ${NEW_VERSION_CODE}/" android/app/build.gradle
+        echo "VERSION_CODE=${NEW_VERSION_CODE}" >> $GITHUB_ENV
+  
+    # 9. Build des apks
     - name: 🏗️ Build Release APK
       run: |
         cd target-repo/android
         ./gradlew :app:assembleRelease
+
+    # 10. Renommer les apks
+    - name: ⚙️ Rename apks
+      run: |
+        cd target-repo/android/app/build/outputs/apk/release/
+        mv app-arm64-v8a-release.apk Papillon-arm64-v8a-release.apk
+        mv app-armeabi-v7a-release.apk Papillon-armeabi-v7a-release.apk
+        mv app-universal-release.apk Papillon-universal-release.apk
+        mv app-x86-release.apk Papillon-x86-release.apk
+        mv app-x86_64-release.apk Papillon-x86_64-release.apk
 
     - uses: actions/upload-artifact@v4
       with:
@@ -116,6 +195,18 @@ jobs:
       with:
         tag: "weekly-build"
         name: "Weekly Build"
+        body: "Build automatique hebdomadaire pour Android."
+        prerelease: true
+        artifacts: |
+          target-repo/android/app/build/outputs/apk/release/*.apk
+
+    # 11. Publier les APKs dans une préversion
+    - name: 📤 Create Pre-Release with APKs
+      if: ${{ false }}
+      uses: ncipollo/release-action@v1
+      with:
+        tag: "${{ env.VERSION_CODE }}"
+        name: "Weekly Build v${{ steps.get_latest_release.outputs.version }}"
         body: "Build automatique hebdomadaire pour Android."
         prerelease: true
         artifacts: |
