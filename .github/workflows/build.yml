@@ -106,7 +106,7 @@ jobs:
         cd target-repo
         npx expo prebuild -p android
 
-    # 6. Configurer gradle.properties pour générer des APKs par architecture
+    # 9. Configurer gradle.properties pour générer des APKs par architecture
     - name: 🔧 Configure Build Gradle for Split APKs
       run: |
         sed -i '/android {/a \
@@ -120,7 +120,7 @@ jobs:
         }' target-repo/android/app/build.gradle
         sed -i '/buildToolsVersion/d' target-repo/android/app/build.gradle
 
-    # Étape 7 : Récupérer la dernière version distante, y compris les pré-releases
+    # 10. Récupérer la dernière version distante, y compris les pré-releases
     - name: 🔍 Get Latest Release Version
       id: get_latest_release
       uses: actions/github-script@v6
@@ -155,7 +155,7 @@ jobs:
             core.setOutput("versionCode", 100);
           }
     
-    # 8. Incrémentation de la version
+    # 11. Incrémentation de la version
     - name: 📈 Increment Version Code
       run: |
         cd target-repo
@@ -168,13 +168,13 @@ jobs:
         sed -i "s/versionCode [0-9]*/versionCode ${NEW_VERSION_CODE}/" android/app/build.gradle
         echo "VERSION_CODE=${NEW_VERSION_CODE}" >> $GITHUB_ENV
   
-    # 9. Build des apks
+    # 12. Build des apks
     - name: 🏗️ Build Release APK
       run: |
         cd target-repo/android
         ./gradlew :app:assembleRelease
 
-    # 10. Renommer les apks
+    # 13. Renommer les apks
     - name: ⚙️ Rename apks
       run: |
         cd target-repo/android/app/build/outputs/apk/release/
@@ -184,23 +184,7 @@ jobs:
         mv app-x86-release.apk Papillon-x86-release.apk
         mv app-x86_64-release.apk Papillon-x86_64-release.apk
 
-    - uses: actions/upload-artifact@v4
-      with:
-        path: target-repo/android/app/build/outputs/apk/release/*.apk
-
-    # 10. Publier les APKs
-    - name: 📤 Publish APKs
-      if: ${{ false }}
-      uses: ncipollo/release-action@v1
-      with:
-        tag: "weekly-build"
-        name: "Weekly Build"
-        body: "Build automatique hebdomadaire pour Android."
-        prerelease: true
-        artifacts: |
-          target-repo/android/app/build/outputs/apk/release/*.apk
-
-    # 11. Publier les APKs dans une préversion
+    # 14. Publier les APKs dans une préversion
     - name: 📤 Create Pre-Release with APKs
       if: ${{ false }}
       uses: ncipollo/release-action@v1
