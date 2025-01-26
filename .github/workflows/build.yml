@@ -106,6 +106,10 @@ jobs:
         cd target-repo/android
         ./gradlew :app:assembleRelease
 
+    - uses: actions/upload-artifact@v4
+      with:
+        path: target-repo/android/app/build/outputs/apk/release/*.apk
+
     # 10. Publier les APKs
     - name: 📤 Publish APKs
       if: ${{ false }}
