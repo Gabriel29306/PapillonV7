@@ -101,7 +101,6 @@ jobs:
 
     # 9. Build les APKs
     - name: 🏗️ Build Release APK
-      if: ${{ false }}
       run: |
         cd target-repo/android
         ./gradlew :app:assembleRelease
