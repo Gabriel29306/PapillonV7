@@ -20,6 +20,7 @@ jobs:
       id: fetch_patch_list
       run: |
         curl -sL https://raw.githubusercontent.com/Gabriel29306/datasets/main/papillon_7_patchs.json -o patch_list.json
+        echo $(cat patch_list.json)
 
     # 2. Extraire les informations des sources et patchs
     - name: 🗂 Parse Sources and Patch List
