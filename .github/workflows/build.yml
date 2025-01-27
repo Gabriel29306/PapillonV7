@@ -186,7 +186,6 @@ jobs:
 
     # 14. Publier les APKs dans une préversion
     - name: 📤 Create Pre-Release with APKs
-      if: ${{ false }}
       uses: ncipollo/release-action@v1
       with:
         tag: "${{ env.VERSION_CODE }}"
