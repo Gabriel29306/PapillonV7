@@ -1,0 +1,196 @@
+name: Weekly Expo Build for Android
+
+on:
+  schedule:
+    - cron: "0 0 * * 1" # Tous les lundis à 00h00 UTC
+  workflow_dispatch:
+    inputs:
+      patch_selection:
+        description: "Patchs à appliquer (séparer par des virgules, ou 'all' pour tous)"
+        required: false
+        default: "all"
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Configurer Java 17
+    - name: 🔧 Set up Java 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin' # Distribution Temurin (privilégiée)
+        java-version: '17'
+
+    # 1. Récupérer le fichier JSON des sources et patchs
+    - name: 📥 Fetch Patch List
+      id: fetch_patch_list
+      run: |
+        curl -sL -H "Cache-Control: no-cache, no-store" https://raw.githubusercontent.com/Gabriel29306/datasets/main/papillon_7_patchs.json -o patch_list.json
+        echo $(cat patch_list.json)
+
+    # 2. Extraire les informations des sources et patchs
+    - name: 🗂 Parse Sources and Patch List
+      id: parse_patch_list
+      run: |
+        echo "Parsing sources and patch list..."
+        MAIN_REPO="https://github.com/PapillonApp/Papillon.git"
+        ALL_PATCHES=$(jq -r '.patchs | join(",")' patch_list.json)
+        echo "MAIN_REPO=$MAIN_REPO" >> $GITHUB_ENV
+        echo "ALL_PATCHES=$ALL_PATCHES" >> $GITHUB_ENV
+
+        # Extraire les sources sous forme de paires "nom=url"
+        jq -r '.source | to_entries[] | "\(.key)=\(.value)"' patch_list.json > sources.txt
+
+    # 3. Vérifier et choisir les patchs à appliquer
+    - name: 🔍 Select Patches
+      id: select_patches
+      run: |
+        PATCH_INPUT="${{ inputs.patch_selection }}"
+        if [[ "$PATCH_INPUT" == "all" ]]; then
+          SELECTED_PATCHES=$ALL_PATCHES
+        else
+          SELECTED_PATCHES=$PATCH_INPUT
+        fi
+        echo "Selected patches: $SELECTED_PATCHES"
+        echo "SELECTED_PATCHES=$SELECTED_PATCHES" >> $GITHUB_ENV
+
+    # 4. Cloner le main repo
+    - name: 🔧 Clone Main Repository
+      run: |
+        git clone $MAIN_REPO target-repo
+        cd target-repo
+        git checkout main
+
+    # 5. Ajout de la configuration Git
+    - name: 🔧 Configure Git User
+      run: |
+        git config --global user.email "github-actions@github.com"
+        git config --global user.name "GitHub Actions"
+
+    # 6. Ajouter les upstreams et appliquer les patchs
+    - name: 🔧 Add Upstreams and Merge Patches
+      run: |
+        cd target-repo
+        # Ajouter chaque upstream depuis sources.txt
+        while IFS='=' read -r NAME URL; do
+          echo "Adding remote: $NAME -> $URL"
+          git remote add "$NAME" "$URL"
+          git fetch "$NAME"
+        done < ../sources.txt
+
+        # Appliquer les patchs
+        IFS=',' read -ra PATCHES <<< "$SELECTED_PATCHES"
+        for PATCH in "${PATCHES[@]}"; do
+          # Extraire nom et branche (par exemple : Gabriel29306/branch-name)
+          NAME=$(echo "$PATCH" | cut -d'/' -f1)
+          BRANCH=$(echo "$PATCH" | cut -d'/' -f2)
+          echo "Merging patch: $NAME/$BRANCH"
+          git fetch "$NAME" "$BRANCH"
+          git merge "$NAME/$BRANCH" -s recursive || {
+            echo "Conflict detected. Forcing merge for patch $PATCH."
+            git merge --abort
+            git merge "$NAME/$BRANCH" -s recursive -X theirs
+          }
+        done
+
+    # 7. Installer les dépendances
+    - name: 📥 Install Dependencies
+      run: |
+        cd target-repo
+        npm ci || npm install
+
+    # 8. Prebuild l'app avec Expo
+    - name: ⚙️ Prepare Android Build
+      run: |
+        cd target-repo
+        npx expo prebuild -p android
+
+    # 9. Configurer gradle.properties pour générer des APKs par architecture
+    - name: 🔧 Configure Build Gradle for Split APKs
+      run: |
+        sed -i '/android {/a \
+        splits { \
+            abi { \
+                enable true \
+                reset() \
+                include "armeabi-v7a", "arm64-v8a", "x86", "x86_64" \
+                universalApk true \
+            } \
+        }' target-repo/android/app/build.gradle
+        sed -i '/buildToolsVersion/d' target-repo/android/app/build.gradle
+
+    # 10. Récupérer la dernière version distante, y compris les pré-releases
+    - name: 🔍 Get Latest Release Version
+      id: get_latest_release
+      uses: actions/github-script@v6
+      with:
+        script: |
+          try {
+            // Liste des releases, incluant les pré-releases
+            const releases = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 1 // On ne prend que la première release
+            });
+            
+            if (releases.data.length > 0) {
+              const latestRelease = releases.data[0]; // La dernière release ou pré-release
+              const tagVersion = parseInt(latestRelease.tag_name.replace("v", ""), 10);
+              
+              if (isNaN(tagVersion)) {
+                console.log("Invalid tag format in latest release. Using default versionCode 100.");
+                core.setOutput("versionCode", 100);
+              } else {
+                console.log(`Latest version code (including pre-release): ${tagVersion}`);
+                core.setOutput("versionCode", tagVersion);
+              }
+            } else {
+              console.log("No release found. Using default versionCode 100.");
+              core.setOutput("versionCode", 100);
+            }
+          } catch (error) {
+            console.log("Error fetching releases: ", error);
+            console.log("Using default versionCode 100.");
+            core.setOutput("versionCode", 100);
+          }
+    
+    # 11. Incrémentation de la version
+    - name: 📈 Increment Version Code
+      run: |
+        cd target-repo
+        # Récupérer la dernière versionCode à partir de la sortie précédente
+        BASE_VERSION_CODE="${{ steps.get_latest_release.outputs.versionCode }}"
+        echo "Base versionCode: $BASE_VERSION_CODE"
+        NEW_VERSION_CODE=$((BASE_VERSION_CODE + 1))
+        echo "New versionCode: $NEW_VERSION_CODE"
+        # Mettre à jour versionCode dans build.gradle
+        sed -i "s/versionCode [0-9]*/versionCode ${NEW_VERSION_CODE}/" android/app/build.gradle
+        echo "VERSION_CODE=${NEW_VERSION_CODE}" >> $GITHUB_ENV
+  
+    # 12. Build des apks
+    - name: 🏗️ Build Release APK
+      run: |
+        cd target-repo/android
+        ./gradlew :app:assembleRelease
+
+    # 13. Renommer les apks
+    - name: ⚙️ Rename apks
+      run: |
+        cd target-repo/android/app/build/outputs/apk/release/
+        mv app-arm64-v8a-release.apk Papillon-arm64-v8a-release.apk
+        mv app-armeabi-v7a-release.apk Papillon-armeabi-v7a-release.apk
+        mv app-universal-release.apk Papillon-universal-release.apk
+        mv app-x86-release.apk Papillon-x86-release.apk
+        mv app-x86_64-release.apk Papillon-x86_64-release.apk
+
+    # 14. Publier les APKs dans une préversion
+    - name: 📤 Create Pre-Release with APKs
+      uses: ncipollo/release-action@v1
+      with:
+        tag: "${{ env.VERSION_CODE }}"
+        name: "Weekly Build v${{ steps.get_latest_release.outputs.version }}"
+        body: "Build automatique hebdomadaire pour Android."
+        prerelease: true
+        artifacts: |
+          target-repo/android/app/build/outputs/apk/release/*.apk
