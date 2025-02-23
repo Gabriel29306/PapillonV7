@@ -98,7 +98,7 @@ jobs:
     - name: 📥 Install Dependencies
       run: |
         cd target-repo
-        npm ci || npm install
+        npm install
 
     # 8. Prebuild l'app avec Expo
     - name: ⚙️ Prepare Android Build
