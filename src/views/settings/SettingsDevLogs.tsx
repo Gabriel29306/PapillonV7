@@ -35,6 +35,7 @@ import { animPapillon } from "@/utils/ui/animations";
 import { useTheme } from "@react-navigation/native";
 import { useAlert } from "@/providers/AlertProvider";
 import MissingItem from "@/components/Global/MissingItem";
+import formatDate from "@/utils/format/format_date_complets";
 
 const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
   const { colors } = useTheme();
@@ -49,7 +50,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
     get_logs().then((logs) => {
       setLogs(
         logs.sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
         )
       );
       setLoading(false);
@@ -186,7 +187,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
                           <Moon />
                         ) : log.message.toLowerCase().includes("read") ? (
                           <Newspaper />
-                        ) : log.message === "[timetable:updateClasses" ? (
+                        ) : log.message.startsWith("[timetable:updateClasses") ? (
                           <Calendar />
                         ) : log.message.toLowerCase().includes("folder") ? (
                           <Folder />
@@ -207,7 +208,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
                                   ? "#1F618D"
                                   : log.message.toLowerCase().includes("read")
                                     ? "#D4AC02"
-                                    : log.message === "[timetable:updateClasses"
+                                    : log.message.startsWith("[timetable:updateClasses")
                                       ? "#884EA0"
                                       : log.message.toLowerCase().includes("folder")
                                         ? "#CA6F1E"
@@ -220,7 +221,11 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
                   }
                 >
                   <NativeText variant="title">{log.message}</NativeText>
-                  <NativeText variant="subtitle">{log.date}</NativeText>
+                  <NativeText variant="subtitle">
+                    {formatDate(log.date)} à {new Date(log.date).getHours()}:
+                    {new Date(log.date).getMinutes()}:
+                    {new Date(log.date).getSeconds()}
+                  </NativeText>
                   <NativeText variant="subtitle">{log.from}</NativeText>
                 </NativeItem>
               );

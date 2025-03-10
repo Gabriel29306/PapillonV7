@@ -15,6 +15,9 @@ import {EvaluationsPerSubject} from "@/services/shared/Evaluation";
 import MissingItem from "@/components/Global/MissingItem";
 import Subject from "@/views/account/Evaluation/Subject/Subject";
 import EvaluationsLatestList from "@/views/account/Evaluation/Latest/LatestEvaluations";
+import {AccountService} from "@/stores/account/types";
+import {hasFeatureAccountSetup} from "@/utils/multiservice";
+import {MultiServiceFeature} from "@/stores/multiService/types";
 
 const Evaluation: Screen<"Evaluation"> = ({ route, navigation }) => {
   const theme = useTheme();
@@ -23,6 +26,7 @@ const Evaluation: Screen<"Evaluation"> = ({ route, navigation }) => {
   const outsideNav = route.params?.outsideNav;
 
   const account = useCurrentAccount((store) => store.account!);
+  const hasServiceSetup = account.service === AccountService.PapillonMultiService ? hasFeatureAccountSetup(MultiServiceFeature.Evaluations, account.localID) : true;
   const defaultPeriod = useEvaluationStore((store) => store.defaultPeriod);
   const periods = useEvaluationStore((store) => store.periods);
   const evaluations = useEvaluationStore((store) => store.evaluations);
@@ -91,7 +95,6 @@ const Evaluation: Screen<"Evaluation"> = ({ route, navigation }) => {
             subjectName: evaluation.subjectName,
             evaluations: [evaluation],
           });
-          console.log(evaluation.name);
         }
       }
 
@@ -175,12 +178,20 @@ const Evaluation: Screen<"Evaluation"> = ({ route, navigation }) => {
             >
               {(!evaluations[selectedPeriod] || evaluations[selectedPeriod].length === 0) &&
                   !isLoading &&
-                  !isRefreshing && (
+                  !isRefreshing && hasServiceSetup && (
                 <MissingItem
                   style={{ marginTop: 24, marginHorizontal: 16 }}
                   emoji="📚"
                   title="Aucune compétence disponible"
                   description="La période sélectionnée ne contient aucune compétence."
+                />
+              )}
+              {!hasServiceSetup && (
+                <MissingItem
+                  title="Aucun service connecté"
+                  description="Tu n'as pas encore paramétré de service pour cette fonctionnalité."
+                  emoji="🤷"
+                  style={{ marginTop: 24, marginHorizontal: 16 }}
                 />
               )}
 

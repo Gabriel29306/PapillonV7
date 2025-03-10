@@ -1,4 +1,3 @@
-import AnimatedNumber from "@/components/Global/AnimatedNumber";
 import { NativeText } from "@/components/Global/NativeComponents";
 import { getCourseSpeciality } from "@/utils/format/format_cours_name";
 import { useTheme } from "@react-navigation/native";
@@ -9,6 +8,7 @@ import {type RouteParameters} from "@/router/helpers/types";
 import type {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import type {Grade, GradesPerSubject} from "@/services/shared/Grade";
 import { getSubjectAverage } from "@/utils/grades/getAverages";
+import { adjustColor } from "@/utils/ui/colors";
 
 type SubjectTitleParameters = {
   navigation: NativeStackNavigationProp<RouteParameters, keyof RouteParameters>
@@ -63,6 +63,7 @@ const SubjectTitle = ({ navigation, subject, subjectData, allGrades }: SubjectTi
         <NativeText
           style={{
             flex: 1,
+            color: adjustColor(subjectData.color, theme.dark ? 180 : -100),
           }}
           numberOfLines={1}
           variant="overtitle"
@@ -76,11 +77,12 @@ const SubjectTitle = ({ navigation, subject, subjectData, allGrades }: SubjectTi
               textAlign: "right",
               paddingHorizontal: 8,
               paddingVertical: 4,
-              borderColor: theme.colors.text + "55",
+              borderColor: adjustColor(subjectData.color, theme.dark ? 180 : -100) + "55",
               borderWidth: 1,
               borderRadius: 8,
               borderCurve: "continuous",
               maxWidth: 120,
+              color: adjustColor(subjectData.color, theme.dark ? 180 : -100),
             }}
             numberOfLines={1}
             variant="subtitle"
@@ -97,19 +99,19 @@ const SubjectTitle = ({ navigation, subject, subjectData, allGrades }: SubjectTi
           gap: 2,
         }}
       >
-        <AnimatedNumber
-          value={typeof subject.average.average?.value === "number" ? subject.average.average.value.toFixed(2) : calculatedAverage !== -1 ? calculatedAverage.toFixed(2) : "N/A"}
+        <NativeText
           style={{
             fontSize: 18,
             lineHeight: 20,
             fontFamily: "semibold",
+            color: adjustColor(subjectData.color, theme.dark ? 180 : -100),
           }}
-          contentContainerStyle={null}
-        />
+        >{typeof subject.average.average?.value === "number" ? subject.average.average.value.toFixed(2) : calculatedAverage !== -1 ? calculatedAverage.toFixed(2) : "N/A"}</NativeText>
         <NativeText
           style={{
             fontSize: 15,
             lineHeight: 15,
+            color: adjustColor(subjectData.color, theme.dark ? 180 : -100),
             opacity: 0.6,
           }}
         >

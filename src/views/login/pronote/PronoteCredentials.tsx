@@ -68,7 +68,9 @@ const PronoteCredentials: Screen<"PronoteCredentials"> = ({ route, navigation })
         authentication: { ...refresh, deviceUUID: accountID },
         personalization: await defaultPersonalization(session),
 
-        identity: {}
+        identity: {},
+        serviceData: {},
+        providers: []
       };
 
       pronote.startPresenceInterval(session);
@@ -90,7 +92,23 @@ const PronoteCredentials: Screen<"PronoteCredentials"> = ({ route, navigation })
       setLoading(false);
 
       if (error instanceof Error) {
-        setError(error.message);
+        switch (error.name) {
+          case "BadCredentialsError":
+            setError("Nom d'utilisateur ou mot de passe incorrect");
+            break;
+          case "AuthenticateError":
+            setError("Impossible de s'authentifier : " + error.message);
+            break;
+          case "AccessDeniedError":
+            setError("Vous n'êtes pas autorisé à vous connecter à cet établissement");
+            break;
+          case "AccountDisabledError":
+            setError("Votre compte a été désactivé. Contactez votre établissement.");
+            break;
+          default:
+            setError(error.message);
+            break;
+        }
       }
       else {
         setError("Erreur inconnue");

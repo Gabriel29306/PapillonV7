@@ -1,13 +1,14 @@
 import React from "react";
 import { FlatList } from "react-native";
 import { NativeListHeader } from "@/components/Global/NativeComponents";
-import { animPapillon } from "@/utils/ui/animations";
+import { anim2Papillon } from "@/utils/ui/animations";
 import Reanimated, { LinearTransition } from "react-native-reanimated";
 import GradesLatestItem from "./LatestGradesItem";
 import { Grade } from "@/services/shared/Grade";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteParameters } from "@/router/helpers/types";
 import * as Haptics from "expo-haptics";
+import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
 interface GradesLatestListProps {
   latestGrades: Grade[]
@@ -17,6 +18,7 @@ interface GradesLatestListProps {
 
 const GradesLatestList = (props: GradesLatestListProps) => {
   const { latestGrades, navigation, allGrades } = props;
+  const { playHaptics } = useSoundHapticsWrapper();
 
   const renderItem = ({ item, index }: { item: Grade; index: number }) => (
     <GradesLatestItem
@@ -30,7 +32,7 @@ const GradesLatestList = (props: GradesLatestListProps) => {
 
   return (
     <Reanimated.View
-      layout={animPapillon(LinearTransition)}
+      layout={anim2Papillon(LinearTransition)}
     >
       <NativeListHeader animated label="Dernières notes" />
 
@@ -57,7 +59,11 @@ const GradesLatestList = (props: GradesLatestListProps) => {
         snapToInterval={240}
         decelerationRate="fast"
         onScroll={({ nativeEvent }) => {
-          if (nativeEvent.contentOffset.x % 240 === 0) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          if (nativeEvent.contentOffset.x % 240 === 0) {
+            playHaptics("impact", {
+              impact: Haptics.ImpactFeedbackStyle.Light,
+            });
+          }
         }}
       />
 

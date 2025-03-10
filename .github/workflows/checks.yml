@@ -18,13 +18,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Pnpm setup
-        uses: pnpm/action-setup@v2
+      - name: NPM setup
+        uses: actions/setup-node@v2
         with:
-          version: latest
+          version: 20
 
       - name: Environnement setup
-        run: pnpm install
+        run: npm install
 
       - name: Typescript and Eslint scanning
-        run: pnpm lint
+        run: npm run lint

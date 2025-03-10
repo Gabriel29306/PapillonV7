@@ -21,7 +21,7 @@ import { animPapillon } from "@/utils/ui/animations";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import AnimatedNumber from "@/components/Global/AnimatedNumber";
-import { CalendarPlus, Eye, MoreVertical } from "lucide-react-native";
+import { CalendarPlus, Eye, EyeOff, MoreVertical } from "lucide-react-native";
 import {
   PapillonHeaderAction,
   PapillonHeaderSelector,
@@ -31,9 +31,14 @@ import {
 import PapillonPicker from "@/components/Global/PapillonPicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WeekFrequency } from "@/services/shared/Timetable";
+import {AccountService} from "@/stores/account/types";
+import {hasFeatureAccountSetup} from "@/utils/multiservice";
+import {MultiServiceFeature} from "@/stores/multiService/types";
+import { fetchIcalData } from "@/services/local/ical";
 
 const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
   const account = useCurrentAccount((store) => store.account!);
+  const hasServiceSetup = account.service === AccountService.PapillonMultiService ? hasFeatureAccountSetup(MultiServiceFeature.Timetable, account.localID) : true;
   const mutateProperty = useCurrentAccount((store) => store.mutateProperty);
 
   const timetables = useTimetableStore((store) => store.timetables);
@@ -110,6 +115,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
 
     try {
       await updateTimetableForWeekInCache(account, weekNumber, force);
+      await fetchIcalData(account, force);
       currentlyLoadingWeeks.current.add(weekNumber);
     } finally {
       currentlyLoadingWeeks.current.delete(weekNumber);
@@ -152,6 +158,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
     return (
       <View style={{ width: Dimensions.get("window").width }}>
         <Page
+          hasServiceSetup={hasServiceSetup}
           paddingTop={outsideNav ? 80 : insets.top + 56}
           current={date.getTime() === pickerDate.getTime()}
           date={date}
@@ -374,18 +381,26 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
             {
               icon: <CalendarPlus />,
               label: "Importer un iCal",
+              subtitle: "Ajouter un calendrier depuis une URL",
+              sfSymbol: "calendar.badge.plus",
               onPress: () => {
                 navigation.navigate("LessonsImportIcal", {});
               }
             },
-            ...(weekFrequency != null) ? [{
-              icon: <Eye />,
-              label: "Afficher type sem.",
+            {
+              icon: shouldShowWeekFrequency ? <EyeOff /> : <Eye />,
+              label: shouldShowWeekFrequency
+                ? "Masquer alternance semaine"
+                : "Afficher alternance semaine",
+              subtitle: shouldShowWeekFrequency
+                ? "Masquer semaine paire / impaire"
+                : "Afficher semaine paire / impaire",
+              sfSymbol: "eye",
               onPress: () => {
                 setShouldShowWeekFrequency(!shouldShowWeekFrequency);
               },
               checked: shouldShowWeekFrequency,
-            }] : []
+            },
           ]}
         >
           <PapillonHeaderAction

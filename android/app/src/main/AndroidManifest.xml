@@ -14,6 +14,10 @@
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
   <queries>
+    <package android:name="com.facebook.katana"/>
+    <package android:name="com.instagram.android"/>
+    <package android:name="com.twitter.android"/>
+    <package android:name="com.zhiliaoapp.musically"/>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
       <category android:name="android.intent.category.BROWSABLE"/>
@@ -36,6 +40,7 @@
         <data android:scheme="papillon"/>
         <data android:scheme="xyz.getpapillon.app"/>
         <data android:scheme="izly"/>
+        <data android:scheme="exp+papillonvex"/>
       </intent-filter>
       <intent-filter data-generated="true">
         <action android:name="android.intent.action.VIEW"/>

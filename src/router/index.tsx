@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {NavigationContainer, NavigationState, PartialState, Theme} from "@react-navigation/native";
-import {Platform, StatusBar, View, useColorScheme } from "react-native";
+import { NavigationContainer, NavigationState, PartialState, Theme } from "@react-navigation/native";
+import { Platform, StatusBar, View, useColorScheme } from "react-native";
 import * as Linking from "expo-linking";
 import screens from "@/router/screens";
 import type { RouteParameters } from "@/router/helpers/types";
@@ -13,14 +13,15 @@ import * as NavigationBar from "expo-navigation-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useCurrentAccount } from "@/stores/account";
 import { navigatorScreenOptions } from "./helpers/create-screen";
-import {navigate} from "@/utils/logger/logger";
+import { navigate } from "@/utils/logger/logger";
 import { PapillonNavigation } from "./refs";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useThemeSoundHaptics } from "@/hooks/Theme_Sound_Haptics";
 
 export const Stack = createNativeStackNavigator<RouteParameters>();
 
 const Router: React.FC = () => {
   const scheme = useColorScheme();
+  const { whatTheme } = useThemeSoundHaptics();
 
   useEffect(() => {
     async function setNavigationBar () {
@@ -47,19 +48,10 @@ const Router: React.FC = () => {
     config,
   };
 
-  const [themeValue, setThemeValue] = React.useState<number>(0);
-
   const [theme, setTheme] = React.useState<Theme>(scheme === "dark" ? PapillonDark : PapillonLight);
 
   useEffect(() => {
-    AsyncStorage.getItem("theme").then((value) => {
-      if (value)
-        setThemeValue(parseInt(value));
-    });
-  }, []);
-
-  useEffect(() => {
-    switch (themeValue) {
+    switch (whatTheme) {
       case 0:
         setTheme(scheme === "dark" ? PapillonDark : PapillonLight);
         break;
@@ -70,13 +62,13 @@ const Router: React.FC = () => {
         setTheme(PapillonDark);
         break;
     }
-  }, [scheme, themeValue]);
+  }, [scheme, whatTheme]);
 
 
   const account = useCurrentAccount(store => store.account!);
-  if (account && account.personalization?.color !== undefined) {
+  if (account?.personalization?.color) {
 
-    if (account.personalization?.color?.hex?.primary !== undefined) {
+    if (account.personalization?.color?.hex?.primary) {
       theme.colors.primary = account.personalization.color.hex.primary;
     }
   }
@@ -88,13 +80,13 @@ const Router: React.FC = () => {
           backgroundColor={"transparent"}
           translucent={true}
           barStyle={
-            themeValue == 0 ?
+            whatTheme === 0 ?
               scheme === "dark" ?
                 "light-content"
                 :
                 "dark-content"
               :
-              themeValue == 1 ?
+              whatTheme === 1 ?
                 "dark-content"
                 :
                 "light-content"
@@ -117,14 +109,16 @@ const Router: React.FC = () => {
               navigate(str);
             }}
           >
-            <AlertProvider>
-              <Stack.Navigator initialRouteName="AccountSelector" screenOptions={navigatorScreenOptions}>
-                {screens.map((screen) => (
+            <View style={{ flex: 1, backgroundColor: scheme === "dark" ? "#151515" : "#fff" }}>
+              <AlertProvider>
+                <Stack.Navigator initialRouteName="AccountSelector" screenOptions={navigatorScreenOptions}>
+                  {screens.map((screen) => (
                   // @ts-expect-error : type not compatible, but it works fine.
-                  <Stack.Screen key={screen.name} {...screen}/>
-                ))}
-              </Stack.Navigator>
-            </AlertProvider>
+                    <Stack.Screen key={screen.name} {...screen}/>
+                  ))}
+                </Stack.Navigator>
+              </AlertProvider>
+            </View>
           </NavigationContainer>
         </GestureHandlerRootView>
       </SafeAreaProvider>

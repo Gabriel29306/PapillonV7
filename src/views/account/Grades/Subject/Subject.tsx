@@ -15,7 +15,8 @@ import PapillonSpinner from "@/components/Global/PapillonSpinner";
 interface SubjectProps {
   allGrades: Grade[]
   gradesPerSubject: GradesPerSubject[]
-  navigation: NativeStackNavigationProp<RouteParameters, keyof RouteParameters>
+  navigation: NativeStackNavigationProp<RouteParameters, keyof RouteParameters>,
+  currentPeriod?: string
 }
 
 type SortingFunction = (a: GradesPerSubject, b: GradesPerSubject) => number;
@@ -30,21 +31,25 @@ const sortings: PickerDataItem[] = [
   {
     label: "Alphabétique",
     icon: <ArrowDownAZ />,
+    sfSymbol: "arrow.up.arrow.down",
   },
   {
     label: "Date",
     icon: <Calendar />,
+    sfSymbol: "calendar",
   },
   {
     label: "Moyenne",
     icon: <TrendingUp />,
+    sfSymbol: "chart.line.uptrend.xyaxis",
   },
 ];
 
 const Subject: React.FC<SubjectProps> = ({
   gradesPerSubject,
   navigation,
-  allGrades
+  allGrades,
+  currentPeriod
 }) => {
   const [sorting, setSorting] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,7 +72,7 @@ const Subject: React.FC<SubjectProps> = ({
 
   const renderItem = useCallback(({ item, index }: { item: GradesPerSubject; index: number }) => (
     <SubjectItem
-      key={item.average.subjectName + index}
+      key={item.average.subjectName + "subjectItem"}
       index={index}
       subject={item}
       navigation={navigation}

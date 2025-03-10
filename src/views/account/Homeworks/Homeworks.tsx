@@ -32,11 +32,15 @@ import AnimatedNumber from "@/components/Global/AnimatedNumber";
 import * as Haptics from "expo-haptics";
 import MissingItem from "@/components/Global/MissingItem";
 import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
-import { Homework } from "@/services/shared/Homework";
-import { Screen } from "@/router/helpers/types";
-import { NativeSyntheticEvent } from "react-native/Libraries/Types/CoreEventTypes";
-import { NativeScrollEvent, ScrollViewProps } from "react-native/Libraries/Components/ScrollView/ScrollView";
+import {Homework} from "@/services/shared/Homework";
+import {Account, AccountService} from "@/stores/account/types";
+import {Screen} from "@/router/helpers/types";
+import {NativeSyntheticEvent} from "react-native/Libraries/Types/CoreEventTypes";
+import {NativeScrollEvent, ScrollViewProps} from "react-native/Libraries/Components/ScrollView/ScrollView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {hasFeatureAccountSetup} from "@/utils/multiservice";
+import {MultiServiceFeature} from "@/stores/multiService/types";
+import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
 const formatDate = (date: string | number | Date): string => {
   return new Date(date).toLocaleDateString("fr-FR", {
@@ -53,11 +57,13 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
       320
   ) : 0);
   const insets = useSafeAreaInsets();
+  const { playHaptics } = useSoundHapticsWrapper();
 
   const outsideNav = route.params?.outsideNav;
 
   const theme = useTheme();
   const account = useCurrentAccount(store => store.account!);
+  const hasServiceSetup = account.service === AccountService.PapillonMultiService ? hasFeatureAccountSetup(MultiServiceFeature.Homeworks, account.localID) : true;
   const homeworks = useHomeworkStore(store => store.homeworks);
 
   // @ts-expect-error
@@ -280,12 +286,17 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
                   title="Il ne reste rien à faire"
                   description="Il n'y a aucun devoir non terminé pour cette semaine."
                 />
-                :
-                <MissingItem
-                  emoji="📚"
-                  title="Aucun devoir"
-                  description="Il n'y a aucun devoir pour cette semaine."
-                />}
+                : hasServiceSetup ?
+                  <MissingItem
+                    emoji="📚"
+                    title="Aucun devoir"
+                    description="Il n'y a aucun devoir pour cette semaine."
+                  />
+                  : <MissingItem
+                    title="Aucun service connecté"
+                    description="Tu n'as pas encore paramétré de service pour cette fonctionnalité."
+                    emoji="🤷"
+                  />}
           </Reanimated.View>
         }
       </ScrollView>
@@ -388,7 +399,9 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
             onPress={() => setShowPickerButtons(!showPickerButtons)}
             onLongPress={() => {
               setHideDone(!hideDone);
-              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              playHaptics("notification", {
+                notification: Haptics.NotificationFeedbackType.Success,
+              });
             }}
             delayLongPress={200}
           >

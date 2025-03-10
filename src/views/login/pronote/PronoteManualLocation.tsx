@@ -217,6 +217,7 @@ const PronoteManualLocation: Screen<"PronoteManualLocation"> = ({ navigation }) 
                     onPress={() => navigation.navigate("PronoteInstanceSelector", {
                       longitude: municipality.geometry.coordinates[0],
                       latitude: municipality.geometry.coordinates[1],
+                      hideDistance: true
                     })}
                   />
                 </Reanimated.View>

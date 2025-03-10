@@ -29,11 +29,13 @@ import {
   Scroll,
   Settings as SettingsLucide,
   Sparkles,
-  SunMoon,
   Smile,
   SwatchBook,
   WandSparkles,
-  X
+  X,
+  Blocks,
+  HelpCircle,
+  PersonStanding
 } from "lucide-react-native";
 
 import { NativeIcon, NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
@@ -155,12 +157,6 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
             }, 10);
           }
         },
-        {
-          icon: <SunMoon />,
-          color: "#1e316a",
-          label: "Mode d'affichage",
-          onPress: () => navigation.navigate("SettingsApparence"),
-        },
       ],
     },
     {
@@ -190,8 +186,14 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
           },
         },
         {
-          icon: <Puzzle />,
+          icon: <PersonStanding />,
           color: "#bf547d",
+          label: "Accessibilité",
+          onPress: () => navigation.navigate("SettingsAccessibility"),
+        },
+        {
+          icon: <Puzzle />,
+          color: "#498c75",
           label: "Extensions",
           description: "Disponible prochainement",
           onPress: () => navigation.navigate("SettingsAddons"),
@@ -204,6 +206,13 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
           description: "Fonctionnalités intelligentes",
           onPress: () => navigation.navigate("SettingsMagic"),
         },
+        {
+          icon: <Blocks />,
+          color: "#1f76ce",
+          label: "Multiservice (Bêta)",
+          description: "Connecte plusieurs services en un seul espace de travail",
+          onPress: () => navigation.navigate("SettingsMultiService"),
+        },
       ],
     },
     {
@@ -215,6 +224,12 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
           color: "#c75110",
           label: "Quoi de neuf ?",
           onPress: () => navigation.navigate("ChangelogScreen"),
+        },
+        {
+          icon: <HelpCircle />,
+          color: "#0E7CCB",
+          label: "Besoin d'aide ?",
+          onPress: () => openUrl("https://support.papillon.bzh/"),
         },
         {
           icon: <Info />,

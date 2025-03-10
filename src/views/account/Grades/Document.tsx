@@ -1,11 +1,22 @@
+import React from "react";
 import { NativeItem, NativeList, NativeListHeader, NativeText, } from "@/components/Global/NativeComponents";
 import { getSubjectData } from "@/services/shared/Subject";
 import { useTheme } from "@react-navigation/native";
-import React, { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { Image, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import * as StoreReview from "expo-store-review";
-import { Asterisk, Calculator, Scale, School, UserMinus, UserPlus, Users, Maximize2 } from "lucide-react-native";
-import { getAverageDiffGrade, type AverageDiffGrade } from "@/utils/grades/getAverages";
+import {
+  Asterisk,
+  Calculator,
+  Scale,
+  School,
+  UserMinus,
+  UserPlus,
+  Users,
+  Maximize2
+} from "lucide-react-native";
+import { getAverageDiffGrade } from "@/utils/grades/getAverages";
+import type { AverageDiffGrade } from "@/utils/grades/getAverages";
 import { Screen } from "@/router/helpers/types";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -95,12 +106,12 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
       [grade],
       allGrades,
       "student"
-    ) as AverageDiffGrade;
+    );
     const cD = getAverageDiffGrade(
       [grade],
       allGrades,
       "average"
-    ) as AverageDiffGrade;
+    );
 
     setGradeDiff(gD);
     setClassDiff(cD);
@@ -158,7 +169,7 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
                           : "??",
           bareme: "/" + grade.outOf.value,
         },
-      ],
+      ].filter((value) => value.value != "??"),
     },
     {
       title: "Influence",
@@ -423,7 +434,7 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
                 }}
                 numberOfLines={1}
               >
-                {grade.student.disabled ? "N. not" : grade.student.value?.toFixed(2)}
+                {grade.student.disabled ? grade.student.status : grade.student.value?.toFixed(2)}
               </Text>
               <Text
                 style={{

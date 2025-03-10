@@ -3,6 +3,7 @@ import type { Screen } from "@/router/helpers/types";
 import { QrCode } from "lucide-react-native";
 import { useSafeAreaInsets, SafeAreaView } from "react-native-safe-area-context";
 import { View, StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 import { ExternalAccount } from "@/stores/account/types";
@@ -10,6 +11,7 @@ import { useAccounts } from "@/stores/account";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import MaskedView from "@react-native-masked-view/masked-view";
 import * as Haptics from "expo-haptics";
+import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
 const QrcodeScanner: Screen<"QrcodeScanner"> = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
@@ -17,7 +19,7 @@ const QrcodeScanner: Screen<"QrcodeScanner"> = ({ navigation, route }) => {
   const accountID = route.params?.accountID;
   const [hasPermission, setHasPermission] = React.useState<boolean | null>(null);
   const [scanned, setScanned] = React.useState(false);
-
+  const { playHaptics } = useSoundHapticsWrapper();
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -35,7 +37,9 @@ const QrcodeScanner: Screen<"QrcodeScanner"> = ({ navigation, route }) => {
     data: string;
   }) => {
     setScanned(true);
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    playHaptics("notification", {
+      notification: Haptics.NotificationFeedbackType.Success,
+    });
     update<ExternalAccount>(accountID, "data", { "qrcodedata": data, "qrcodetype": type });
     navigation.navigate("PriceDetectionOnboarding", { accountID });
   };

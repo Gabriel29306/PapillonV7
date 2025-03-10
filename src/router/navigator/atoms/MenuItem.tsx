@@ -1,12 +1,12 @@
 import * as React from "react";
 import { useTheme } from "@react-navigation/native";
-import { StyleSheet, Platform } from "react-native";
+import { StyleSheet, Platform, Pressable } from "react-native";
 import LottieView from "lottie-react-native";
 import colorsList from "@/utils/data/colors.json";
-import { Pressable } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
 import Reanimated, { FadeIn, FadeOut, LinearTransition } from "react-native-reanimated";
 import { anim2Papillon } from "@/utils/ui/animations";
+import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
 const MenuItem: React.FC<{
   route: any;
@@ -15,9 +15,10 @@ const MenuItem: React.FC<{
   isFocused: boolean;
 }> = ({ route, descriptor, navigation, isFocused }) => {
   const theme = useTheme();
+  const { playHaptics } = useSoundHapticsWrapper();
 
   const { options } = descriptor;
-  const label = options.tabBarLabel !== undefined ? options.tabBarLabel : options.title !== undefined ? options.title : route.name;
+  const label = options.tabBarLabel ?? options.title ?? route.name;
 
   const onPress = () => {
     const event = navigation.emit({
@@ -31,8 +32,9 @@ const MenuItem: React.FC<{
     }
 
     lottieRef.current?.play();
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-
+    playHaptics("impact", {
+      impact: Haptics.ImpactFeedbackStyle.Light,
+    });
   };
 
   const onLongPress = () => {
