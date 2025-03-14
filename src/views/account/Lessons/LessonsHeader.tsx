@@ -12,7 +12,7 @@ import Reanimated, {
 
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {animPapillon} from "@/utils/ui/animations";
+import { animPapillon } from "@/utils/ui/animations";
 
 interface HeaderCalendarProps {
   index: number,

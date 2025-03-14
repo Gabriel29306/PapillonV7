@@ -5,7 +5,7 @@ import { LogBox, AppState, AppStateStatus } from "react-native";
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAccounts, useCurrentAccount } from "@/stores/account";
-import {AccountService, PrimaryAccount} from "@/stores/account/types";
+import { AccountService, PrimaryAccount } from "@/stores/account/types";
 import { log } from "@/utils/logger/logger";
 import { isExpoGo } from "@/utils/native/expoGoAlert";
 import { atobPolyfill, btoaPolyfill } from "js-base64";

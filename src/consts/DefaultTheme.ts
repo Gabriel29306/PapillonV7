@@ -1,4 +1,4 @@
-import {Theme} from "@/utils/chat/themes/Themes.types";
+import { Theme } from "@/utils/chat/themes/Themes.types";
 
 export const DefaultTheme: Theme = {
   meta: {

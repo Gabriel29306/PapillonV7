@@ -4,11 +4,11 @@ import type { Client as ARDClient } from "pawrd";
 import { Client as TurboselfClient } from "turboself-api";
 import { Client as AliseClient, BookingDay } from "alise-api";
 import type ScolengoAPI from "scolengo-api";
-import {Configuration, Identification} from "ezly";
+import { Configuration, Identification } from "ezly";
 import type MultiAPI from "esup-multi.js";
 import { SkolengoAuthConfig } from "@/services/skolengo/skolengo-types";
 import { User as ScolengoAPIUser } from "scolengo-api/types/models/Common";
-import {OnlinePayments} from "pawrd/dist";
+import { OnlinePayments } from "pawrd/dist";
 
 export interface Tab {
   name: string

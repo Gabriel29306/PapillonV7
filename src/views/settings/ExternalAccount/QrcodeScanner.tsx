@@ -3,8 +3,6 @@ import type { Screen } from "@/router/helpers/types";
 import { QrCode } from "lucide-react-native";
 import { useSafeAreaInsets, SafeAreaView } from "react-native-safe-area-context";
 import { View, StyleSheet, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
 
 import { ExternalAccount } from "@/stores/account/types";
 import { useAccounts } from "@/stores/account";

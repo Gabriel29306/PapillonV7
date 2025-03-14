@@ -1,7 +1,6 @@
 import React from "react";
 import { Platform, View } from "react-native";
 import { TabAnimatedTitleLeft, TabAnimatedTitleRight } from "./TabAnimatedTitle";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { ArrowLeft } from "lucide-react-native";
 import { type RouteProp, useTheme } from "@react-navigation/native";

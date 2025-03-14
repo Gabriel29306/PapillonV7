@@ -1,8 +1,8 @@
-import {SkillLevel} from "@/services/shared/Evaluation";
-import {View} from "react-native";
-import React, {useState} from "react";
-import {NativeText} from "@/components/Global/NativeComponents";
-import {Plus} from "lucide-react-native";
+import { SkillLevel } from "@/services/shared/Evaluation";
+import { View } from "react-native";
+import React, { useState } from "react";
+import { NativeText } from "@/components/Global/NativeComponents";
+import { Plus } from "lucide-react-native";
 
 
 interface SkillLevelBadgeProps {

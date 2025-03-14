@@ -1,5 +1,5 @@
 import type { MultiAccount } from "@/stores/account/types";
-import { TimetableClassStatus, type Timetable, type TimetableClass} from "../../shared/Timetable";
+import { TimetableClassStatus, type Timetable, type TimetableClass } from "../../shared/Timetable";
 import { weekNumberToDateRange } from "@/utils/epochWeekNumber";
 import type { EventResponse } from "esup-multi.js";
 import { ErrorServiceUnauthenticated } from "@/services/shared/errors";

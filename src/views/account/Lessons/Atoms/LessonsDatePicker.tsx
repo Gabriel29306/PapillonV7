@@ -14,9 +14,9 @@ import Animated, {
   runOnJS, SharedValue,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {Theme} from "@react-navigation/native/src/types";
-import {NativeScrollEvent, ScrollViewProps} from "react-native/Libraries/Components/ScrollView/ScrollView";
-import {NativeSyntheticEvent} from "react-native/Libraries/Types/CoreEventTypes";
+import { Theme } from "@react-navigation/native/src/types";
+import { NativeScrollEvent, ScrollViewProps } from "react-native/Libraries/Components/ScrollView/ScrollView";
+import { NativeSyntheticEvent } from "react-native/Libraries/Types/CoreEventTypes";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");

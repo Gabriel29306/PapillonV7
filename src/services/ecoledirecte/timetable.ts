@@ -1,6 +1,6 @@
-import type {EcoleDirecteAccount} from "@/stores/account/types";
-import {Timetable, TimetableClass, TimetableClassStatus} from "../shared/Timetable";
-import {ErrorServiceUnauthenticated} from "../shared/errors";
+import type { EcoleDirecteAccount } from "@/stores/account/types";
+import { Timetable, TimetableClass, TimetableClassStatus } from "../shared/Timetable";
+import { ErrorServiceUnauthenticated } from "../shared/errors";
 import ecoledirecte, { TimetableItemKind } from "pawdirecte";
 
 const decodeTimetableClass = (c: ecoledirecte.TimetableItem): TimetableClass => {

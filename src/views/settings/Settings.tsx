@@ -42,9 +42,9 @@ import { NativeIcon, NativeItem, NativeList, NativeListHeader, NativeText } from
 import ModalHandle from "@/components/Modals/ModalHandle";
 import AccountContainerCard from "@/components/Settings/AccountContainerCard";
 import { useTheme } from "@react-navigation/native";
-import {get_settings_widgets} from "@/addons/addons";
+import { get_settings_widgets } from "@/addons/addons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {AddonPlacementManifest} from "@/addons/types";
+import { AddonPlacementManifest } from "@/addons/types";
 import { useFlagsStore } from "@/stores/flags";
 import { useAlert } from "@/providers/AlertProvider";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";

@@ -31,9 +31,9 @@ import {
 import PapillonPicker from "@/components/Global/PapillonPicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WeekFrequency } from "@/services/shared/Timetable";
-import {AccountService} from "@/stores/account/types";
-import {hasFeatureAccountSetup} from "@/utils/multiservice";
-import {MultiServiceFeature} from "@/stores/multiService/types";
+import { AccountService } from "@/stores/account/types";
+import { hasFeatureAccountSetup } from "@/utils/multiservice";
+import { MultiServiceFeature } from "@/stores/multiService/types";
 import { fetchIcalData } from "@/services/local/ical";
 
 const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {

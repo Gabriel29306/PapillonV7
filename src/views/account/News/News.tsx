@@ -15,10 +15,10 @@ import { animPapillon } from "@/utils/ui/animations";
 import { categorizeMessages } from "@/utils/magic/categorizeMessages";
 import { protectScreenComponent } from "@/router/helpers/protected-screen";
 import MissingItem from "@/components/Global/MissingItem";
-import {Information} from "@/services/shared/Information";
-import {AccountService} from "@/stores/account/types";
-import {hasFeatureAccountSetup} from "@/utils/multiservice";
-import {MultiServiceFeature} from "@/stores/multiService/types";
+import { Information } from "@/services/shared/Information";
+import { AccountService } from "@/stores/account/types";
+import { hasFeatureAccountSetup } from "@/utils/multiservice";
+import { MultiServiceFeature } from "@/stores/multiService/types";
 import PapillonHeader, { PapillonHeaderInsetHeight } from "@/components/Global/PapillonHeader";
 
 type NewsItem = Omit<Information, "date"> & { date: string, important: boolean };

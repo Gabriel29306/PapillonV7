@@ -13,8 +13,8 @@ import Reanimated, {
   FadeOutUp,
 } from "react-native-reanimated";
 import SubjectTitle from "./SubjectTitle";
-import {Evaluation, EvaluationsPerSubject, Skill} from "@/services/shared/Evaluation";
-import {SkillLevelBadge} from "@/views/account/Evaluation/Atoms/SkillLevelBadge";
+import { Evaluation, EvaluationsPerSubject, Skill } from "@/services/shared/Evaluation";
+import { SkillLevelBadge } from "@/views/account/Evaluation/Atoms/SkillLevelBadge";
 
 interface SubjectItemProps {
   subject: EvaluationsPerSubject,

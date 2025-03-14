@@ -1,4 +1,4 @@
-import { useTheme, useNavigation } from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 import { Pizza } from "lucide-react-native";
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Text, View } from "react-native";
@@ -11,10 +11,6 @@ import { useCurrentAccount } from "@/stores/account";
 import QRCode from "react-native-qrcode-svg";
 import { AccountService } from "@/stores/account/types";
 import { qrcodeFromExternal } from "@/services/qrcode";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RouteParameters } from "./../../router/helpers/types";
-
-type NavigationProps = StackNavigationProp<RouteParameters, "RestaurantQrCode">;
 
 const RestaurantQRCodeWidget = forwardRef(({
   setLoading,

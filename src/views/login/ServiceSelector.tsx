@@ -9,7 +9,6 @@ import PapillonShineBubble from "@/components/FirstInstallation/PapillonShineBub
 import DuoListPressable from "@/components/FirstInstallation/DuoListPressable";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import MaskStars from "@/components/FirstInstallation/MaskStars";
-import { useAlert } from "@/providers/AlertProvider";
 import { useTheme } from "@react-navigation/native";
 import GetV6Data from "@/utils/login/GetV6Data";
 import { School } from "lucide-react-native";

@@ -15,7 +15,7 @@ import { Host } from "turboself-api";
 import { Evaluation } from "@/services/shared/Evaluation";
 import { ThemesMeta } from "@/utils/chat/themes/Themes.types";
 import { ServiceCard } from "@/views/account/Restaurant/Menu";
-import {MultiServiceSpace} from "@/stores/multiService/types";
+import { MultiServiceSpace } from "@/stores/multiService/types";
 
 export type RouteParameters = {
   // welcome.index

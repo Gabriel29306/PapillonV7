@@ -1,5 +1,5 @@
-import {NativeItem, NativeList, NativeText} from "@/components/Global/NativeComponents";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import { NativeItem, NativeList, NativeText } from "@/components/Global/NativeComponents";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Reanimated, {
   FadeInUp,
   FadeOutDown,
@@ -7,21 +7,21 @@ import Reanimated, {
   FlipInXDown,
   LinearTransition,
 } from "react-native-reanimated";
-import { Sparkles, WifiOff, X} from "lucide-react-native";
-import {useTheme} from "@react-navigation/native";
+import { Sparkles, WifiOff, X } from "lucide-react-native";
+import { useTheme } from "@react-navigation/native";
 import PackageJSON from "../../../../package.json";
-import {Dimensions, View} from "react-native";
+import { Dimensions, View } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 
-import {getErrorTitle} from "@/utils/format/get_papillon_error_title";
-import {Elements, type Element} from "./ElementIndex";
-import {animPapillon} from "@/utils/ui/animations";
-import {useFlagsStore} from "@/stores/flags";
-import {useCurrentAccount} from "@/stores/account";
+import { getErrorTitle } from "@/utils/format/get_papillon_error_title";
+import { Elements, type Element } from "./ElementIndex";
+import { animPapillon } from "@/utils/ui/animations";
+import { useFlagsStore } from "@/stores/flags";
+import { useCurrentAccount } from "@/stores/account";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {defaultTabs} from "@/consts/DefaultTabs";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {RouteParameters} from "@/router/helpers/types";
+import { defaultTabs } from "@/consts/DefaultTabs";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteParameters } from "@/router/helpers/types";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface ModalContentProps {

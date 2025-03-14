@@ -1,5 +1,5 @@
 import { useTheme } from "@react-navigation/native";
-import React, {useCallback} from "react";
+import React, { useCallback } from "react";
 import { KeyboardAvoidingView, Modal, Pressable } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 

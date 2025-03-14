@@ -111,7 +111,7 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
       {messages[0] ? (
         <>
           <PapillonModernHeader height={130} outsideNav={true} tint={theme.dark ? chatTheme?.darkModifier.headerBackgroundColor : chatTheme?.lightModifier.headerBackgroundColor}>
-            <View style={{flexDirection: "row", gap: 10, alignItems: "center"}}>
+            <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <ChevronLeft color={
                   (theme.dark ? chatTheme?.darkModifier.headerTextColor : chatTheme?.lightModifier.headerTextColor + "80")
@@ -134,7 +134,7 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                   textColor={getProfileColorByName(creatorName).dark}
                   size={38}
                 />
-                <View style={{flex: 1}}>
+                <View style={{ flex: 1 }}>
                   <NativeText
                     variant="subtitle"
                     color={theme.dark ? chatTheme?.darkModifier.headerTextColor : chatTheme?.lightModifier.headerTextColor}
@@ -272,7 +272,7 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                         >
                           {item.attachments.map((attachment: Attachment) => (
                             <TouchableOpacity onPress={() => openUrl(attachment.url)}>
-                              <View style={{flexDirection: "row", alignItems: "center", gap: 10, maxWidth: "90%"}}>
+                              <View style={{ flexDirection: "row", alignItems: "center", gap: 10, maxWidth: "90%" }}>
                                 <View>
                                   {attachment.type === AttachmentType.File ? (
                                     <AutoFileIcon filename={attachment.name} size={28} color={colors.text} opacity={0.7}/>
@@ -331,7 +331,7 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                   description="Envoie un message pour commencer la discussion."
                   entering={animPapillon(FadeInDown)}
                   exiting={animPapillon(FadeOut)}
-                  style={{paddingVertical: 26}}
+                  style={{ paddingVertical: 26 }}
                 />
               )}
             />
@@ -377,10 +377,10 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                   sendMessageInChat(account, route.params.handle, text);
                 }}
               >
-                <Send color={"#FFF"} size={24} style={{marginTop: 1, marginLeft: -3}}/>
+                <Send color={"#FFF"} size={24} style={{ marginTop: 1, marginLeft: -3 }}/>
               </TouchableOpacity>
             </View>
-            <View style={{height: insets.bottom, backgroundColor: theme.dark ? chatTheme?.darkModifier.inputBarBackgroundColor : chatTheme?.lightModifier.inputBarBackgroundColor }}></View>
+            <View style={{ height: insets.bottom, backgroundColor: theme.dark ? chatTheme?.darkModifier.inputBarBackgroundColor : chatTheme?.lightModifier.inputBarBackgroundColor }}></View>
           </ImageBackground>
         </>
       ) : (

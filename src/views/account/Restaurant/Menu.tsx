@@ -1,59 +1,49 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Alert,
-  ActivityIndicator,
-  RefreshControl,
-  Text,
-  Dimensions
-} from "react-native";
+// React
 import { useTheme } from "@react-navigation/native";
-import {
-  AlertTriangle,
-  ChefHat,
-  CookingPot,
-  MapPin,
-  Plus,
-  Sprout,
-  Utensils,
-} from "lucide-react-native";
-
-import type { Screen } from "@/router/helpers/types";
-import {
-  NativeItem,
-  NativeList,
-  NativeListHeader,
-  NativeText,
-} from "@/components/Global/NativeComponents";
-import { useCurrentAccount } from "@/stores/account";
-import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
-import { balanceFromExternal } from "@/services/balance";
-import MissingItem from "@/components/Global/MissingItem";
-import { animPapillon } from "@/utils/ui/animations";
 import Reanimated, { FadeIn, FadeInDown, FadeOut, LinearTransition, ZoomIn, ZoomOut } from "react-native-reanimated";
-import { reservationHistoryFromExternal } from "@/services/reservation-history";
-import { qrcodeFromExternal } from "@/services/qrcode";
-import { getMenu } from "@/services/menu";
-import type { FoodAllergen, FoodLabel, Menu as PawnoteMenu } from "pawnote";
-import { PapillonHeaderSelector } from "@/components/Global/PapillonModernHeader";
-import AnimatedNumber from "@/components/Global/AnimatedNumber";
-import { LessonsDateModal } from "../Lessons/LessonsHeader";
-import { BookingTerminal, BookingDay } from "@/services/shared/Booking";
-import { bookDayFromExternal, getBookingsAvailableFromExternal } from "@/services/booking";
-import InsetsBottomView from "@/components/Global/InsetsBottomView";
-import PapillonHeader, { PapillonHeaderInsetHeight } from "@/components/Global/PapillonHeader";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { ActivityIndicator, Alert, Dimensions, RefreshControl, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { PressableScale } from "react-native-pressable-scale";
-import { ChevronLeft, ChevronRight} from "lucide-react-native";
+
+// External modules
+import { AlertTriangle, ChefHat, ChevronLeft, ChevronRight, CookingPot, MapPin, Plus, Sprout, Utensils } from "lucide-react-native";
+import type { FoodAllergen, FoodLabel, Menu as PawnoteMenu } from "pawnote";
+
+// Components
 import DrawableImportRestaurant from "@/components/Drawables/DrawableImportRestaurant";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
-import { Account, AccountService } from "@/stores/account/types";
+import AnimatedNumber from "@/components/Global/AnimatedNumber";
+import InsetsBottomView from "@/components/Global/InsetsBottomView";
+import MissingItem from "@/components/Global/MissingItem";
+import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
+import PapillonHeader, { PapillonHeaderInsetHeight } from "@/components/Global/PapillonHeader";
+import { PapillonHeaderSelector } from "@/components/Global/PapillonModernHeader";
+import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
+import { LessonsDateModal } from "@/views/account/Lessons/LessonsHeader";
+import MenuCard from "@/views/account/Restaurant/Cards/Card";
+
+// Router type
+import type { Screen } from "@/router/helpers/types";
+
+// Services
+import { balanceFromExternal } from "@/services/balance";
+import { bookDayFromExternal, getBookingsAvailableFromExternal } from "@/services/booking";
+import { getMenu } from "@/services/menu";
+import { qrcodeFromExternal } from "@/services/qrcode";
+import { reservationHistoryFromExternal } from "@/services/reservation-history";
 import { Balance } from "@/services/shared/Balance";
+import { BookingDay, BookingTerminal } from "@/services/shared/Booking";
 import { ReservationHistory } from "@/services/shared/ReservationHistory";
-import { STORE_THEMES, StoreTheme } from "./Cards/StoreThemes";
-import MenuCard from "./Cards/Card";
+
+// Stores
+import { useCurrentAccount } from "@/stores/account";
+import { Account, AccountService } from "@/stores/account/types";
+
+// Animations
+import { animPapillon } from "@/utils/ui/animations";
+
+// Styles
+import { STORE_THEMES, StoreTheme } from "@/views/account/Restaurant/Cards/StoreThemes";
 
 export const formatCardIdentifier = (identifier: string, dots: number = 4, separator: string = " ") => {
   if(!identifier) {

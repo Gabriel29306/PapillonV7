@@ -14,11 +14,11 @@ import { PapillonHeaderAction } from "@/components/Global/PapillonModernHeader";
 import { getSubjectData } from "@/services/shared/Subject";
 import { PapillonNavigation } from "@/router/refs";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
-import { TimetableClassStatus} from "@/services/shared/Timetable";
+import { TimetableClassStatus } from "@/services/shared/Timetable";
 import { NativeText } from "@/components/Global/NativeComponents";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import type { Screen } from "@/router/helpers/types";
-import {Account} from "@/stores/account/types";
+import { Account } from "@/stores/account/types";
 import { fetchIcalData } from "@/services/local/ical";
 
 const LOCALES = {

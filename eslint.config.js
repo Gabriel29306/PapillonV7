@@ -44,6 +44,7 @@ module.exports = [
       "@stylistic/no-extra-semi": "error",
       "@stylistic/no-mixed-spaces-and-tabs": "error",
       "unused-imports/no-unused-imports": "error",
+      "@stylistic/object-curly-spacing": ["error", "always"],
       "no-unused-vars": ["error", {
         "args": "none"
       }],

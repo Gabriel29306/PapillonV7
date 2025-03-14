@@ -17,9 +17,9 @@ import { useHomeworkStore } from "../homework";
 import { useGradesStore } from "../grades";
 import { useNewsStore } from "../news";
 import { useAttendanceStore } from "../attendance";
-import {error, info, log} from "@/utils/logger/logger";
-import {useMultiService} from "@/stores/multiService";
-import {MultiServiceFeature, MultiServiceSpace} from "@/stores/multiService/types";
+import { error, info, log } from "@/utils/logger/logger";
+import { useMultiService } from "@/stores/multiService";
+import { MultiServiceFeature, MultiServiceSpace } from "@/stores/multiService/types";
 
 /**
  * Store for the currently selected account.

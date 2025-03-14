@@ -32,14 +32,14 @@ import AnimatedNumber from "@/components/Global/AnimatedNumber";
 import * as Haptics from "expo-haptics";
 import MissingItem from "@/components/Global/MissingItem";
 import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
-import {Homework} from "@/services/shared/Homework";
-import {Account, AccountService} from "@/stores/account/types";
-import {Screen} from "@/router/helpers/types";
-import {NativeSyntheticEvent} from "react-native/Libraries/Types/CoreEventTypes";
-import {NativeScrollEvent, ScrollViewProps} from "react-native/Libraries/Components/ScrollView/ScrollView";
+import { Homework } from "@/services/shared/Homework";
+import { AccountService } from "@/stores/account/types";
+import { Screen } from "@/router/helpers/types";
+import { NativeSyntheticEvent } from "react-native/Libraries/Types/CoreEventTypes";
+import { NativeScrollEvent, ScrollViewProps } from "react-native/Libraries/Components/ScrollView/ScrollView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {hasFeatureAccountSetup} from "@/utils/multiservice";
-import {MultiServiceFeature} from "@/stores/multiService/types";
+import { hasFeatureAccountSetup } from "@/utils/multiservice";
+import { MultiServiceFeature } from "@/stores/multiService/types";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
 const formatDate = (date: string | number | Date): string => {

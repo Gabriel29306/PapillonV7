@@ -31,8 +31,8 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import GradesScodocUE from "./Atoms/GradesScodocUE";
-import {hasFeatureAccountSetup} from "@/utils/multiservice";
-import {MultiServiceFeature} from "@/stores/multiService/types";
+import { hasFeatureAccountSetup } from "@/utils/multiservice";
+import { MultiServiceFeature } from "@/stores/multiService/types";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
 
 const GradesAverageGraph = lazy(() => import("./Graph/GradesAverage"));

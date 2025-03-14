@@ -30,7 +30,7 @@ import DuoListPressable from "@/components/FirstInstallation/DuoListPressable";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@react-navigation/native";
 
-import {Search, X, GraduationCap, SearchX} from "lucide-react-native";
+import { Search, X, GraduationCap, SearchX } from "lucide-react-native";
 import { useAlert } from "@/providers/AlertProvider";
 import { Audio } from "expo-av";
 import getInstancesFromDataset from "@/services/pronote/dataset_geolocation";

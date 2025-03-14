@@ -1,6 +1,6 @@
 import type { SkolengoAccount } from "@/stores/account/types";
 import { type Homework, HomeworkReturnType } from "@/services/shared/Homework";
-import {info, log} from "@/utils/logger/logger";
+import { info, log } from "@/utils/logger/logger";
 import { weekNumberToDateRange } from "@/utils/epochWeekNumber";
 import { HomeworkAssignment } from "scolengo-api/types/models/Calendar";
 import { htmlToText } from "html-to-text";

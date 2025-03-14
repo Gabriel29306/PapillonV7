@@ -5,7 +5,7 @@ import { isExpoGo } from "@/utils/native/expoGoAlert";
 import { useAccounts, useCurrentAccount } from "@/stores/account";
 
 import { fetchNews } from "./data/News";
-import {PrimaryAccount} from "@/stores/account/types";
+import { PrimaryAccount } from "@/stores/account/types";
 
 /**
  * Background fetch function that fetches all the data

@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity, View, Image, StyleSheet } from "react-native";
-import {useTheme} from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 
-import type {Screen} from "@/router/helpers/types";
-import {NativeItem, NativeList, NativeListHeader, NativeText,} from "@/components/Global/NativeComponents";
-import {useCurrentAccount} from "@/stores/account";
-import {ChevronDown } from "lucide-react-native";
+import type { Screen } from "@/router/helpers/types";
+import { NativeItem, NativeList, NativeListHeader, NativeText, } from "@/components/Global/NativeComponents";
+import { useCurrentAccount } from "@/stores/account";
+import { ChevronDown } from "lucide-react-native";
 import parse_initials from "@/utils/format/format_pronote_initials";
 import InitialIndicator from "@/components/News/InitialIndicator";
-import {getProfileColorByName} from "@/services/local/default-personalization";
+import { getProfileColorByName } from "@/services/local/default-personalization";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import GetAvailableThemes from "@/utils/chat/themes/GetAvailableThemes";
 import { ThemesMeta } from "@/utils/chat/themes/Themes.types";
