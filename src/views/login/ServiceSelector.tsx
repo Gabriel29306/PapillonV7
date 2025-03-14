@@ -15,6 +15,16 @@ import { School } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
+type V6Data = { restore: boolean;
+  imported: boolean;
+  data: {
+    nextTimeToken: string | null;
+    instanceUrl: string | null;
+    username: string | null;
+    deviceUUID: string | null;
+  }
+};
+
 const ServiceSelector: Screen<"ServiceSelector"> = ({ navigation }) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -191,6 +201,7 @@ const ServiceSelector: Screen<"ServiceSelector"> = ({ navigation }) => {
         {v6Data && v6Data.restore && (
           <ButtonCta
             value="Importer mon compte"
+            // @ts-expect-error v6Data is not null
             onPress={() => navigation.navigate("PronoteV6Import", { data: v6Data.data })}
           />
         )}
