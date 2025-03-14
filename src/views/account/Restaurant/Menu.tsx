@@ -84,7 +84,6 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   const [pickerDate, setPickerDate] = React.useState(new Date(new Date().setHours(0, 0, 0, 0)));
   const [menuLoading, setMenuLoading] = useState(false);
   const [isInitialised, setIsInitialised] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [allCards, setAllCards] = useState<Array<ServiceCard> | null>(null);
 
   const refreshData = async () => {

@@ -20,6 +20,7 @@ const SettingsNotifications: Screen<"SettingsNotifications"> = () => {
   const notifications = account.personalization.notifications;
 
   // Global state
+  // eslint-disable-next-line no-unused-vars
   const [enabled, setEnabled] = useState(notifications?.enabled || false);
 
   // Animation states

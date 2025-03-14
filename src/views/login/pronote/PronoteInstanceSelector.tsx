@@ -66,9 +66,6 @@ const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const routes = navigation.getState()?.routes;
-  const prevRoute = routes[routes.length - 2];
-
   const keyboardDidShow = (event: KeyboardEvent) => {
     setKeyboardOpen(true);
     setKeyboardHeight(event.endCoordinates.height);

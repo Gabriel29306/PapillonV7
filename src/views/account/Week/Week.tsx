@@ -217,8 +217,6 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 
-  const outsideNav = route.params?.outsideNav;
-
   const [isLoading, setIsLoading] = React.useState(false);
 
   const account = useCurrentAccount((store) => store.account);
@@ -277,6 +275,7 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
     await loadTimetableWeek(weekNumber);
   }, [loadTimetableWeek]);
 
+  // eslint-disable-next-line no-unused-vars
   const [openedIcalModal, setOpenedIcalModal] = React.useState(false);
 
   React.useEffect(() => {

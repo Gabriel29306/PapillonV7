@@ -32,7 +32,7 @@ const ServiceSelector: Screen<"ServiceSelector"> = ({ navigation }) => {
   type Services = "pronote" | "ed" | "skolengo";
   const [service, setService] = useState<Services | null>(null);
 
-  const [v6Data, setV6Data] = useState<any | null>(null);
+  const [v6Data, setV6Data] = useState<V6Data | null>(null);
 
   const { playSound } = useSoundHapticsWrapper();
   const LEson = require("@/../assets/sound/1.wav");
@@ -93,13 +93,6 @@ const ServiceSelector: Screen<"ServiceSelector"> = ({ navigation }) => {
       }
     },
   ];
-
-  const UnsupportedAlert = () => {
-    showAlert({
-      title: "Service non supporté",
-      message: "Désolé, ce service n'est pas encore supporté. Réessaye dans une prochaine version."
-    });
-  };
 
   return (
     <SafeAreaView style={styles.container}>

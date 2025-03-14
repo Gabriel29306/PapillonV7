@@ -9,12 +9,7 @@ import DuoListPressable from "@/components/FirstInstallation/DuoListPressable";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 
 const ExternalAccountSelector: Screen<"ExternalAccountSelector"> = ({ navigation, route }) => {
-  const theme = useTheme();
-  const { colors } = theme;
-  const insets = useSafeAreaInsets();
-  const account = useCurrentAccount(store => store.account!);
 
-const ExternalAccountSelector: Screen<"ExternalAccountSelector"> = ({ navigation, route }) => {
   type Service = AccountService | "Other";
 
   const [service, setService] = useState<Service | null>(null);

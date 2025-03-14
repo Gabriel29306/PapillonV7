@@ -24,10 +24,6 @@ const PapillonHeader: React.FC<PapillonHeaderProps> = ({
   navigation
 }) => {
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
-
-  const topPadding = (Platform.OS === "ios" && route.params?.outsideNav) ? 0 : insets.top;
-  const largeHeader = route.params?.outsideNav || Platform.OS !== "ios";
 
   return (
     <PapillonModernHeader height={route.params?.outsideNav ? 96 : 56} outsideNav={route.params?.outsideNav}>
