@@ -39,6 +39,7 @@ module.exports = [
       "@stylistic/no-trailing-spaces": "error",
       "@stylistic/quotes": ["error", "double"],
       "@stylistic/semi": ["error", "always"],
+      "@stylistic/eol-last": ["error", "always"],
       "@stylistic/space-before-function-paren": ["error", "always"],
       "@stylistic/no-extra-semi": "error",
       "@stylistic/no-mixed-spaces-and-tabs": "error",

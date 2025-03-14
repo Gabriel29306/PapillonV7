@@ -38,7 +38,7 @@ const registerBackgroundTasks = async () => {
     backgroundFetch();
 
     console.log("[background fetch] Registered background fetch");
-  };
+  }
 };
 
 const unsetBackgroundFetch = async () => {

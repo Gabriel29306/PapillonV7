@@ -61,7 +61,7 @@ const ColorSelector: Screen<"ColorSelector"> = ({ route, navigation }) => {
           setIconName(iconConstructName);
         }
       });
-    };
+    }
   };
 
   const ColorButton: React.FC<{ color: Color }> = ({ color }) => (

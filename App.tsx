@@ -109,7 +109,7 @@ export default function App () {
 
     if (!isExpoGo()) {
       registerBackgroundTasks();
-    };
+    }
   }, []);
 
   const applyGlobalPolyfills = useCallback(() => {
