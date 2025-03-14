@@ -3,14 +3,15 @@ import { Screen } from "@/router/helpers/types";
 import { useCurrentAccount } from "@/stores/account";
 import { useTheme } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-import { Camera, ChevronDown, ChevronUp, TextCursorInput, User2, UserCircle2, WholeWord } from "lucide-react-native";
+import { BadgeX, Camera, ChevronDown, ChevronUp, ClipboardCopy, TextCursorInput, Undo2, User2, UserCircle2, WholeWord } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, ScrollView, Switch, TextInput, Platform } from "react-native";
+import { ActivityIndicator, Image, KeyboardAvoidingView, ScrollView, Switch, TextInput } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAlert } from "@/providers/AlertProvider";
 import * as Clipboard from "expo-clipboard";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getDefaultProfilePicture } from "@/utils/GetRessources/GetDefaultProfilePicture";
+import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
 
 const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
   const theme = useTheme();
@@ -59,25 +60,18 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
 
     // If the image is undefined, an alert is displayed with an error message
     if (!img) {
-      if (Platform.OS === "ios") {
-        Alert.alert("Erreur", "Impossible de récupérer de la photo de profil", [
+      showAlert({
+        title: "Erreur",
+        message: "Impossible de récupérer de la photo de profil",
+        icon: <BadgeX />,
+        actions: [
           {
-            text: "OK",
+            title: "OK",
+            primary: true,
+            icon: <Undo2 />,
           },
-        ]);
-      } else {
-        showAlert({
-          title: "Erreur",
-          message: "Impossible de récupérer de la photo de profil",
-          actions: [
-            {
-              title: "OK",
-              onPress: () => {},
-              backgroundColor: theme.colors.card,
-            },
-          ],
-        });
-      }
+        ],
+      });
     } else {
       // If image available, update profile picture
       setProfilePic(img);
@@ -249,7 +243,7 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
             <NativeText variant="subtitle">
               Prénom
             </NativeText>
-            <TextInput
+            <ResponsiveTextInput
               style={{
                 fontSize: 16,
                 fontFamily: "semibold",
@@ -271,7 +265,7 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
             <NativeText variant="subtitle">
               Nom de famille
             </NativeText>
-            <TextInput
+            <ResponsiveTextInput
               style={{
                 fontSize: 16,
                 fontFamily: "semibold",
@@ -364,7 +358,11 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
                 key={"identityData_"+index}
                 onPress={async () => {
                   await Clipboard.setStringAsync(item.value);
-                  Alert.alert("Copié", "L'information a été copiée dans le presse-papier.");
+                  showAlert({
+                    title: "Copié",
+                    message: "L'information a été copiée dans le presse-papier.",
+                    icon: <ClipboardCopy />,
+                  });
                 }}
                 chevron={false}
               >

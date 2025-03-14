@@ -23,6 +23,7 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { anim2Papillon } from "@/utils/ui/animations";
 
+
 import * as Haptics from "expo-haptics";
 import { PressableScale } from "react-native-pressable-scale";
 import { ReanimatedGraphProps, ReanimatedGraphPublicMethods } from "@birdwingo/react-native-reanimated-graph/src/core/dto/graphDTO";
@@ -107,18 +108,23 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
     hst = hst.filter((p) => isNaN(p.value) === false);
 
     graphRef.current?.updateData({
-      xAxis: hst.map((p, i) => new Date(p.date).getTime()),
-      yAxis: hst.map((p) => p.value),
+      xAxis: hst.length > 0 ? hst.map((p, i) => new Date(p.date).getTime()) : [Date.now()],
+      yAxis: hst.length > 0 ? hst.map((p) => p.value) : [10],
     });
   }, [grades, account.instance]);
 
   const updateTo = useCallback(
-    (index: number) => {
-      if (index < 0 || index > gradesHistoryRef.current.length - 1) return;
-      if (!gradesHistoryRef.current[index]?.value) return;
+    (index: number, x: number, y: number) => {
+      try {
+        if (index < 0 || index > gradesHistoryRef.current.length - 1) return;
+        if (!gradesHistoryRef.current[index]?.value) return;
 
-      setSelectedDate(gradesHistoryRef.current[index].date);
-      setCurrentAvg(gradesHistoryRef.current[index].value);
+        setSelectedDate(gradesHistoryRef.current[index].date);
+        setCurrentAvg(gradesHistoryRef.current[index].value);
+      }
+      catch (e) {
+        console.error(e);
+      }
     },
     [gradesHistoryRef]
   );
@@ -130,17 +136,17 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
 
   const theoryAvgDisclaimer = useCallback(() => {
     showAlert({
-      icon: <TrendingUp />,
       title: "Moyenne théorique",
-      message: "La moyenne théorique est calculée en prenant en compte toutes les moyennes de tes matières. Elle est donc purement indicative et ne reflète pas la réalité des différentes options ou variations."
+      message: "La moyenne théorique est calculée en prenant en compte toutes les moyennes de tes matières. Elle est donc purement indicative et ne reflète pas la réalité des différentes options ou variations.",
+      icon: <TrendingUp />,
     });
   }, []);
 
   const estimatedAvgDisclaimer = useCallback(() => {
     showAlert({
-      icon: <PieChart />,
       title: "Moyenne générale estimée",
       message: "L'estimation automatique des moyennes n'est pas une information exacte, mais une approximation qui essaye de s'en rapprocher un maximum.",
+      icon: <PieChart />,
       actions: [
         {
           title: "En savoir plus",
@@ -245,10 +251,7 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
                   ref={graphRef}
                   animationDuration={400}
                   onGestureUpdate={(x, y, index) => {
-                    if (index < 0 || index > gradesHistory.length - 1) return;
-                    if (!gradesHistory[index]?.value) return;
-
-                    updateTo(index);
+                    updateTo(index, x, y);
                   }}
                   onGestureEnd={() => {
                     resetToOriginal();
@@ -342,7 +345,8 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
                     <>
                       <AnimatedNumber
                         value={classAvg.toFixed(2)}
-                        style={styles.gradeNumberClass}
+                        style={styles.gradeNumber}
+                        contentContainerStyle={{ marginLeft: -2 }}
                       />
                       <Reanimated.View layout={anim2Papillon(LinearTransition)}>
                         <NativeText style={[styles.gradeOutOf]}>/20</NativeText>

@@ -1,13 +1,14 @@
 import React from "react";
 import type { Screen } from "@/router/helpers/types";
 import { useTheme } from "@react-navigation/native";
-import { CircleHelp } from "lucide-react-native";
+import { BadgeX, CircleHelp } from "lucide-react-native";
 import { View, StyleSheet, Text, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAccounts } from "@/stores/account";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import { ExternalAccount } from "@/stores/account/types";
 import { detectMealPrice as ARDPriceDetector } from "@/views/settings/ExternalAccount/ARD";
+import { useAlert } from "@/providers/AlertProvider";
 
 const PriceError: Screen<"PriceError"> = ({ navigation, route }) => {
   const theme = useTheme();
@@ -15,6 +16,8 @@ const PriceError: Screen<"PriceError"> = ({ navigation, route }) => {
   const update = useAccounts(store => store.update);
   const account = route.params?.account;
   const accountId = route.params?.accountId;
+
+  const { showAlert } = useAlert();
 
   const manualInput = () => {
     Alert.prompt(
@@ -40,7 +43,13 @@ const PriceError: Screen<"PriceError"> = ({ navigation, route }) => {
 
   const reloadMealPrice = async () => {
     const mealPrice = await ARDPriceDetector(account);
-    if (!mealPrice) return Alert.alert("Erreur", "Impossible de déterminer le prix d'un repas");
+    if (!mealPrice) {
+      return showAlert({
+        title: "Erreur",
+        message: "Impossible de déterminer le prix d'un repas",
+        icon: <BadgeX />,
+      });
+    }
     update<ExternalAccount>(accountId, "authentication", { "mealPrice": mealPrice });
     navigation.pop();
     navigation.pop();

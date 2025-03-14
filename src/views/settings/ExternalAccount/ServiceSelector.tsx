@@ -7,25 +7,25 @@ import PapillonShineBubble from "@/components/FirstInstallation/PapillonShineBub
 import { AccountService } from "@/stores/account/types";
 import DuoListPressable from "@/components/FirstInstallation/DuoListPressable";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { useAlert } from "@/providers/AlertProvider";
+import { Check, WifiOff } from "lucide-react-native";
 
 const ExternalAccountSelector: Screen<"ExternalAccountSelector"> = ({ navigation, route }) => {
+  const { isOnline } = useOnlineStatus();
+  const { showAlert } = useAlert();
 
   type Service = AccountService | "Other";
 
   const [service, setService] = useState<Service | null>(null);
 
   return (
-    <SafeAreaView
-      style={styles.container}
-    >
+    <SafeAreaView style={styles.container}>
       <PapillonShineBubble
-        noFlex
-        message={"Pour commencer, quel est ton service de cantine ?"}
-        width={250}
+        message="Pour commencer, quel est ton service de cantine ?"
         numberOfLines={2}
-        style={{
-          height: 180,
-        }}
+        width={260}
+        offsetTop={"15%"}
       />
 
       <Reanimated.ScrollView
@@ -98,7 +98,21 @@ const ExternalAccountSelector: Screen<"ExternalAccountSelector"> = ({ navigation
           disabled={!service || service === "Other"}
           onPress={() => {
             if (service) {
-              navigation.navigate("ExternalAccountSelectMethod", { service });
+              if (isOnline) {
+                navigation.navigate("ExternalAccountSelectMethod", { service });
+              } else {
+                showAlert({
+                  title: "Information",
+                  message: "Pour poursuivre la connexion, tu dois être connecté à Internet. Vérifie ta connexion Internet et réessaie",
+                  icon: <WifiOff />,
+                  actions: [
+                    {
+                      title: "OK",
+                      icon: <Check />,
+                    },
+                  ],
+                });
+              }
             }
           }}
         />

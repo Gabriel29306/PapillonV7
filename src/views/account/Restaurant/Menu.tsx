@@ -2,11 +2,11 @@
 import { useTheme } from "@react-navigation/native";
 import Reanimated, { FadeIn, FadeInDown, FadeOut, LinearTransition, ZoomIn, ZoomOut } from "react-native-reanimated";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { ActivityIndicator, Alert, Dimensions, RefreshControl, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, RefreshControl, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { PressableScale } from "react-native-pressable-scale";
 
 // External modules
-import { AlertTriangle, ChefHat, ChevronLeft, ChevronRight, CookingPot, MapPin, Plus, Sprout, Utensils } from "lucide-react-native";
+import { AlertTriangle, BadgeX, ChefHat, ChevronLeft, ChevronRight, CookingPot, MapPin, Plus, Sprout, Utensils } from "lucide-react-native";
 import type { FoodAllergen, FoodLabel, Menu as PawnoteMenu } from "pawnote";
 
 // Components
@@ -44,6 +44,8 @@ import { animPapillon } from "@/utils/ui/animations";
 
 // Styles
 import { STORE_THEMES, StoreTheme } from "@/views/account/Restaurant/Cards/StoreThemes";
+import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { useAlert } from "@/providers/AlertProvider";
 
 export const formatCardIdentifier = (identifier: string, dots: number = 4, separator: string = " ") => {
   if(!identifier) {
@@ -62,12 +64,14 @@ export interface ServiceCard {
   balance: never[] | Balance[];
   history: never[] | ReservationHistory[];
   cardnumber: string | Blob | null;
+  // @ts-ignore
   theme: StoreTheme;
 }
 
 const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   const theme = useTheme();
   const { colors } = theme;
+  const { isOnline } = useOnlineStatus();
 
   const account = useCurrentAccount((store) => store.account);
   const linkedAccounts = useCurrentAccount((store) => store.linkedAccounts);
@@ -85,6 +89,8 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   const [menuLoading, setMenuLoading] = useState(false);
   const [isInitialised, setIsInitialised] = useState(false);
   const [allCards, setAllCards] = useState<Array<ServiceCard> | null>(null);
+
+  const { showAlert } = useAlert();
 
   const refreshData = async () => {
     setIsRefreshing(true);
@@ -163,7 +169,11 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
           : term
       );
       setAllBookings(revertedBookings ?? null);
-      Alert.alert("Erreur", "Une erreur est survenue lors de la réservation du repas");
+      showAlert({
+        title: "Erreur",
+        message: "Une erreur est survenue lors de la réservation du repas",
+        icon: <BadgeX />,
+      });
     }
   };
 
@@ -194,6 +204,10 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
         const dailyMenu = account ? await getMenu(account, pickerDate).catch(() => null) : null;
         const accountPromises = linkedAccounts.map(async (account) => {
           try {
+            if (!account || !account.service) {
+              return;
+            }
+
             const [balance, history, cardnumber, booking] = await Promise.all([
               balanceFromExternal(account, isRefreshing).catch(err => {
                 console.warn(`Error fetching balance for account ${account.username}:`, err);
@@ -222,7 +236,8 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
               balance: balance,
               history: history,
               cardnumber: cardnumber,
-              theme: STORE_THEMES.find((theme) => theme.id === AccountService[account.service]) ?? STORE_THEMES[0],
+              // @ts-ignore
+              theme: STORE_THEMES.find((theme) => theme.id === AccountService[account.service]) ?? STORE_THEMES[0] as StoreTheme,
             };
 
             newCards.push(newCard);
@@ -335,7 +350,9 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
       >
         <PapillonHeaderInsetHeight route={route} />
 
-        {!isInitialised ? (
+        {!isOnline ? (
+          <OfflineWarning cache={false} />
+        ) : !isInitialised ? (
           <ActivityIndicator size="large" style={{ padding: 50 }} />
         ) : (
           <>

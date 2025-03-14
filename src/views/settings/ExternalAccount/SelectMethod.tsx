@@ -3,7 +3,6 @@ import { ScrollView, } from "react-native";
 import type { Screen } from "@/router/helpers/types";
 import { useTheme } from "@react-navigation/native";
 import { Star } from "lucide-react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import PapillonShineBubble from "@/components/FirstInstallation/PapillonShineBubble";
 import {
   NativeItem,
@@ -16,7 +15,6 @@ import { useCurrentAccount } from "@/stores/account";
 const ExternalAccountSelectMethod: Screen<"ExternalAccountSelectMethod"> = ({ navigation, route }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const insets = useSafeAreaInsets();
   const account = useCurrentAccount(store => store.account!);
 
   return (
@@ -29,7 +27,7 @@ const ExternalAccountSelectMethod: Screen<"ExternalAccountSelectMethod"> = ({ na
         message={`Sélectionne ta méthode de connexion au service ${route.params.service === "Other" ? "(autre)" : AccountService[route.params.service]}`}
         width={300}
         numberOfLines={2}
-        offsetTop={insets.top}
+        offsetTop={"15%"}
       />
 
       <NativeList>

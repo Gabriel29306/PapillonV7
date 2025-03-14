@@ -11,7 +11,7 @@
 // |  ne contiendra pas grand-chose qui puisse t'intéresser.  |
 // |                                                          |
 // |        Heureusement pour toi, je suis magicien !         |
-// |                  ╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ                  |
+// |                  ╰( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ                    |
 // |                                                          |
 // |          Si tu souhaites modifier les widgets :          |
 // |                      ~/src/widgets                       |
@@ -33,12 +33,13 @@
 
 import { protectScreenComponent } from "@/router/helpers/protected-screen";
 import type { Screen } from "@/router/helpers/types";
-import { useCurrentAccount } from "@/stores/account";
+import { useAccounts, useCurrentAccount } from "@/stores/account";
 import getCorners from "@/utils/ui/corner-radius";
 import { useIsFocused, useTheme } from "@react-navigation/native";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Dimensions,
+  Linking,
   Platform,
   RefreshControl,
   StatusBar,
@@ -61,6 +62,8 @@ import ModalContent from "@/views/account/Home/ModalContent";
 import { AnimatedScrollView } from "react-native-reanimated/lib/typescript/reanimated2/component/ScrollView";
 import useScreenDimensions from "@/hooks/useScreenDimensions";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
+import { useAlert } from "@/providers/AlertProvider";
+import { ArrowLeft, Menu, Plus } from "lucide-react-native";
 
 const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   const { colors } = useTheme();
@@ -70,11 +73,62 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   const { playHaptics } = useSoundHapticsWrapper();
 
   const { isTablet } = useScreenDimensions();
+  const { showAlert } = useAlert();
 
   let scrollRef = useAnimatedRef<AnimatedScrollView>();
   let scrollOffset = useScrollViewOffset(scrollRef);
 
   let account = useCurrentAccount(store => store.account!);
+  const accounts = useAccounts((store) => store.accounts);
+
+  useEffect(() => {
+    void async function () {
+      if (!useAccounts.persist.hasHydrated()) return;
+
+      // If there are no accounts, redirect the user to the first installation page.
+      if (accounts.filter((account) => !account.isExternal).length === 0) {
+        // Use the `reset` method to clear the navigation stack.
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "FirstInstallation" }],
+        });
+      }
+      else {
+        Linking.getInitialURL().then((url) => {
+          manageIzlyLogin(url || "");
+        });
+      }
+    }();
+
+    Linking.addEventListener("url", (event) => {
+      manageIzlyLogin(event.url);
+    });
+  }, [accounts]);
+
+  const manageIzlyLogin = (url: string) => {
+    if (url) {
+      const scheme = url.split(":")[0];
+      if (scheme === "izly") {
+        showAlert({
+          title: "Activation de compte Izly",
+          message: "Papillon gère la connexion au service Izly. Ouvrez les paramètres de services de cantine pour activer votre compte.",
+          icon: <Menu />,
+          actions: [
+            {
+              title: "Annuler",
+              icon: <ArrowLeft />,
+            },
+            {
+              title: "Ajouter mon compte",
+              icon: <Plus />,
+              onPress: () => navigation.navigate("SettingStack", { view: "IzlyActivation" }),
+              primary: true,
+            }
+          ],
+        });
+      }
+    }
+  };
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalFull, setModalFull] = useState(false);
@@ -198,20 +252,22 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
       {!modalOpen && focused && !isTablet && (
         <StatusBar barStyle="light-content" backgroundColor={"transparent"} translucent />
       )}
-      <ContextMenu
-        style={[{
-          position: "absolute",
-          top: insets.top + 8,
-          left: 16,
-          zIndex: 1000,
-        }]}
-      >
-        <AccountSwitcher
-          translationY={scrollOffset}
-          modalOpen={modalOpen}
-          loading={!account.instance}
-        />
-      </ContextMenu>
+      {!isTablet && (
+        <ContextMenu
+          style={[{
+            position: "absolute",
+            top: insets.top + 8,
+            left: 16,
+            zIndex: 1000,
+          }]}
+        >
+          <AccountSwitcher
+            translationY={scrollOffset}
+            modalOpen={modalOpen}
+            loading={!account.instance}
+          />
+        </ContextMenu>
+      )}
       <Animated.ScrollView
         ref={scrollRef}
         snapToEnd={false}
@@ -247,7 +303,12 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         <Animated.View
-          style={widgetAnimatedStyle}
+          style={[
+            widgetAnimatedStyle,
+            isTablet && {
+              marginTop: 2 * (0 - insets.top),
+            }
+          ]}
         >
           <Header
             scrolled={false}

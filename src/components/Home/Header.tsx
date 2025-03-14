@@ -1,6 +1,6 @@
 import { CopyPlus } from "lucide-react-native";
 import React, { forwardRef, useEffect, useState } from "react";
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
 import { useCurrentAccount } from "@/stores/account";
@@ -24,6 +24,7 @@ import { RouteParameters } from "@/router/helpers/types";
 import type { Tab } from "@/stores/account/types";
 import { animPapillon } from "@/utils/ui/animations";
 import PapillonSpinner from "../Global/PapillonSpinner";
+import useScreenDimensions from "@/hooks/useScreenDimensions";
 
 const Header: React.FC<{
   scrolled: boolean
@@ -42,9 +43,7 @@ const Header: React.FC<{
   const [addons] = useState<AddonHomePageInfo[]>([]);
   const [addonsTitle, setAddonsTitle] = useState<string[]>([]);
   const [click, setClick] = useState<false | true>(false);
-
-  const dims = Dimensions.get("window");
-  const tablet = dims.width > 600;
+  const { isTablet } = useScreenDimensions();
 
   useEffect(() => {
     // On récupère le fichier principal de chaque extension.
@@ -82,7 +81,7 @@ const Header: React.FC<{
         style={[styles.part, styles.header]}
       />
 
-      {!tablet && (
+      {!isTablet && (
         tabs.filter(tab => !tab.enabled).length === 0 ?
           <PressableScale
             style={{

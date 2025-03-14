@@ -41,6 +41,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { hasFeatureAccountSetup } from "@/utils/multiservice";
 import { MultiServiceFeature } from "@/stores/multiService/types";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
+import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 const formatDate = (date: string | number | Date): string => {
   return new Date(date).toLocaleDateString("fr-FR", {
@@ -58,6 +59,7 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
   ) : 0);
   const insets = useSafeAreaInsets();
   const { playHaptics } = useSoundHapticsWrapper();
+  const { isOnline } = useOnlineStatus();
 
   const outsideNav = route.params?.outsideNav;
 
@@ -75,18 +77,7 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
   }
   const firstDateEpoch = dateToEpochWeekNumber(firstDate);
 
-  // Function to get the current week number since epoch
-  const getCurrentWeekNumber = () => {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    const start = new Date(1970, 0, 0);
-    start.setHours(0, 0, 0, 0);
-    const diff = now.getTime() - start.getTime();
-    const oneWeek = 1000 * 60 * 60 * 24 * 7;
-    return Math.floor(diff / oneWeek) + 1;
-  };
-
-  const currentWeek = getCurrentWeekNumber();
+  const currentWeek = dateToEpochWeekNumber(new Date());
   const [data, setData] = useState(Array.from({ length: 100 }, (_, i) => currentWeek - 50 + i));
 
   const [selectedWeek, setSelectedWeek] = useState(currentWeek);
@@ -108,6 +99,12 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
 
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    if (!isOnline && loading) {
+      setLoading(false);
+    }
+  }, [isOnline, loading]);
 
   const [loadedWeeks, setLoadedWeeks] = useState<number[]>([]);
 
@@ -236,6 +233,8 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
           />
         }
       >
+        {!isOnline && <OfflineWarning cache={true} />}
+
         {groupedHomework && Object.keys(groupedHomework).map((day, index) => (
           <Reanimated.View
             key={day}

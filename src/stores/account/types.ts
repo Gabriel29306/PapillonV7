@@ -54,6 +54,7 @@ export interface Personalization {
     grades?: boolean
     timetable?: boolean
     attendance?: boolean
+    evaluation?: boolean
   }
   icalURLs: PapillonIcalURL[],
   tabs: Tab[],
@@ -88,7 +89,10 @@ export interface CurrentAccountStore {
   account: PrimaryAccount | null
   linkedAccounts: ExternalAccount[]
   associatedAccounts: PrimaryAccount[]
-  mutateProperty: <T extends keyof PrimaryAccount>(key: T, value: PrimaryAccount[T], forceMutation?: boolean) => void
+  mutateProperty: <T extends keyof PrimaryAccount>(
+    key: T,
+    value: PrimaryAccount[T], forceMutation?: boolean
+  ) => void
   linkExistingExternalAccount: (account: ExternalAccount) => void
   switchTo: (account: PrimaryAccount) => Promise<void>
   logout: () => void
@@ -300,5 +304,9 @@ export interface AccountsStore {
   accounts: Account[]
   create: (account: Account) => void
   remove: (localID: string) => void
-  update: <A extends Account, T extends keyof A = keyof A>(localID: string, key: T, value: A[T]) => Account | null
+  update: <A extends Account, T extends keyof A = keyof A>(
+    localID: string,
+    key: T,
+    value: A[T]
+  ) => Account | null
 }

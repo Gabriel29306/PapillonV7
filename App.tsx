@@ -1,3 +1,4 @@
+import { Notification } from "@notifee/react-native";
 import Router from "@/router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -11,6 +12,9 @@ import { isExpoGo } from "@/utils/native/expoGoAlert";
 import { atobPolyfill, btoaPolyfill } from "js-base64";
 import { registerBackgroundTasks } from "@/background/BackgroundTasks";
 import { SoundHapticsProvider } from "@/hooks/Theme_Sound_Haptics";
+import { PapillonNavigation } from "@/router/refs";
+import { RouteParameters } from "@/router/helpers/types";
+import { findAccountByID, getSwitchToFunction } from "@/background/utils/accounts";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -23,8 +27,41 @@ const BACKGROUND_LIMITS: Partial<Record<AccountService, number>> = {
 };
 
 export default function App () {
+  const handleNotificationPress = async (notification: Notification) => {
+    if (notification?.data) {
+      const switchTo = getSwitchToFunction();
+      const accountID = notification.data.accountID as string;
+      const account = findAccountByID(accountID);
+      if (account) {
+        await switchTo(account);
+        PapillonNavigation.current?.reset({
+          index: 0,
+          routes: [{ name: "AccountStack" }],
+        });
+        setTimeout(() => {
+          // @ts-expect-error : on ne prend pas le state des routes en compte ici.
+          PapillonNavigation.current?.navigate(notification.data.page as keyof RouteParameters);
+        }, 500);
+      }
+    }
+  };
+
+  const checkInitialNotification = async () => {
+    const notifee = (await import("@notifee/react-native")).default;
+
+    const initialNotification = await notifee.getInitialNotification();
+    if (initialNotification) {
+      await handleNotificationPress(initialNotification.notification);
+    }
+  };
+
+  useEffect(() => {
+    if (!isExpoGo()) checkInitialNotification();
+  }, []);
+
   const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
   const backgroundStartTime = useRef<number | null>(null);
+  const currentAccount = useCurrentAccount((store) => store.account);
   const switchTo = useCurrentAccount((store) => store.switchTo);
   const accounts: PrimaryAccount[] = useAccounts((store) => store.accounts)
     .filter(account => !account.isExternal) as PrimaryAccount[];
@@ -59,7 +96,7 @@ export default function App () {
         log(`Account type: ${serviceName}`, "RefreshToken");
         log(`Using ${BACKGROUND_LIMITS[account.service] ? "specific" : "default"} time limit`, "RefreshToken");
 
-        if (timeInBackground >= timeLimit) {
+        if (timeInBackground >= timeLimit && currentAccount === account) {
           log(`⚠️ Refreshing account ${account.studentName.first} ${account.studentName.last} after ${timeInBackgroundSeconds}s in background`, "RefreshToken");
 
           // Prevent React state updates during render
@@ -84,6 +121,13 @@ export default function App () {
 
       if (nextAppState === "active") {
         log("🔄 App is active", "AppState");
+        if (!isExpoGo()) {
+          const notifee = (await import("@notifee/react-native")).default;
+
+          await notifee.setBadgeCount(0);
+          await notifee.cancelAllNotifications();
+        }
+
         await handleBackgroundState();
         backgroundStartTime.current = null;
       } else if (nextAppState.match(/inactive|background/)) {

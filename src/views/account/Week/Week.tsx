@@ -20,6 +20,7 @@ import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import type { Screen } from "@/router/helpers/types";
 import { Account } from "@/stores/account/types";
 import { fetchIcalData } from "@/services/local/ical";
+import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 const LOCALES = {
   en: {
@@ -52,7 +53,7 @@ const EventItem = memo<EventItemProps>(({ event }) => {
   const isWide = layout.width > 100;
 
   const handlePress = () => {
-    PapillonNavigation.current.navigate("LessonDocument", { lesson: event.event });
+    PapillonNavigation.current?.navigate("LessonDocument", { lesson: event.event });
   };
 
   const containerStyle = [
@@ -216,6 +217,7 @@ const displayModes = ["Semaine", "3 jours", "Journée"];
 const Week: Screen<"Week"> = ({ route, navigation }) => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const { isOnline } = useOnlineStatus();
 
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -240,6 +242,8 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
   const [events, setEvents] = React.useState<CalendarKitEventItem[]>([]);
 
   useEffect(() => {
+    if(!timetables) return;
+
     const nevts = Object.values(timetables)
       .flat()
       .map(event => ({
@@ -291,6 +295,12 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
 
   return (
     <View style={{ flex: 1, marginTop: insets.top }}>
+      {!isOnline && (
+        <View style={{ padding: 16 }}>
+          <OfflineWarning cache={true} />
+        </View>
+      )}
+
       {account?.providers?.includes("ical") && Object.values(timetables).flat().length === 0 && (
         <View
           style={{
@@ -341,7 +351,7 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
                 onPress={() => {
                   setOpenedIcalModal(true);
                   setTimeout(() => {
-                    PapillonNavigation.current.navigate("LessonsImportIcal");
+                    PapillonNavigation.current?.navigate("LessonsImportIcal", {});
                   }, 100);
                 }}
               />
@@ -426,7 +436,9 @@ const styles = StyleSheet.create({
   },
   canceledContainer: {
     borderColor: "red",
-    borderWidth: 2,
+    borderWidth: 4,
+    borderStyle: "dotted",
+    backgroundColor: "transparent",
   },
   alertBadge: {
     position: "absolute",
@@ -453,11 +465,12 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   canceledContent: {
-    opacity: 0.3,
+    opacity: 0.5,
     backgroundColor: "grey",
+    borderWidth: 0,
   },
   title: {
-    fontSize: 13,
+    fontSize: 11.5,
     letterSpacing: 0.2,
     fontFamily: "semibold",
     textTransform: "uppercase",
@@ -469,7 +482,7 @@ const styles = StyleSheet.create({
     textTransform: "none",
   },
   room: {
-    fontSize: 13,
+    fontSize: 11,
     letterSpacing: 0.2,
     fontFamily: "medium",
     opacity: 0.6,

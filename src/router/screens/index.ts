@@ -15,15 +15,14 @@ export default [
   createScreen("SettingStack", SettingsScreen, {
     headerShown: false,
     presentation: Platform.OS === "android" ? "modal" : "formSheet",
-    animation: Platform.OS === "android" ? "slide_from_right" : "default",
+    animation: Platform.OS === "android" ? "default" : "default",
     animationDuration: 100,
-    sheetCornerRadius: 24,
   }),
 
   createScreen("AccountStack", AccountScreen, {
     headerShown: false,
     gestureEnabled: false,
-    animation: Platform.OS === "android" ? "slide_from_right" : "none",
+    animation: Platform.OS === "android" ? "default" : "none",
     animationDuration: 100,
   }),
 ] as const;

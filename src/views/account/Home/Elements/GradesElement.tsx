@@ -9,6 +9,7 @@ import type { Grade } from "@/services/shared/Grade";
 import RedirectButton from "@/components/Home/RedirectButton";
 import { FadeInDown, FadeOut } from "react-native-reanimated";
 import MissingItem from "@/components/Global/MissingItem";
+import PapillonLoading from "@/components/Global/PapillonLoading";
 
 interface GradesElementProps {
   onImportance: (value: number) => unknown
@@ -19,6 +20,8 @@ const GradesElement: React.FC<GradesElementProps> = ({ onImportance }) => {
 
   const defaultPeriod = useGradesStore(store => store.defaultPeriod);
   const grades = useGradesStore((store) => store.grades);
+
+  const [loading, setLoading] = useState(false);
 
   const ImportanceHandler = () => {
     if (grades && grades[defaultPeriod] && grades[defaultPeriod].length > 0) {
@@ -38,17 +41,16 @@ const GradesElement: React.FC<GradesElementProps> = ({ onImportance }) => {
 
   useEffect(() => {
     void async function () {
-      if (!account?.instance) return;
-      await updateGradesPeriodsInCache(account);
+      if (account?.instance) {
+        setLoading(true);
+        await updateGradesPeriodsInCache(account);
+        if (defaultPeriod) {
+          await updateGradesAndAveragesInCache(account, defaultPeriod);
+        }
+        setLoading(false);
+      }
     }();
   }, [account?.instance]);
-
-  useEffect(() => {
-    void async function () {
-      if (!account?.instance || !defaultPeriod) return;
-      await updateGradesAndAveragesInCache(account, defaultPeriod);
-    }();
-  }, [defaultPeriod]);
 
   const [lastThreeGrades, setLastThreeGrades] = useState<Array<{
     subject: { average: { subjectName: string }, grades: any[] },
@@ -69,6 +71,30 @@ const GradesElement: React.FC<GradesElementProps> = ({ onImportance }) => {
       ImportanceHandler();
     }
   }, [grades]);
+
+  if (loading) {
+    return (
+      <>
+        <NativeListHeader animated label="Notes"
+          trailing={(
+            <RedirectButton navigation={PapillonNavigation.current} redirect="Grades" />
+          )}
+        />
+        <NativeList
+          animated
+          key="loadingGrades"
+          entering={FadeInDown.springify().mass(1).damping(20).stiffness(300)}
+          exiting={FadeOut.duration(300)}
+        >
+          <NativeItem animated style={{ paddingVertical: 10 }}>
+            <PapillonLoading
+              title="Chargement des notes"
+            />
+          </NativeItem>
+        </NativeList>
+      </>
+    );
+  }
 
   if (!grades || lastThreeGrades.length === 0) {
     return (

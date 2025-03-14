@@ -1,6 +1,6 @@
 import type { Screen } from "@/router/helpers/types";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { Alert, Image, Platform, Text, View } from "react-native";
+import { Image, Platform, Text, View } from "react-native";
 import { useAccounts, useCurrentAccount } from "@/stores/account";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import PackageJSON from "../../../package.json";
@@ -35,7 +35,9 @@ import {
   X,
   Blocks,
   HelpCircle,
-  PersonStanding
+  PersonStanding,
+  Bug,
+  BadgeHelp
 } from "lucide-react-native";
 
 import { NativeIcon, NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
@@ -51,6 +53,7 @@ import PapillonSpinner from "@/components/Global/PapillonSpinner";
 import { animPapillon } from "@/utils/ui/animations";
 import * as WebBrowser from "expo-web-browser";
 import { WebBrowserPresentationStyle } from "expo-web-browser";
+import useScreenDimensions from "@/hooks/useScreenDimensions";
 
 const Settings: Screen<"Settings"> = ({ route, navigation }) => {
   const theme = useTheme();
@@ -61,6 +64,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
   const [devModeEnabled, setDevModeEnabled] = useState(false);
   const defined = useFlagsStore(state => state.defined);
   const [click, setClick] = useState<true | false>(false);
+  const { isTablet } = useScreenDimensions();
 
   const removeAccount = useAccounts((store) => store.remove);
 
@@ -164,28 +168,6 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
       label: "Avancé",
       tabs: [
         {
-          icon: click ? (
-            <PapillonSpinner
-              size={18}
-              color="white"
-              strokeWidth={2.8}
-              entering={animPapillon(ZoomIn)}
-              exiting={animPapillon(ZoomOut)}
-            />) : <Route />,
-          color: "#7E1174",
-          label: "Onglets & Navigation",
-          onPress: async () => {
-            setClick(true);
-            setTimeout(() => {
-              if (Platform.OS === "ios") {
-                navigation.goBack();
-              }
-              navigation.navigate("SettingsTabs");
-              setClick(false);
-            }, 10);
-          },
-        },
-        {
           icon: <PersonStanding />,
           color: "#bf547d",
           label: "Accessibilité",
@@ -232,6 +214,12 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
           onPress: () => openUrl("https://support.papillon.bzh/"),
         },
         {
+          icon: <Bug />,
+          color: "#CF0029",
+          label: "Signaler un problème",
+          onPress: () => navigation.navigate("SettingsSupport"),
+        },
+        {
           icon: <Info />,
           color: "#888888",
           label: "À propos de Papillon",
@@ -246,15 +234,18 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
           color: "#CF0029",
           label: "Se déconnecter",
           onPress: () => {
-            if (Platform.OS === "ios") {
-              Alert.alert("Se déconnecter", "Es-tu sûr de vouloir te déconnecter ?", [
+            showAlert({
+              title: "Se déconnecter",
+              message: "Es-tu sûr de vouloir te déconnecter ?",
+              icon: <BadgeHelp />,
+              actions: [
                 {
-                  text: "Annuler",
-                  style: "cancel",
+                  title: "Annuler",
+                  icon: <X />,
+                  primary: false,
                 },
                 {
-                  text: "Se déconnecter",
-                  style: "destructive",
+                  title: "Déconnexion",
                   onPress: () => {
                     removeAccount(account.localID);
                     navigation.reset({
@@ -262,36 +253,13 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
                       routes: [{ name: "AccountSelector" }],
                     });
                   },
+                  danger: true,
+                  icon: <LogOut />,
+                  delayDisable: 5,
                 },
-              ]);
-            } else {
-              showAlert({
-                title: "Se déconnecter",
-                message: "Es-tu sûr de vouloir te déconnecter ?",
-                actions: [
-                  {
-                    title: "Annuler",
-                    onPress: () => {},
-                    backgroundColor: colors.card,
-                    icon: <X color={colors.text} />,
-                  },
-                  {
-                    title: "Se déconnecter",
-                    onPress: () => {
-                      removeAccount(account.localID);
-                      navigation.reset({
-                        index: 0,
-                        routes: [{ name: "AccountSelector" }],
-                      });
-                    },
-                    primary: true,
-                    backgroundColor: "#CF0029",
-                    icon: <LogOut color="#FFFFFF" />,
-                  },
-                ],
-              });
-            }
-          },
+              ],
+            });
+          }
         },
       ]
     }
@@ -305,6 +273,32 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
       onPress: () => openUrl("https://papillon.bzh/donate"),
       android: true,
       description: ""
+    });
+  }
+
+  if (!isTablet) {
+    tabs[2].tabs.unshift({
+      icon: click ? (
+        <PapillonSpinner
+          size={18}
+          color="white"
+          strokeWidth={2.8}
+          entering={animPapillon(ZoomIn)}
+          exiting={animPapillon(ZoomOut)}
+        />) : <Route />,
+      color: "#7E1174",
+      label: "Onglets & Navigation",
+      onPress: async () => {
+        setClick(true);
+        setTimeout(() => {
+          if (Platform.OS === "ios") {
+            navigation.goBack();
+          }
+          navigation.navigate("SettingsTabs");
+          setClick(false);
+        }, 10);
+      },
+      description: "",
     });
   }
 
