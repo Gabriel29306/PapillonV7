@@ -60,7 +60,7 @@ const SubjectItem: React.FC<SubjectItemProps> = ({
             evaluation={item}
             index={index}
             onPress={() => {
-              navigation.navigate("EvaluationDocument", { evaluation:item, allEvaluations});
+              navigation.navigate("EvaluationDocument", { evaluation:item, allEvaluations });
             }}
           />
         )}
@@ -143,7 +143,7 @@ const SubjectEvaluationItem: React.FC<SubjectEvaluationItemProps> = ({ subject, 
               <SkillLevelBadge skillLevel={skill.level} key={index} />
             ))}
             {skillLevelsMoreNumber > 0 && (
-              <NativeText variant={"subtitle"} style={{fontSize: 16}}>
+              <NativeText variant={"subtitle"} style={{ fontSize: 16 }}>
                 {`+${skillLevelsMoreNumber}`}
               </NativeText>
             )}

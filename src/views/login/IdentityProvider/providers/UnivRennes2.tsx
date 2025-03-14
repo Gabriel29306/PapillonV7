@@ -145,11 +145,11 @@ const UnivRennes2_Login: Screen<"UnivRennes2_Login"> = ({ navigation }) => {
             }}
           />
 
-          <NativeText variant="title" style={{textAlign: "center"}}>
+          <NativeText variant="title" style={{ textAlign: "center" }}>
             Connexion au compte Sésame
           </NativeText>
 
-          <NativeText variant="subtitle" style={{textAlign: "center"}}>
+          <NativeText variant="subtitle" style={{ textAlign: "center" }}>
             {isLoadingText}
           </NativeText>
         </View>

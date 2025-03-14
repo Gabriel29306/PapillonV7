@@ -87,9 +87,9 @@ const PapillonPicker: React.FC<PapillonPickerProps> = ({
               // @ts-ignore
               menuState: (item.checked || item === selected) ? "on" : "off",
               icon: {
-                type: typeof item !== "string" ? "IMAGE_SYSTEM" : "IMAGE_SYSTEM",
+                type: "IMAGE_SYSTEM",
                 imageValue: {
-                  systemName: typeof item !== "string" ? (item.sfSymbol ? item.sfSymbol : "") : "",
+                  systemName: typeof item !== "string" ? (item.sfSymbol ?? "") : "",
                 },
               }
             };
@@ -201,7 +201,7 @@ const PapillonPicker: React.FC<PapillonPickerProps> = ({
                         size={20}
                         strokeWidth={2.5}
                         color={theme.colors.primary}
-                        style={{ marginRight: 10}}
+                        style={{ marginRight: 10 }}
                       />
                     )}
                   </TouchableOpacity>

@@ -94,12 +94,12 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
         <ScrollView style={{
           flex: 1,
         }}>
-          <View style={{display: "flex", gap: 20, paddingTop: 23}}>
-            <View style={{backgroundColor: "#BE0B0010", padding: 10, margin: 16, borderRadius: 10, display: "flex", flexDirection: "row", alignItems: "center", gap: 10}}>
+          <View style={{ display: "flex", gap: 20, paddingTop: 23 }}>
+            <View style={{ backgroundColor: "#BE0B0010", padding: 10, margin: 16, borderRadius: 10, display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
               <TriangleAlert size={32} color={"#BE0B00"}/>
-              <View style={{flex: 1}}>
-                <NativeText variant={"title"} style={{flex: 1}}>Cette extension n'est pas signé</NativeText>
-                <NativeText variant={"subtitle"} style={{flex: 1}}>Les extensions non signées ne sont pas vérifiées par nos équipes. Tu es responsable de l'installation de celle-ci.</NativeText>
+              <View style={{ flex: 1 }}>
+                <NativeText variant={"title"} style={{ flex: 1 }}>Cette extension n'est pas signé</NativeText>
+                <NativeText variant={"subtitle"} style={{ flex: 1 }}>Les extensions non signées ne sont pas vérifiées par nos équipes. Tu es responsable de l'installation de celle-ci.</NativeText>
               </View>
             </View>
             <View style={{
@@ -111,7 +111,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
               paddingHorizontal: 16
             }}>
               <Image
-                source={selectedAddons.icon == "" ? require("../../../assets/images/addon_default_logo.png"): {uri: selectedAddons.icon}}
+                source={selectedAddons.icon == "" ? require("../../../assets/images/addon_default_logo.png"): { uri: selectedAddons.icon }}
                 style={{
                   width: 90,
                   height: 90,
@@ -121,10 +121,10 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
                   marginBottom: 16,
                 }}
               />
-              <NativeText variant="title" style={{fontSize: 22}}>
+              <NativeText variant="title" style={{ fontSize: 22 }}>
                 {selectedAddons.name}
               </NativeText>
-              <NativeText variant="subtitle" style={{width: "100%", textAlign: "center"}}>
+              <NativeText variant="subtitle" style={{ width: "100%", textAlign: "center" }}>
                 {"v" + selectedAddons.version + " - " + (selectedAddons.license == "" ? "Licence non précisé": selectedAddons.license)}
               </NativeText>
               <PressableScale
@@ -139,21 +139,21 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
                   marginTop: 10,
                 }}
               >
-                <NativeText variant="subtitle" style={{width: "100%", textAlign: "center"}}>
+                <NativeText variant="subtitle" style={{ width: "100%", textAlign: "center" }}>
                   {"par @" + selectedAddons.author}
                 </NativeText>
               </PressableScale>
             </View>
             <View>
-              <NativeText variant="title" style={{fontSize: 18, paddingHorizontal: 16}}>
+              <NativeText variant="title" style={{ fontSize: 18, paddingHorizontal: 16 }}>
                 Capture d’écran
               </NativeText>
-              <ScrollView horizontal={true} style={{marginTop: 10}} snapToInterval={130} showsHorizontalScrollIndicator={false}>
-                <View style={{display: "flex", gap: 10, flexDirection: "row", paddingHorizontal: 16}}>
+              <ScrollView horizontal={true} style={{ marginTop: 10 }} snapToInterval={130} showsHorizontalScrollIndicator={false}>
+                <View style={{ display: "flex", gap: 10, flexDirection: "row", paddingHorizontal: 16 }}>
                   {selectedAddons.screenshot.map((screenshot, index) => (
                     <Image
                       key={index}
-                      source={{uri: screenshot}}
+                      source={{ uri: screenshot }}
                       style={{
                         width: 120,
                         height: 250,
@@ -166,19 +166,19 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
                 </View>
               </ScrollView>
             </View>
-            <View style={{paddingHorizontal: 16}}>
-              <NativeText variant="title" style={{fontSize: 18, marginBottom: 10}}>
+            <View style={{ paddingHorizontal: 16 }}>
+              <NativeText variant="title" style={{ fontSize: 18, marginBottom: 10 }}>
                 Description
               </NativeText>
               <NativeText variant="subtitle">
                 {selectedAddons.description}
               </NativeText>
             </View>
-            <View style={{paddingHorizontal: 16}}>
-              <NativeText variant="title" style={{fontSize: 18, marginBottom: 10}}>
+            <View style={{ paddingHorizontal: 16 }}>
+              <NativeText variant="title" style={{ fontSize: 18, marginBottom: 10 }}>
                 Autorisations
               </NativeText>
-              <NativeList style={{marginTop: 0}}>
+              <NativeList style={{ marginTop: 0 }}>
                 {selectedAddons.permissions.map((permission, index) => (
                   <NativeItem
                     key={"perm_" + index}
@@ -199,7 +199,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
                                                 <Code color={"#000"} size={24}/>
                     }
                   >
-                    <NativeText variant="title" style={permission.name == "PERM_SCHOOLDATA_AUTH" && {color: "#BE0B00"}}>
+                    <NativeText variant="title" style={permission.name == "PERM_SCHOOLDATA_AUTH" && { color: "#BE0B00" }}>
                       {
                         permission.name == "PERM_APP_CAMERA" ? "Accès à la caméra":
                           permission.name == "PERM_APP_PHOTOS" ? "Accès aux photos":
@@ -241,7 +241,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
             </View>
           </View>
         </ScrollView>
-        <View style={{padding: 16, marginBottom: insets.bottom, backgroundColor: "#FFFFFFFA"}}>
+        <View style={{ padding: 16, marginBottom: insets.bottom, backgroundColor: "#FFFFFFFA" }}>
           <ButtonCta
             value="Désinstaller"
           />
@@ -278,7 +278,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
               }}
               leading={
                 <Image
-                  source={addon.icon == "" ? require("../../../assets/images/addon_default_logo.png"): {uri: addon.icon}}
+                  source={addon.icon == "" ? require("../../../assets/images/addon_default_logo.png"): { uri: addon.icon }}
                   style={{
                     width: 46,
                     height: 46,
@@ -298,12 +298,12 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
                   <TriangleAlert
                     size={24}
                     color={"#BE0B00"}
-                    style={{marginRight: 5}}
+                    style={{ marginRight: 5 }}
                   />
                 </PressableScale>
               )}
             >
-              <NativeText variant="title" numberOfLines={1} style={{opacity: addon.error ? 0.5 : 1}}>
+              <NativeText variant="title" numberOfLines={1} style={{ opacity: addon.error ? 0.5 : 1 }}>
                 {addon.name}
               </NativeText>
               <NativeText variant="subtitle" numberOfLines={1}>

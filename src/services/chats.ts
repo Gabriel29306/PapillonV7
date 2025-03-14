@@ -12,7 +12,7 @@ export const getChats = async <T extends Account> (account: T): Promise<Array<Ch
       return getChats(account);
     }
     case AccountService.EcoleDirecte: {
-      const {getChats} = await import("./ecoledirecte/chats");
+      const { getChats } = await import("./ecoledirecte/chats");
       return await getChats(account);
     }
     case AccountService.PapillonMultiService: {

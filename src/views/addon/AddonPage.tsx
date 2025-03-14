@@ -18,7 +18,7 @@ const AddonPage: Screen<"AddonPage"> = ({ navigation, route }) => {
   });
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <AddonsWebview
         navigation={navigation}
         addon={{
@@ -29,7 +29,7 @@ const AddonPage: Screen<"AddonPage"> = ({ navigation, route }) => {
         url={addon.manifest.placement[addon.index].main}
         scrollEnabled={true}
         inset={insets}
-        setTitle={(title) => navigation.setOptions({headerTitle: title})}
+        setTitle={(title) => navigation.setOptions({ headerTitle: title })}
         data={data}
         requestNavigate={(url, data) => {
           //find the placement
@@ -43,7 +43,7 @@ const AddonPage: Screen<"AddonPage"> = ({ navigation, route }) => {
           if (index == -1) {
             Alert.alert("Error", "The requested page was not found."); //TODO: transfer error to webview
           } else {
-            let newAddon: AddonPlacementManifest = {manifest: addon.manifest, index: index};
+            let newAddon: AddonPlacementManifest = { manifest: addon.manifest, index: index };
             // @ts-ignore "Very hard to type, need to think about"
             navigation.push("Addon" + from + "Page", { addon: newAddon, from: from, data: data.data });
           }

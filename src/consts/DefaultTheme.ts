@@ -4,8 +4,8 @@ export const DefaultTheme: Theme = {
   meta: {
     name: "Default",
     author: "PapillonApp",
-    icon: { uri: "https://play-lh.googleusercontent.com/wpV-VScxugHvexfYPURrkhpCxr1un_eJupTk9rHFf9TKfCBlYcrPoqyaJCVtWlX4Zw"},
-    darkIcon: { uri: "https://play-lh.googleusercontent.com/wpV-VScxugHvexfYPURrkhpCxr1un_eJupTk9rHFf9TKfCBlYcrPoqyaJCVtWlX4Zw"},
+    icon: { uri: "https://play-lh.googleusercontent.com/wpV-VScxugHvexfYPURrkhpCxr1un_eJupTk9rHFf9TKfCBlYcrPoqyaJCVtWlX4Zw" },
+    darkIcon: { uri: "https://play-lh.googleusercontent.com/wpV-VScxugHvexfYPURrkhpCxr1un_eJupTk9rHFf9TKfCBlYcrPoqyaJCVtWlX4Zw" },
     path: "default"
   },
   lightModifier: {

@@ -199,7 +199,7 @@ const EvaluationDocument: Screen<"EvaluationDocument"> = ({ route, navigation })
                   <NativeItem
                     key={index}
                     leading={<SkillLevelBadge skillLevel={skill.level} />}
-                    trailing={<NativeText variant="subtitle" style={{fontSize: 18, marginLeft: 10}}>
+                    trailing={<NativeText variant="subtitle" style={{ fontSize: 18, marginLeft: 10 }}>
                       {skill.pillarPrefixes.join(", ")}
                     </NativeText>}
                   >

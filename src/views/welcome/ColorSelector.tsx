@@ -150,7 +150,7 @@ const ColorSelector: Screen<"ColorSelector"> = ({ route, navigation }) => {
             overflow: "hidden",
             alignItems: "center",
             justifyContent: "center",
-            alignSelf: "center"}]}
+            alignSelf: "center" }]}
         >
           <Reanimated.Text
             layout={LinearTransition.springify().stiffness(150)}
@@ -183,7 +183,7 @@ const ColorSelector: Screen<"ColorSelector"> = ({ route, navigation }) => {
             if (!settings) {
               playSound(LEson6);
             }
-            navigation.navigate("AccountStack", {onboard: true});
+            navigation.navigate("AccountStack", { onboard: true });
           }}
           disabled={!account?.personalization?.color}
           style={{

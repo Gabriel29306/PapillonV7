@@ -22,7 +22,7 @@ const SkolengoInstanceSelector: Screen<"SkolengoInstanceSelector"> = ({
   const [instances, setInstances] = useState<School[]>([]);
   const [geoInstances, setGeoInstances] = useState<School[]|null>(null);
 
-  const {colors} = useTheme();
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
 
   const [search, setSearch] = useState("");
@@ -101,7 +101,7 @@ const SkolengoInstanceSelector: Screen<"SkolengoInstanceSelector"> = ({
     >
       <MaskStars />
 
-      <View style={{height: insets.top}} />
+      <View style={{ height: insets.top }} />
 
       {!keyboardOpen &&
         <Reanimated.View

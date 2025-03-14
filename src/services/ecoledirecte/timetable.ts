@@ -71,7 +71,7 @@ const decodeTimetableClass = (c: ecoledirecte.TimetableItem): TimetableClass => 
   throw new Error("ecoledirecte: unknown class type");
 };
 
-export const getTimetableForWeek = async (account: EcoleDirecteAccount, rangeDate: { start: Date, end: Date}): Promise<Timetable> => {
+export const getTimetableForWeek = async (account: EcoleDirecteAccount, rangeDate: { start: Date, end: Date }): Promise<Timetable> => {
   if (!account.authentication.session)
     throw new ErrorServiceUnauthenticated("ecoledirecte");
 

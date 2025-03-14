@@ -69,7 +69,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   const focused = useIsFocused();
   const { playHaptics } = useSoundHapticsWrapper();
 
-  const {isTablet} = useScreenDimensions();
+  const { isTablet } = useScreenDimensions();
 
   let scrollRef = useAnimatedRef<AnimatedScrollView>();
   let scrollOffset = useScrollViewOffset(scrollRef);
@@ -100,7 +100,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
         [0, 265],
         [1, 0.9],
         Extrapolation.CLAMP
-      )},
+      ) },
     ]
   }));
 
@@ -134,12 +134,12 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
     backgroundColor: colors.card,
     overflow: "hidden",
     transform: [
-      {translateY: interpolate(
+      { translateY: interpolate(
         scrollOffset.value,
         [-1000, 0, 125, 265 ],
         [-1000, 0, 105, 0],
         Extrapolation.CLAMP
-      )}
+      ) }
     ],
   }));
 
@@ -163,12 +163,12 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
     top: 10,
     left: "50%",
     transform: [
-      {translateX: interpolate(
+      { translateX: interpolate(
         scrollOffset.value,
         [125, 200],
         [-25, -2],
         Extrapolation.CLAMP
-      )}
+      ) }
     ],
     width: interpolate(
       scrollOffset.value,
@@ -194,7 +194,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   }));
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       {!modalOpen && focused && !isTablet && (
         <StatusBar barStyle="light-content" backgroundColor={"transparent"} translucent />
       )}
@@ -241,7 +241,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
         refreshControl={<RefreshControl
           refreshing={refreshing}
           onRefresh={() => setRefreshing(true)}
-          style={{zIndex: 100}}
+          style={{ zIndex: 100 }}
           progressViewOffset={285 + insets.top}
         />}
         showsVerticalScrollIndicator={false}

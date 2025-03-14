@@ -87,7 +87,7 @@ export async function updateGradesAndAveragesInCache <T extends Account> (accoun
   let averages: AverageOverview = {
     subjects: [],
     overall: { value: null, disabled: true, status: null },
-    classOverall: { value: null, disabled: true, status: null}
+    classOverall: { value: null, disabled: true, status: null }
   };
 
   try {

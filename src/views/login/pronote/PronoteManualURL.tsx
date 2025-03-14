@@ -18,11 +18,11 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 const PronoteManualURL: Screen<"PronoteManualURL"> = ({ route, navigation }) => {
   const theme = useTheme();
-  const {colors} = theme;
+  const { colors } = theme;
   const insets = useSafeAreaInsets();
   const [instanceURL, setInstanceURL] = useState("");
 
-  const {showAlert} = useAlert();
+  const { showAlert } = useAlert();
 
   // find url in route params
   useEffect(() => {
@@ -86,7 +86,7 @@ const PronoteManualURL: Screen<"PronoteManualURL"> = ({ route, navigation }) => 
     ]}>
       <MaskStars />
 
-      <View style={{height: 44 + 20}} />
+      <View style={{ height: 44 + 20 }} />
 
       <PapillonShineBubble
         message={
@@ -148,7 +148,7 @@ const PronoteManualURL: Screen<"PronoteManualURL"> = ({ route, navigation }) => 
         </Reanimated.View>
       </View>
 
-      <View style={{flex: 1}} />
+      <View style={{ flex: 1 }} />
 
       <View
         style={styles.buttons}

@@ -77,7 +77,7 @@ export const SkillLevelBadge: React.FC<SkillLevelBadgeProps> = ({ skillLevel }) 
           color: "#006AB7",
           fontSize: 15,
           fontFamily: "semibold",
-          transform: [{ translateY: -2 }, {translateX: 0.5}],
+          transform: [{ translateY: -2 }, { translateX: 0.5 }],
         }}>
           a
         </NativeText>

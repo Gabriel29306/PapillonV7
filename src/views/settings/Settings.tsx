@@ -74,7 +74,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
   useEffect(() => {
     AsyncStorage.getItem("devmode")
       .then((res) => {
-        let value = {enabled: false};
+        let value = { enabled: false };
         if (res)
           value = JSON.parse(res);
         setDevModeEnabled(value.enabled);
@@ -363,7 +363,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
                     onPress={() => navigation.navigate("AddonSettingsPage", { addon, from: "Settings" })}
                     leading={
                       <Image
-                        source={addon.manifest.icon == "" ? require("../../../assets/images/addon_default_logo.png"): {uri: addon.manifest.icon}}
+                        source={addon.manifest.icon == "" ? require("../../../assets/images/addon_default_logo.png"): { uri: addon.manifest.icon }}
                         style={{
                           width: 36,
                           height: 36,

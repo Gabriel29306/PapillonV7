@@ -35,7 +35,7 @@ const PronoteManualLocation: Screen<"PronoteManualLocation"> = ({ navigation }) 
   });
 
   const insets = useSafeAreaInsets();
-  const {colors} = useTheme();
+  const { colors } = useTheme();
 
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 

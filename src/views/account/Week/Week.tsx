@@ -171,7 +171,7 @@ const HeaderItem = memo<HeaderItemProps>(({ header }) => {
             >
               {new Date(start
               + i * 24 * 60 * 60 * 1000
-              ).toLocaleDateString("fr-FR", {weekday: "short"})}
+              ).toLocaleDateString("fr-FR", { weekday: "short" })}
             </Text>
           )}
           <Text
@@ -199,7 +199,7 @@ const HeaderItem = memo<HeaderItemProps>(({ header }) => {
             {new Date(start
               + i * 24 * 60 * 60 * 1000
             ).toLocaleDateString("fr-FR",
-              cols > 1 ? {day: "numeric"} : {
+              cols > 1 ? { day: "numeric" } : {
                 weekday: "long",
                 day: "numeric",
                 month: "long",
@@ -323,13 +323,13 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
               />
               <NativeText
                 variant="title"
-                style={{textAlign: "center"}}
+                style={{ textAlign: "center" }}
               >
                 Aucun agenda externe
               </NativeText>
               <NativeText
                 variant="subtitle"
-                style={{textAlign: "center"}}
+                style={{ textAlign: "center" }}
               >
                 Importez un calendrier depuis une URL de votre agenda externe tel que ADE ou Moodle.
               </NativeText>
@@ -402,7 +402,7 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
         numberOfDays={displayMode === "Semaine" ? 5 : displayMode === "3 jours" ? 3 : 1}
         hideWeekDays={displayMode === "Semaine" ? [6, 7] : []}
         pagesPerSide={2}
-        scrollByDay={displayMode === "Semaine" ? false : true}
+        scrollByDay={displayMode !== "Semaine"}
         events={events}
         onDateChanged={handleDateChange}
         initialLocales={LOCALES}

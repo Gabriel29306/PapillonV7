@@ -73,7 +73,7 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
     <View style={{ flex: 1 }}>
       <PapillonModernHeader native height={110} outsideNav={true}>
         <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
-          <View style={{flex: 1, gap: 3}}>
+          <View style={{ flex: 1, gap: 3 }}>
             <NativeText variant="title" numberOfLines={1}>{message.title === "" ? message.author : message.title}</NativeText>
             <NativeText variant="subtitle" numberOfLines={1}>{message.title === "" ? formatDate(message.date.toString()) : message.author}</NativeText>
           </View>
@@ -187,7 +187,7 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
           />
         </View>
 
-        {isED && <ScrollView horizontal={true} contentContainerStyle={{gap: 5, paddingHorizontal: 16}}>
+        {isED && <ScrollView horizontal={true} contentContainerStyle={{ gap: 5, paddingHorizontal: 16 }}>
           <View style={{
             padding: 4,
             paddingHorizontal: 12,

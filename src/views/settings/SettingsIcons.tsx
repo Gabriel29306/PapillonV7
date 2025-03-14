@@ -40,7 +40,7 @@ export const removeColor = (icon: string) => {
 const SettingsIcons: Screen<"SettingsIcons"> = ({ navigation }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const {showAlert} = useAlert();
+  const { showAlert } = useAlert();
   const insets = useSafeAreaInsets();
   const data = icones as { [key: string]: Icon[] };
 
@@ -172,7 +172,7 @@ const SettingsIcons: Screen<"SettingsIcons"> = ({ navigation }) => {
                           });
                         }}
                       >
-                        <Sparkles color={colors.primary} style={{ marginRight: 10}}/>
+                        <Sparkles color={colors.primary} style={{ marginRight: 10 }}/>
                       </TouchableOpacity>
                     ) : null}
 

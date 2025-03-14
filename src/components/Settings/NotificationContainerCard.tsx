@@ -51,7 +51,7 @@ const NotificationContainerCard = ({ theme, isEnable = false, setEnabled }: Noti
 
   return (
     <NativeList>
-      <View style={[styles.notificationView, {backgroundColor: colors.primary + "22"}]}>
+      <View style={[styles.notificationView, { backgroundColor: colors.primary + "22" }]}>
         <View style={styles.innerNotificationView}>
           <Reanimated.View style={[styles.animatedContainer, containerAnimatedStyle]}>
             <Reanimated.View style={[styles.bellOffContainer, invertedTextAnimatedStyle]}>

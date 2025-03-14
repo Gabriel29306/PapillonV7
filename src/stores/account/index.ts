@@ -105,11 +105,11 @@ export const useCurrentAccount = create<CurrentAccountStore>()((set, get) => ({
     }
 
     const linkedAccounts = account.linkedExternalLocalIDs.map((linkedID) => {
-      return {...accounts.find((acc) => acc.localID === linkedID)};
+      return { ...accounts.find((acc) => acc.localID === linkedID) };
     }).filter(Boolean) as ExternalAccount[] ?? [];
 
     const associatedAccounts = account.associatedAccountsLocalIDs?.map((associatedID) => {
-      return {...accounts.find((acc) => acc.localID === associatedID)};
+      return { ...accounts.find((acc) => acc.localID === associatedID) };
     }).filter(Boolean) as PrimaryAccount[] ?? [];
 
     info(`found ${linkedAccounts.length} external accounts and ${associatedAccounts.length} associated accounts`, "switchTo");

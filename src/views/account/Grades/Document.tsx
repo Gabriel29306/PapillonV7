@@ -177,38 +177,38 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
           title: "Moyenne générale",
           description: "Impact estimé sur la moyenne générale",
           value:
-                        gradeDiff.difference === undefined
-                          ? "???"
-                          : (gradeDiff.difference > 0
-                            ? "- "
-                            : gradeDiff.difference === 0
-                              ? "+/- "
-                              : "+ ") +
-                            gradeDiff.difference.toFixed(2).replace("-", "") +
-                            " pts",
+            gradeDiff.difference === undefined
+              ? "???"
+              : (gradeDiff.difference > 0
+                ? "- "
+                : gradeDiff.difference === 0
+                  ? "+/- "
+                  : "+ ") +
+                gradeDiff.difference.toFixed(2).replace("-", "") +
+                " pts",
           color:
-                        gradeDiff.difference === undefined
-                          ? void 0
-                          : gradeDiff.difference < 0
-                            ? "#4CAF50"
-                            : gradeDiff.difference === 0
-                              ? theme.colors.text
-                              : "#F44336",
+            gradeDiff.difference === undefined
+              ? void 0
+              : gradeDiff.difference < 0
+                ? "#4CAF50"
+                : gradeDiff.difference === 0
+                  ? theme.colors.text
+                  : "#F44336",
         },
         !grade.average.disabled && {
           icon: <School />,
           title: "Moyenne de la classe",
           description: "Impact de la note sur la moyenne de la classe",
           value:
-                        classDiff.difference === undefined
-                          ? "???"
-                          : (classDiff.difference > 0
-                            ? "- "
-                            : gradeDiff.difference === 0
-                              ? "+/- "
-                              : "+ ") +
-                            classDiff.difference.toFixed(2).replace("-", "") +
-                            " pts",
+            classDiff.difference === undefined
+              ? "???"
+              : (classDiff.difference > 0
+                ? "- "
+                : gradeDiff.difference === 0
+                  ? "+/- "
+                  : "+ ") +
+                classDiff.difference.toFixed(2).replace("-", "") +
+                " pts",
         },
       ],
     },

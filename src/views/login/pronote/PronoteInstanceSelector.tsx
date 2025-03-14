@@ -393,7 +393,7 @@ const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
                 />
               </Reanimated.View>
             </Reanimated.View>
-            <View style={{height: 36}} />
+            <View style={{ height: 36 }} />
           </Reanimated.ScrollView>
         </Reanimated.View>
       )}

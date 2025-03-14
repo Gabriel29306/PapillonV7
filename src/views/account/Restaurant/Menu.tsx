@@ -82,7 +82,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   const [currentWeek, setCurrentWeek] = useState<number>(0);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [pickerDate, setPickerDate] = React.useState(new Date(new Date().setHours(0, 0, 0, 0)));
-  const [isMenuLoading, setMenuLoading] = useState(false);
+  const [menuLoading, setMenuLoading] = useState(false);
   const [isInitialised, setIsInitialised] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [allCards, setAllCards] = useState<Array<ServiceCard> | null>(null);
@@ -197,7 +197,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
           try {
             const [balance, history, cardnumber, booking] = await Promise.all([
               balanceFromExternal(account, isRefreshing).catch(err => {
-                console.warn(`Error fetching balance for account ${account}:`, err);
+                console.warn(`Error fetching balance for account ${account.username}:`, err);
                 return [];
               }),
               reservationHistoryFromExternal(account).catch(err => {
@@ -370,7 +370,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
               />
             )}
 
-            <View style={{height: 16}} />
+            <View style={{ height: 16 }} />
 
             {(allCards ?? [])?.length > 0 && (
               <ScrollView
@@ -408,7 +408,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
               </ScrollView>
             )}
 
-            {(currentMenu || (allBookings && allBookings?.some((terminal) => terminal.days.some((day) => day.date?.toDateString() === pickerDate.toDateString())))) &&
+            {(currentMenu || (allBookings?.some((terminal) => terminal.days.some((day) => day.date?.toDateString() === pickerDate.toDateString())))) &&
               <View style={styles.calendarContainer}>
                 <Reanimated.View
                   layout={animPapillon(LinearTransition)}
@@ -437,7 +437,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
                     </View>
                   </PressableScale>
                 </Reanimated.View>
-                <PapillonHeaderSelector loading={isMenuLoading} onPress={() => setShowDatePicker(true)}>
+                <PapillonHeaderSelector loading={menuLoading} onPress={() => setShowDatePicker(true)}>
                   <Reanimated.View layout={animPapillon(LinearTransition)}>
                     <Reanimated.View
                       key={pickerDate.toLocaleDateString("fr-FR", { weekday: "short" })}
@@ -520,7 +520,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
 
             {currentMenu ?
               <>
-                {isMenuLoading ? (
+                {menuLoading ? (
                   <ActivityIndicator size="large" style={{ padding: 50 }} />
                 ) : currentMenu?.lunch || currentMenu?.dinner ? (
                   <>

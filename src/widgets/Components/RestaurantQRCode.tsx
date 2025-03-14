@@ -21,8 +21,7 @@ const RestaurantQRCodeWidget = forwardRef(({
   const { colors } = theme;
 
   const linkedAccounts = useCurrentAccount(store => store.linkedAccounts);
-  const [qrcode, setQRCodes] = useState<Array<string | Blob> | null>(null);
-  const navigation = useNavigation<NavigationProps>();
+  const [QRCodes, setQRCodes] = useState<Array<string | Blob> | null>(null);
 
   useImperativeHandle(ref, () => ({
     handlePress: () => {
@@ -93,7 +92,7 @@ const RestaurantQRCodeWidget = forwardRef(({
           }}
           layout={LinearTransition}
         >
-          {qrcode && qrcode.length > 1 ? "Toucher pour afficher les QR-Codes" : "Toucher pour afficher le QR-Code"}
+          {QRCodes && QRCodes.length > 1 ? "Toucher pour afficher les QR-Codes" : "Toucher pour afficher le QR-Code"}
         </Reanimated.Text>
         <View style={{
           position: "absolute",

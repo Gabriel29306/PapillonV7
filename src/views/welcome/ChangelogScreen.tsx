@@ -159,7 +159,7 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
               animated inline
             >
               <Image
-                source={{uri: changelog.illustration}}
+                source={{ uri: changelog.illustration }}
                 style={{
                   width: "100%",
                   aspectRatio: 2 / 1

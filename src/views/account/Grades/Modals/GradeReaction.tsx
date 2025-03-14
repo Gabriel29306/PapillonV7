@@ -166,12 +166,12 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
   };
 
   return (isCameraPermissionGranted == PermissionStatus.DENIED || isMediaLibraryPermissionGranted == PermissionStatus.DENIED) ? (
-    <View style={[styles.container, {alignItems: "center", justifyContent: "center", padding: 16}]}>
-      <NativeText style={{fontSize: 100, lineHeight: 115, marginTop: -20}}>🫣</NativeText>
-      <NativeText variant={"titleLarge2"} color={"#FFF"} style={{textAlign: "center"}}>On ne te voit pas…</NativeText>
-      <NativeText color={"#FFF"} style={{textAlign: "center"}}>Pour réagir à tes notes, Papillon a besoin d'un accès à ta caméra et à ta librairie photo.</NativeText>
+    <View style={[styles.container, { alignItems: "center", justifyContent: "center", padding: 16 }]}>
+      <NativeText style={{ fontSize: 100, lineHeight: 115, marginTop: -20 }}>🫣</NativeText>
+      <NativeText variant={"titleLarge2"} color={"#FFF"} style={{ textAlign: "center" }}>On ne te voit pas…</NativeText>
+      <NativeText color={"#FFF"} style={{ textAlign: "center" }}>Pour réagir à tes notes, Papillon a besoin d'un accès à ta caméra et à ta librairie photo.</NativeText>
 
-      <View style={{position: "absolute", bottom: 16 + inset.bottom, left: 16, right: 16, gap: 10}}>
+      <View style={{ position: "absolute", bottom: 16 + inset.bottom, left: 16, right: 16, gap: 10 }}>
         <ButtonCta
           value={"Accès à ta caméra"}
           backgroundColor={"#000"}

@@ -16,8 +16,8 @@ import { Reel } from "@/services/shared/Reel";
 // Components
 const GradeIndicator = ({ value, outOf, color }: { value: number; outOf: number; color: string }) => (
   <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-    <Text style={[styles.scoreText, {color: color}]}>{value.toFixed(2)}</Text>
-    <Text style={[styles.maxScoreText, {color: color+"50"}]}>/{outOf}</Text>
+    <Text style={[styles.scoreText, { color: color }]}>{value.toFixed(2)}</Text>
+    <Text style={[styles.maxScoreText, { color: color+"50" }]}>/{outOf}</Text>
   </View>
 );
 
@@ -45,7 +45,7 @@ const ReelThumbnail = ({ reel, onPress, width }: { reel: Reel; onPress: () => vo
         justifyContent: "center",
         alignItems: "center"
       }]}>
-        <Text style={{color: colors.text}}>Image non disponible</Text>
+        <Text style={{ color: colors.text }}>Image non disponible</Text>
       </View>
     );
   }

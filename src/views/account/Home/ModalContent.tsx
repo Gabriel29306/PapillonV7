@@ -175,7 +175,7 @@ const ModalContent: React.FC<ModalContentProps> = ({ navigation, refresh, endRef
                 strokeWidth={2}
                 color={colors.text}
               />
-              <NativeText variant="title" style={{ flex: 1}}>
+              <NativeText variant="title" style={{ flex: 1 }}>
                 Papillon vient d'être mis à jour à la version {PackageJSON.version} !
               </NativeText>
 

@@ -52,7 +52,7 @@ const MissingItem: React.FC<MissingItemProps> = ({
         {title}
       </NativeText>
 
-      <NativeText variant="subtitle" style={{textAlign: "center"}}>
+      <NativeText variant="subtitle" style={{ textAlign: "center" }}>
         {description}
       </NativeText>
 

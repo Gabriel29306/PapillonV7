@@ -70,13 +70,13 @@ const ChatDetails: Screen<"ChatDetails"> = ({ navigation, route }) => {
           textColor={getProfileColorByName(creatorName).dark}
           size={55}
         />
-        <View style={{alignItems: "center", maxWidth: "80%"}}>
+        <View style={{ alignItems: "center", maxWidth: "80%" }}>
           <NativeText variant="subtitle">{creatorName}</NativeText>
-          <NativeText variant="title" numberOfLines={3} style={{textAlign: "center"}}>{chat.subject}</NativeText>
+          <NativeText variant="title" numberOfLines={3} style={{ textAlign: "center" }}>{chat.subject}</NativeText>
         </View>
       </View>
 
-      <View style={{paddingHorizontal: 20}}>
+      <View style={{ paddingHorizontal: 20 }}>
         <NativeList>
           <NativeItem onPress={() => navigation.navigate("ChatThemes", {
             handle: chat,
@@ -103,7 +103,7 @@ const ChatDetails: Screen<"ChatDetails"> = ({ navigation, route }) => {
             <NativeItem
               key={index}
             >
-              <View style={{flex: 1, flexDirection: "row", alignItems: "center", gap: 10}}>
+              <View style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 10 }}>
                 {recipient.name === account.name ? (
                   <Image
                     source={account.personalization.profilePictureB64 && account.personalization.profilePictureB64.trim() !== ""
@@ -133,7 +133,7 @@ const ChatDetails: Screen<"ChatDetails"> = ({ navigation, route }) => {
           {recipients.length > maxRecipientsShow ? (
             <NativeItem>
               <TouchableOpacity onPress={increaseMaxRecipientsShow}>
-                <View style={{flex: 1, flexDirection: "row", justifyContent:"space-between"}}>
+                <View style={{ flex: 1, flexDirection: "row", justifyContent:"space-between" }}>
                   <NativeText variant="title">En afficher plus</NativeText>
                   <ChevronDown color={colors.text}/>
                 </View>

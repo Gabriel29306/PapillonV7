@@ -25,13 +25,13 @@ const PriceError: Screen<"PriceError"> = ({ navigation, route }) => {
         { text: "Soumettre", onPress: async (input) => {
           if (input) {
             const mealPrice = parseFloat(input.replace(",", ".")) * 100;
-            update<ExternalAccount>(accountId, "authentication", {"mealPrice": mealPrice});
+            update<ExternalAccount>(accountId, "authentication", { "mealPrice": mealPrice });
             navigation.pop();
             navigation.pop();
             navigation.pop();
             navigation.pop();
           }
-        }},
+        } },
       ],
       "plain-text",
       "2.00"
@@ -52,7 +52,7 @@ const PriceError: Screen<"PriceError"> = ({ navigation, route }) => {
     <SafeAreaView
       style={styles.container}
     >
-      <View style={{width: "100%", alignItems: "center", justifyContent: "center", flex: 1}}>
+      <View style={{ width: "100%", alignItems: "center", justifyContent: "center", flex: 1 }}>
         <CircleHelp color={colors.text + "55"} size={200}></CircleHelp>
       </View>
       <View style={{

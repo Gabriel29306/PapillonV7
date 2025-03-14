@@ -222,7 +222,7 @@ const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total }
                   opacity={0.6}
                   color={theme.colors.text}
                 />
-                <NativeText style={{color: theme.colors.text, opacity:0.5}}>{timestampToString(homework.due)}</NativeText>
+                <NativeText style={{ color: theme.colors.text, opacity:0.5 }}>{timestampToString(homework.due)}</NativeText>
               </View>
             )}
           </Reanimated.View>

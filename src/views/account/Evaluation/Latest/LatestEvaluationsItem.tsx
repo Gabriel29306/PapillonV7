@@ -147,7 +147,7 @@ const EvaluationLatestItem: React.FC<EvaluationLatestItemProps> = ({
 
             {skillLevelsMoreNumber > 0 && (
               <NativeText
-                style={{marginTop: -5}}
+                style={{ marginTop: -5 }}
                 variant={"subtitle"}
               >
                 {`+${skillLevelsMoreNumber}`}

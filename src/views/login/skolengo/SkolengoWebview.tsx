@@ -265,7 +265,7 @@ const getSkolengoURL =  async (school: School) => {
       usePKCE: false,
     });
     const url = await authRes.makeAuthUrlAsync(discovery);
-    return {url, discovery, authRes};
+    return { url, discovery, authRes };
   } catch (e) {
     console.error(e);
     return null;
