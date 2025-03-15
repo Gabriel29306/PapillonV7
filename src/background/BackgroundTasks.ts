@@ -23,7 +23,7 @@ const notifeeEvent = async () => {
 
     switch (type) {
       case EventType.ACTION_PRESS: {
-        console.log(`[Notifee] Action press: ${pressAction?.id}`);
+        log(`[Notifee] Action press: ${pressAction?.id}`, "NOTIFEE/BK");
         break;
       }
       case EventType.DISMISSED: {
@@ -41,7 +41,7 @@ const notifeeEvent = async () => {
 
     switch (type) {
       case EventType.ACTION_PRESS: {
-        console.log(`[Notifee] Action press: ${pressAction?.id}`);
+        log(`[Notifee] Action press: ${pressAction?.id}`, "NOTIFEE/FW");
         break;
       }
       case EventType.DISMISSED: {

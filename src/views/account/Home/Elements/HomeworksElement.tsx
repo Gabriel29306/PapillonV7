@@ -14,6 +14,7 @@ import { RouteParameters } from "@/router/helpers/types";
 import { FadeInDown, FadeOut } from "react-native-reanimated";
 import MissingItem from "@/components/Global/MissingItem";
 import PapillonLoading from "@/components/Global/PapillonLoading";
+import { error } from "@/utils/logger/logger";
 
 interface HomeworksElementProps {
   onImportance: (value: number) => unknown
@@ -162,7 +163,7 @@ const HomeworksElement: React.FC<HomeworksElementProps> = ({ navigation, onImpor
                 try {
                   handleDonePress(hw);
                 } catch (e) {
-                  console.error(e);
+                  error("" + (e as Error)?.stack, "HomeworksElement/onDonePressHandler");
                 }
               }}
             />

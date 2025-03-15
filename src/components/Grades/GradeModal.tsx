@@ -22,6 +22,8 @@ import PapillonBottomSheet from "@/components/Modals/PapillonBottomSheet";
 import { useTheme } from "@react-navigation/native";
 import { useAlert } from "@/providers/AlertProvider";
 import { isExpoGo } from "@/utils/native/expoGoAlert";
+import { error } from "@/utils/logger/logger";
+
 interface GradeModalProps {
   isVisible: boolean;
   reel: Reel;
@@ -95,8 +97,8 @@ const GradeModal: React.FC<GradeModalProps> = ({
         message: "L'image a été sauvegardée dans ta galerie.",
         icon: <ImageDown />,
       });
-    } catch (error) {
-      console.error("Failed to save image:", error);
+    } catch (err) {
+      error("Failed to save image:" + err, "GradeModal/saveimage");
     }
   };
 

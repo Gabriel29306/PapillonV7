@@ -14,6 +14,7 @@ import uuid from "@/utils/uuid-v4";
 import * as Linking from "expo-linking";
 import { useAlert } from "@/providers/AlertProvider";
 import { BadgeX } from "lucide-react-native";
+import { log } from "@/utils/logger/logger";
 
 const IzlyActivation: Screen<"IzlyActivation"> = ({ navigation, route }) => {
   const theme = useTheme();
@@ -34,10 +35,10 @@ const IzlyActivation: Screen<"IzlyActivation"> = ({ navigation, route }) => {
       const url = event.url;
       const scheme = url.split(":")[0];
       if (scheme === "izly") {
-        console.log("[IzlyActivation] Activation link received:", url);
+        log("[IzlyActivation] Activation link received:" + url, "Izly/handleDeepLink");
         handleActivation(url);
       } else {
-        console.log("[IzlyActivation] Ignoring link:", url);
+        log("[IzlyActivation] Ignoring link:" + url, "Izly/handleDeepLink");
       }
     };
 

@@ -13,6 +13,7 @@ import { Screen } from "@/router/helpers/types";
 import { ExternalAccount } from "@/stores/account/types";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 import * as Brightness from "expo-brightness";
+import { log } from "@/utils/logger/logger";
 
 const RestaurantQrCode: Screen<"RestaurantQrCode">  = ({ route, navigation }) => {
   const { card } = route.params;
@@ -68,13 +69,13 @@ const RestaurantQrCode: Screen<"RestaurantQrCode">  = ({ route, navigation }) =>
     // Si Izly
     if(card.service === 10) {
       const interval = setInterval(() => {
-        console.log("[CANTINE >> IZLY] Demande du solde");
+        log("[CANTINE >> IZLY] Demande du solde", "QrCode/Izly/PollingBalance");
         PollingBalance();
       }, 1000);
 
       return () => {
         clearInterval(interval);
-        console.log("[CANTINE >> IZLY] Fin du polling");
+        log("[CANTINE >> IZLY] Fin du polling", "QrCode/Izly/PollingBalance");
       };
     }
   }, []);

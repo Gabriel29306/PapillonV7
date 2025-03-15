@@ -20,6 +20,7 @@ import { formatCardIdentifier } from "../Menu";
 import { LinearGradient } from "expo-linear-gradient";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import PapillonPicker from "@/components/Global/PapillonPicker";
+import { error, warn } from "@/utils/logger/logger";
 
 const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigation }) => {
   try {
@@ -38,11 +39,11 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
       try {
         const [balance, history] = await Promise.all([
           balanceFromExternal(route.params.card.account as ExternalAccount).catch(err => {
-            console.warn(`Error fetching balance for account ${account}:`, err);
+            warn(`Error fetching balance for account ${account?.name}:` + err, "CardDetail/balanceFromExternal");
             return [];
           }),
           reservationHistoryFromExternal(route.params.card.account as ExternalAccount).catch(err => {
-            console.warn(`Error fetching history for account ${account}:`, err);
+            warn(`Error fetching history for account ${account?.name}:` + err, "CardDetail/reservationHistoryFromExternal");
             return [];
           })
         ]);
@@ -55,7 +56,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
         });
       }
       catch (e) {
-        console.log(e);
+        error("" + (e as Error)?.stack, "CardDetail/updateCardData");
       }
     };
 
@@ -111,7 +112,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
                             navigation.goBack();
                           }
                           catch (e) {
-                            console.log(e);
+                            error("" + (e as Error)?.stack, "CardDetail/removeAccount");
                           }
                         }
                       }
@@ -355,7 +356,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
     );
   }
   catch (e) {
-    console.log(e);
+    error("" + (e as Error)?.stack, "CardDetail");
     return <View />;
   }
 };

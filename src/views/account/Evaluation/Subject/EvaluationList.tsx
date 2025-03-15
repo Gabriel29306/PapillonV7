@@ -15,6 +15,7 @@ import Reanimated, {
 import SubjectTitle from "./SubjectTitle";
 import { Evaluation, EvaluationsPerSubject, Skill } from "@/services/shared/Evaluation";
 import { SkillLevelBadge } from "@/views/account/Evaluation/Atoms/SkillLevelBadge";
+import { log } from "@/utils/logger/logger";
 
 interface SubjectItemProps {
   subject: EvaluationsPerSubject,
@@ -91,7 +92,7 @@ const SubjectEvaluationItem: React.FC<SubjectEvaluationItemProps> = ({ subject, 
       .slice(0, 4);
     const skillLevelsMoreNumber = evaluation.skills.length - 4;
 
-    console.log("skillLevelsMoreNumber", skillLevelsMoreNumber);
+    log("SkillLevelsMoreNumber: " + skillLevelsMoreNumber, "SubjectEvaluationItem");
 
     setSkillLevelsList(skillLevels);
     setSkillLevelsMoreNumber(skillLevelsMoreNumber);

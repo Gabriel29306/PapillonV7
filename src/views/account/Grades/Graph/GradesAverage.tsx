@@ -32,9 +32,10 @@ import AnimatedNumber from "@/components/Global/AnimatedNumber";
 import type { Grade } from "@/services/shared/Grade";
 import { AlertTriangle, Check, ExternalLink, PieChart, TrendingUp } from "lucide-react-native";
 import { useAlert } from "@/providers/AlertProvider";
+import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
+import { error } from "@/utils/logger/logger";
 // Using require to set custom types bc module types are broken
 const ReanimatedGraph: React.ForwardRefExoticComponent<ReanimatedGraphProps & React.RefAttributes<ReanimatedGraphPublicMethods>> = require("@birdwingo/react-native-reanimated-graph").default;
-import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
 interface GradesAverageGraphProps {
   grades: Grade[];
@@ -123,7 +124,7 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
         setCurrentAvg(gradesHistoryRef.current[index].value);
       }
       catch (e) {
-        console.error(e);
+        error("" + (e as Error)?.stack, "GradesAverageGraph/updateTo");
       }
     },
     [gradesHistoryRef]

@@ -28,6 +28,7 @@ import Reanimated, {
 import DuoListPressable from "@/components/FirstInstallation/DuoListPressable";
 import { SvgFromXml } from "react-native-svg";
 import LoginView from "@/components/Templates/LoginView";
+import { error as logger_error, warn } from "@/utils/logger/logger";
 
 const EcoleDirecteCredentials: Screen<"EcoleDirecteCredentials"> = ({ navigation }) => {
   const [session, setSession] = useState<Session | null>(null);
@@ -112,10 +113,10 @@ const EcoleDirecteCredentials: Screen<"EcoleDirecteCredentials"> = ({ navigation
         });
       });
     }
-    catch (error) {
-      if (error instanceof DoubleAuthRequired) {
+    catch (err) {
+      if (err instanceof DoubleAuthRequired) {
         const challenge = await initDoubleAuth(currentSession!).catch((e) => {
-          console.error(e);
+          logger_error("" + (e as Error)?.stack, "EcoleDirecteCredentials/DoubleAuthRequired");
           setError("Une erreur est survenue lors de la récupération des questions pour la double authentification");
           return null;
         }).finally(() => setLoading(false));
@@ -124,22 +125,22 @@ const EcoleDirecteCredentials: Screen<"EcoleDirecteCredentials"> = ({ navigation
         setSession(currentSession);
         return;
       }
-      if (error instanceof Error) {
-        if (error.message === "Bad credentials, no token found in response") setError("Nom d'utilisateur ou mot de passe incorrect!");
-        else setError(error.message);
+      if (err instanceof Error) {
+        if (err.message === "Bad credentials, no token found in response") setError("Nom d'utilisateur ou mot de passe incorrect!");
+        else setError(err.message);
       }
       else {
         setError("Erreur inconnue");
       }
 
       setLoading(false);
-      console.error(error);
+      logger_error("" + (err as Error)?.stack, "EcoleDirecteCredentials");
     }
   };
 
   const handleChallenge = async (answer: string) => {
     if (!session) {
-      console.warn("No session to handle challenge");
+      warn("No session to handle challenge", "EcoleDirecteCredentials/handleChallenge");
       return;
     }
 

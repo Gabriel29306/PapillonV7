@@ -2,6 +2,7 @@ import LoginView from "@/components/Templates/LoginView";
 import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 import type { Screen } from "@/router/helpers/types";
+import { error as error_logger } from "@/utils/logger/logger";
 
 export const UnivIUTLannion_Login: Screen<"UnivIUTLannion_Login"> = ({ navigation }) => {
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +16,7 @@ export const UnivIUTLannion_Login: Screen<"UnivIUTLannion_Login"> = ({ navigatio
       });
     }
     catch (e) {
-      console.error(e);
+      error_logger("" + e, "UnivIUTLannion_Login/login");
       // @ts-expect-error
       setError(e.toString());
     }

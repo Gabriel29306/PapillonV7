@@ -1,16 +1,16 @@
 import { LocalAccount } from "@/stores/account/types";
-import  {
+import {
   type AverageOverview,
   type Grade
 } from "@/services/shared/Grade";
 import uuid from "@/utils/uuid-v4";
+import { error } from "@/utils/logger/logger";
 
 export const saveIUTLanGrades = async (account: LocalAccount, periodName: string): Promise<{
   grades: Grade[];
   averages: AverageOverview;
 }> => {
   try {
-    // console.log(periodName);
 
     // Il faudrait peut-être penser à typer cette partie, tous les types sont any :(
     const data = account.serviceData.semestres as any;
@@ -171,7 +171,7 @@ export const saveIUTLanGrades = async (account: LocalAccount, periodName: string
     return { grades: gradesList, averages: averages };
   }
   catch(e) {
-    console.error(e);
+    error("" + (e as Error)?.stack, "saveIUTLanGrades");
     return {
       grades: [],
       averages: {

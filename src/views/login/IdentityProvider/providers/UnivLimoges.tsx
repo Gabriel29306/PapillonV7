@@ -157,7 +157,7 @@ const UnivLimoges_Login: Screen<"UnivLimoges_Login"> = ({ navigation }) => {
         startInLoadingState={true}
         incognito={true}
         onLoadStart={(e) => {
-          log("start " + e.nativeEvent.url, "biome-login");
+          log("Start " + e.nativeEvent.url, "biome-login");
 
           if (e.nativeEvent.url.includes(BIOME_ORIGIN))
             setLoading(true);
@@ -165,7 +165,7 @@ const UnivLimoges_Login: Screen<"UnivLimoges_Login"> = ({ navigation }) => {
             setLoading(false);
         }}
         onLoadEnd={(e) => {
-          log("end " + e.nativeEvent.url, "biome-login");
+          log("End " + e.nativeEvent.url, "biome-login");
 
           if (currentLoginStateIntervalRef.current)
             clearInterval(currentLoginStateIntervalRef.current);
@@ -174,7 +174,7 @@ const UnivLimoges_Login: Screen<"UnivLimoges_Login"> = ({ navigation }) => {
             setLoading(true);
 
             currentLoginStateIntervalRef.current = setInterval(() => {
-              log("injecting script...", "biome-login");
+              log("Injecting script...", "biome-login");
 
               webViewRef.current?.injectJavaScript(`
                 const tokens = sessionStorage.getItem("oidc.default:https://biome.unilim.fr/authentication/callback");

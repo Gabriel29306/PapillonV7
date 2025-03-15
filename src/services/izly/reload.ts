@@ -7,6 +7,6 @@ export const reload = async (account: IzlyAccount): Promise<Identification> => {
   const secret = account.authentication.secret;
 
   await refresh(instance, secret);
-  log("session refreshed", "izly");
+  log("Session refreshed", "izly");
   return instance;
 };

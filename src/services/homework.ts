@@ -1,7 +1,7 @@
 import { type Account, AccountService } from "@/stores/account/types";
 import { useHomeworkStore } from "@/stores/homework";
 import type { Homework } from "./shared/Homework";
-import { error, log } from "@/utils/logger/logger";
+import { error, info, log } from "@/utils/logger/logger";
 import { translateToWeekNumber } from "pawnote";
 import { pronoteFirstDate } from "./pronote/timetable";
 import { dateToEpochWeekNumber } from "@/utils/epochWeekNumber";
@@ -55,7 +55,7 @@ export async function updateHomeworkForWeekInCache <T extends Account> (account:
         return updateHomeworkForWeekInCache(service, date);
       }
       default:
-        console.info(`[updateHomeworkForWeekInCache]: updating to empty since ${account.service} not implemented.`);
+        info(`Updating to empty since ${account.service} not implemented.`, "updateHomeworkForWeekInCache");
     }
 
     useHomeworkStore.getState().updateHomeworks(dateToEpochWeekNumber(date), homeworks);

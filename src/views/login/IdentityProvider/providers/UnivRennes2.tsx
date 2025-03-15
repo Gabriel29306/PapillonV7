@@ -38,8 +38,8 @@ function extractStudentDataFromHTML (htmlString: string) {
     extractSectionData("Formation", data.formation);
     extractSectionData("Compte Sésame", data.sesamAccount);
 
-  } catch (error) {
-    console.error("Error parsing HTML:", error);
+  } catch (err) {
+    error("" + (err as Error)?.stack, "UnivRennes2/extractStudentDataFromHTML");
   }
 
   return data;
@@ -53,6 +53,7 @@ import uuid from "@/utils/uuid-v4";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
 import { NativeText } from "@/components/Global/NativeComponents";
 import { useTheme } from "@react-navigation/native";
+import { error } from "@/utils/logger/logger";
 
 const UnivRennes2_Login: Screen<"UnivRennes2_Login"> = ({ navigation }) => {
   const mainURL = "https://cas.univ-rennes2.fr/login?service=https%3A%2F%2Fservices.univ-rennes2.fr%2Fsesame%2Findex.php%2Flogin%2Fmon-compte-sesame%2Fchanger-mon-mot-de-passe";

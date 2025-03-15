@@ -15,6 +15,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteParameters } from "./../../router/helpers/types";
 import { formatCardIdentifier, ServiceCard } from "@/views/account/Restaurant/Menu";
 import { STORE_THEMES } from "@/views/account/Restaurant/Cards/StoreThemes";
+import { warn } from "@/utils/logger/logger";
 
 type NavigationProps = StackNavigationProp<RouteParameters, "RestaurantQrCode">;
 
@@ -49,7 +50,7 @@ const RestaurantQRCodeWidget = forwardRef(({
         try {
           const [cardnumber] = await Promise.all([
             qrcodeFromExternal(account).catch(err => {
-              console.warn(`Error fetching QR code for account ${account}:`, err);
+              warn(`Error fetching QR code for account ${account.username}:` + err, "RestaurantQRCodeWidget/qrcodeFromExternal");
               return "0";
             }),
           ]);
@@ -66,8 +67,8 @@ const RestaurantQRCodeWidget = forwardRef(({
           };
 
           newCards.push(newCard);
-        } catch (error) {
-          console.warn(`An error occurred with account ${account}:`, error);
+        } catch (err) {
+          warn(`An error occurred with account ${account.username}:` + err, "RestaurantQRCodeWidget/accountPromises");
         }
       });
 

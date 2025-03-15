@@ -66,7 +66,7 @@ export async function reload <T extends Account> (account: T): Promise<Reconnect
       warn("PapillonMultiService space should never be reloaded.", "multiservice");
     }
     default: {
-      console.warn("Service not implemented");
+      warn("Service not implemented", "reload");
       return { instance: undefined, authentication: undefined };
     }
   }

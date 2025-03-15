@@ -1,6 +1,6 @@
 import { useTheme } from "@react-navigation/native";
 import React, { useEffect, useRef, useCallback, useLayoutEffect, useMemo, useState } from "react";
-import { View, ScrollView,Text } from "react-native";
+import { View, ScrollView, Text } from "react-native";
 import { Screen } from "@/router/helpers/types";
 import { toggleHomeworkState, updateHomeworkForWeekInCache } from "@/services/homework";
 import { useHomeworkStore } from "@/stores/homework";
@@ -15,6 +15,7 @@ import { Account } from "@/stores/account/types";
 import { debounce } from "lodash";
 import { dateToEpochWeekNumber, epochWNToDate } from "@/utils/epochWeekNumber";
 import InfinitePager from "react-native-infinite-pager";
+import { log } from "@/utils/logger/logger";
 
 // Types pour les props du composant HomeworkList
 type HomeworkListProps = {
@@ -88,7 +89,7 @@ const HomeworksPage: React.FC<HomeworksPageProps> = React.memo(({ index, isActiv
 
   const homeworksInWeek = homeworks[index] ?? [];
   const sortedHomework = useMemo(
-    () => homeworksInWeek.sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime()),
+    () => homeworksInWeek.toSorted((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime()),
     [homeworksInWeek]
   );
 
@@ -160,7 +161,7 @@ const HomeworksScreen: Screen<"Homeworks"> = ({ navigation }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log("[Homeworks]: account instance changed");
+    log("Account instance changed", "Homeworks");
     if (account.instance) {
       const WN = initialIndex;
       manuallyChangeWeek(WN);
@@ -194,9 +195,9 @@ const HomeworksScreen: Screen<"Homeworks"> = ({ navigation }) => {
 
   const updateHomeworks = useCallback(async () => {
     setLoading(true);
-    console.log("[Homeworks]: updating cache...",epochWeekNumber, epochWNToDate(epochWeekNumber));
+    log("Updating cache..." + epochWeekNumber + epochWNToDate(epochWeekNumber), "Homeworks/Update");
     await updateHomeworkForWeekInCache(account, epochWNToDate(epochWeekNumber));
-    console.log("[Homeworks]: updated cache !", epochWNToDate(epochWeekNumber));
+    log("Updated cache !" + epochWNToDate(epochWeekNumber), "Homeworks/Update");
     setLoading(false);
   }, [account, epochWeekNumber]);
 

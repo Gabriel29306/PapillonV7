@@ -8,6 +8,7 @@ import { useAccounts, useCurrentAccount } from "@/stores/account";
 import { AccountService, type MultiAccount } from "@/stores/account/types";
 import defaultPersonalization from "@/services/multi/default-personalization";
 import LoginView from "@/components/Templates/LoginView";
+import { error as error_logger } from "@/utils/logger/logger";
 
 const Muli_Login: Screen<"Multi_Login"> = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -71,16 +72,16 @@ const Muli_Login: Screen<"Multi_Login"> = ({ route, navigation }) => {
         });
       });
     }
-    catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
+    catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
       }
       else {
         setError("Erreur inconnue");
       }
 
       setLoading(false);
-      console.error(error);
+      error_logger("" + err, "Multi_Login/handleLogin");
     }
   };
 

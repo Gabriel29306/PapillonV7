@@ -15,6 +15,7 @@ import { ThemesMeta } from "@/utils/chat/themes/Themes.types";
 import GetThemeForChatId from "@/utils/chat/themes/GetThemeForChat";
 import SetThemeForChatId from "@/utils/chat/themes/SetThemeForChat";
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
+import { error } from "@/utils/logger/logger";
 
 const ChatDetails: Screen<"ChatDetails"> = ({ navigation, route }) => {
   const account = useCurrentAccount((state) => state.account!);
@@ -35,8 +36,8 @@ const ChatDetails: Screen<"ChatDetails"> = ({ navigation, route }) => {
       .then((themes) => {
         setAvailableThemes(themes);
       })
-      .catch((error) => {
-        console.error("Error fetching themes:", error);
+      .catch((err) => {
+        error("Error fetching themes:" + err, "ChatDetails/GetAvailableThemes");
       });
   }, []);
 
@@ -45,8 +46,8 @@ const ChatDetails: Screen<"ChatDetails"> = ({ navigation, route }) => {
       .then((theme) => {
         setActualTheme(theme.meta.path);
       })
-      .catch((error) => {
-        console.error("Error fetching themes:", error);
+      .catch((err) => {
+        error("Error fetching themes:" + err, "ChatDetails/GetThemeForChatId");
       });
   }, []);
 

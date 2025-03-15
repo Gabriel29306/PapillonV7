@@ -21,6 +21,7 @@ import extract_pronote_name from "@/utils/format/extract_pronote_name";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 import { useAlert } from "@/providers/AlertProvider";
 import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
+import { error } from "@/utils/logger/logger";
 
 const makeUUID = (): string => {
   let dt = new Date().getTime();
@@ -149,8 +150,8 @@ const PronoteQRCode: Screen<"PronoteQRCode"> = ({ navigation }) => {
           });
         });
       }, 1000);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      error("" + (err as Error)?.stack, "PronoteQRCode/loginQR");
 
       showAlert({
         title: "Erreur",

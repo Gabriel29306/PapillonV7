@@ -46,6 +46,7 @@ import { animPapillon } from "@/utils/ui/animations";
 import { STORE_THEMES, StoreTheme } from "@/views/account/Restaurant/Cards/StoreThemes";
 import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useAlert } from "@/providers/AlertProvider";
+import { warn } from "@/utils/logger/logger";
 
 export const formatCardIdentifier = (identifier: string, dots: number = 4, separator: string = " ") => {
   if(!identifier) {
@@ -204,25 +205,25 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
         const dailyMenu = account ? await getMenu(account, pickerDate).catch(() => null) : null;
         const accountPromises = linkedAccounts.map(async (account) => {
           try {
-            if (!account || !account.service) {
+            if (!account?.service) {
               return;
             }
 
             const [balance, history, cardnumber, booking] = await Promise.all([
               balanceFromExternal(account, isRefreshing).catch(err => {
-                console.warn(`Error fetching balance for account ${account.username}:`, err);
+                warn(`Error fetching balance for account ${account.username}:` + err, "Menu/balanceFromExternal");
                 return [];
               }),
               reservationHistoryFromExternal(account).catch(err => {
-                console.warn(`Error fetching history for account ${account}:`, err);
+                warn(`Error fetching history for account ${account.username}:` + err, "Menu/reservationHistoryFromExternal");
                 return [];
               }),
               qrcodeFromExternal(account).catch(err => {
-                console.warn(`Error fetching QR code for account ${account}:`, err);
+                warn(`Error fetching QR code for account ${account.username}:` + err, "Menu/qrcodeFromExternal");
                 return "0";
               }),
               getBookingsAvailableFromExternal(account, getWeekNumber(new Date()), isRefreshing).catch(err => {
-                console.warn(`Error fetching bookings for account ${account}:`, err);
+                warn(`Error fetching bookings for account ${account.username}:` + err, "Menu/getBookingsAvailableFromExternal");
                 return [];
               })
             ]);
@@ -243,7 +244,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
             newCards.push(newCard);
           } catch (error) {
             setIsInitialised(true);
-            console.warn(`An error occurred with account ${account}:`, error);
+            warn(`An error occurred with account ${account.username}:` + error, "Menu/fetchCardsData");
           }
         });
 
@@ -254,7 +255,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
         setIsInitialised(true);
         setIsRefreshing(false);
       } catch (error) {
-        console.warn("An error occurred while fetching data:", error);
+        warn("An error occurred while fetching data:" + error, "Menu/fetchCardsData");
       }
     })();
   };

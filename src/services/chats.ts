@@ -3,7 +3,7 @@ import type { Chat, ChatMessage, ChatRecipient } from "./shared/Chat";
 import type { Recipient } from "./shared/Recipient";
 import { getFeatureAccount } from "@/utils/multiservice";
 import { MultiServiceFeature } from "@/stores/multiService/types";
-import { log } from "@/utils/logger/logger";
+import { info, log } from "@/utils/logger/logger";
 
 export const getChats = async <T extends Account> (account: T): Promise<Array<Chat>> => {
   switch (account.service) {
@@ -24,7 +24,7 @@ export const getChats = async <T extends Account> (account: T): Promise<Array<Ch
       return await getChats(service);
     }
     default:
-      console.info(`[getChats]: returning empty since ${account.service} not implemented.`);
+      info(`Returning empty since ${account.service} not implemented.`, "getChats");
       return [];
   }
 };
@@ -48,7 +48,7 @@ export const getChatRecipients = async <T extends Account> (account: T, chat: Ch
       return await getChatRecipients(service, chat);
     }
     default:
-      console.info(`[getChatRecipients]: returning empty since ${account.service} not implemented.`);
+      info(`Returning empty since ${account.service} not implemented.`, "getChatRecipients");
       return [];
   }
 };
@@ -73,7 +73,7 @@ export const sendMessageInChat = async <T extends Account> (account: T, chat: Ch
       return await sendMessageInChat(service, chat, content);
     }
     default:
-      console.info("[sendMessageInChat]: Not Implementend.");
+      info("Not Implementend.", "sendMessageInChat");
   }
 };
 
@@ -96,7 +96,7 @@ export const getChatMessages = async <T extends Account> (account: T, chat: Chat
       return await getChatMessages(service, chat);
     }
     default:
-      console.info(`[getChatMessages]: returning empty since ${account.service} not implemented.`);
+      info(`Returning empty since ${account.service} not implemented.`, "getChatMessages");
       return [];
   }
 };
@@ -116,7 +116,7 @@ export const createDiscussionRecipients = async <T extends Account> (account: T)
       return await createDiscussionRecipients(service);
     }
     default:
-      console.info(`[createDiscussionRecipients]: returning empty since ${account.service} not implemented.`);
+      info(`Returning empty since ${account.service} not implemented.`, "createDiscussionRecipients");
       return [];
   }
 };
@@ -137,6 +137,6 @@ export const createDiscussion = async <T extends Account> (account: T, subject: 
       return await createDiscussion(service, subject, content, recipients);
     }
     default:
-      console.info(`[createDiscussion]: doing nothing since ${account.service} is not implemented.`);
+      info(`Doing nothing since ${account.service} is not implemented.`, "createDiscussion");
   }
 };

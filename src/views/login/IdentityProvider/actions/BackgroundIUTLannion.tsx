@@ -13,6 +13,7 @@ import { animPapillon } from "@/utils/ui/animations";
 import { FadeInDown, FadeOutUp } from "react-native-reanimated";
 import { useAlert } from "@/providers/AlertProvider";
 import { BadgeX, Undo2 } from "lucide-react-native";
+import { error } from "@/utils/logger/logger";
 
 const providers = ["scodoc", "moodle", "ical"];
 
@@ -103,13 +104,13 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
 
     try {
       const scodocData = data;
-      const semestres = (scodocData["semestres"] as any);
+      const semestres = scodocData["semestres"];
 
       setSemestresToRetrieve(semestres);
       await retreiveNextSemestre(currentSemestre, semestres);
     }
     catch (e) {
-      console.error(e);
+      error("" + (e as Error)?.stack, "BackgroundIUTLannion/retreiveGrades");
       showAlert({
         title: "Erreur",
         message: "Impossible de récupérer les notes de l'IUT de Lannion. Vérifie ta connexion Internet et réessaie.",
@@ -336,7 +337,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
         }}
 
         onError={(data) => {
-          console.error(data);
+          error("" + data, "BackgroundIUTLannion/onError");
           showAlert({
             title: "Erreur",
             message: "Impossible de se connecter au portail de l'IUT de Lannion. Vérifie ta connexion Internet et réessaie.",
@@ -366,7 +367,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
             }
           }
           catch (e) {
-            console.error(e);
+            error("" + (e as Error)?.stack, "BackgroundIUTLannion/onMessage");
           }
         }}
       />

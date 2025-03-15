@@ -11,7 +11,7 @@ import { useTheme } from "@react-navigation/native";
 import Reanimated, { Easing, useSharedValue, withTiming } from "react-native-reanimated";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RouteParameters } from "@/router/helpers/types";
-import { get_iso_date } from "@/utils/logger/logger";
+import { get_iso_date, log } from "@/utils/logger/logger";
 import { AddonLogs } from "@/addons/types";
 
 export type AddonHomePageInfo = {
@@ -228,41 +228,16 @@ const AddonsWebview: React.FC<AddonsWebviewProps> = ({
                 }
 
                 // CONSOLE.LOG
-                if (data.type == "log") {
-                  console.log(`[ADDON][${addon.name}] Log : ${data.message}`);
-                  let log = {
+                if(["log", "error", "warn", "info"].indexOf(data.type) !== -1){
+                  let type = data.type;
+                  let str_type = String(type[0]).toUpperCase() + String(type).slice(1);
+                  log(`[ADDON][${addon.name}] ${str_type} : ${data.message}`, "AddonsWebview");
+                  let log_message = {
                     message: data.message,
-                    type: "log",
+                    type,
                     date: new Date(get_iso_date())
                   } satisfies AddonLogs;
-                  setLogs([...logs, log]);
-                }
-                if (data.type == "error") {
-                  console.log(`[ADDON][${addon.name}] Error : ${data.message}`);
-                  let log = {
-                    message: data.message,
-                    type: "error",
-                    date: new Date(get_iso_date())
-                  } satisfies AddonLogs;
-                  setLogs([...logs, log]);
-                }
-                if (data.type == "warn") {
-                  console.log(`[ADDON][${addon.name}] Warning : ${data.message}`);
-                  let log = {
-                    message: data.message,
-                    type: "warn",
-                    date: new Date(get_iso_date())
-                  } satisfies AddonLogs;
-                  setLogs([...logs, log]);
-                }
-                if (data.type == "info") {
-                  console.log(`[ADDON][${addon.name}] Info : ${data.message}`);
-                  let log = {
-                    message: data.message,
-                    type: "info",
-                    date: new Date(get_iso_date())
-                  } satisfies AddonLogs;
-                  setLogs([...logs, log]);
+                  setLogs([...logs, log_message]);
                 }
 
                 if (data.type == "open_logs") {

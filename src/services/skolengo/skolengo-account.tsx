@@ -21,13 +21,12 @@ const getSkolengoAxiosInstance = () => {
   axioss.interceptors.response.use((r: AxiosResponse) => r, (error)=>{
     if(error.response?.data?.errors?.find((e:any)=>e.title.includes("PRONOTE_RESOURCES"))) return Promise.resolve(error);
 
-    if(__DEV__) {
-      console.warn(
-        "[SKOLENGO] ERR - ",
-        JSON.stringify(error, null, 2),
-        JSON.stringify(error.response?.data, null, 2)
-      );
-    }
+    if(__DEV__) console.warn(
+      "[SKOLENGO] ERR - ",
+      JSON.stringify(error, null, 2),
+      JSON.stringify(error.response?.data, null, 2)
+    );
+
     error.response?.data?.errors?.forEach((e: any) => {
       // if unknown error, don't display the error message
       if(!e["title"] || e["title"] === "FORBIDDEN") return;

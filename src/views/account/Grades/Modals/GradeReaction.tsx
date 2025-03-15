@@ -14,6 +14,7 @@ import { NativeText } from "@/components/Global/NativeComponents";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import { isExpoGo } from "@/utils/native/expoGoAlert";
 import { useAlert } from "@/providers/AlertProvider";
+import { error } from "@/utils/logger/logger";
 
 // Types
 interface SubjectData {
@@ -158,8 +159,8 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
             }
           }));
           navigation.goBack();
-        } catch (error) {
-          console.error("Failed to save image:", error);
+        } catch (err) {
+          error("Failed to save image:" + err, "GradeReaction/handleCapture");
           showAlert({
             title: "Erreur",
             message: "Erreur lors de l'enregistrement de l'image",
@@ -169,8 +170,8 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
           setIsLoading(false);
         }
       }, 1000);
-    } catch (error) {
-      console.error("Failed to take picture:", error);
+    } catch (err) {
+      error("Failed to take picture:" + err, "GradeReaction/handleCapture");
       showAlert({
         title: "Erreur",
         message: "Impossible de capturer l'image.",

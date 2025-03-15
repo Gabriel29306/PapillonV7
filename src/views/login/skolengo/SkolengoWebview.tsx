@@ -27,6 +27,7 @@ import { getSkolengoAccount } from "@/services/skolengo/skolengo-account";
 import { wait } from "@/services/skolengo/data/utils";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 import { BadgeX, Undo2 } from "lucide-react-native";
+import { error } from "@/utils/logger/logger";
 
 // TODO : When the app is not started with Expo Go (so with a prebuild or a release build), use the expo auth-session module completely with the deeplink and without the webview.
 
@@ -271,7 +272,7 @@ const getSkolengoURL =  async (school: School) => {
     const url = await authRes.makeAuthUrlAsync(discovery);
     return { url, discovery, authRes };
   } catch (e) {
-    console.error(e);
+    error("" + (e as Error)?.stack, "SkolengoWebview/getSkolengoURL");
     return null;
   }
 };
