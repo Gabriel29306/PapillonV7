@@ -4,7 +4,7 @@ import { useTheme } from "@react-navigation/native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Alert, Keyboard, KeyboardAvoidingView, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import PapillonShineBubble from "@/components/FirstInstallation/PapillonShineBubble";
-import { NativeText, } from "@/components/Global/NativeComponents";
+import { NativeText } from "@/components/Global/NativeComponents";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import { tokenize } from "ezly";
 import { AccountService, IzlyAccount } from "@/stores/account/types";
