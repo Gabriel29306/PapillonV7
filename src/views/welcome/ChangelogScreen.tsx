@@ -18,6 +18,7 @@ import { PressableScale } from "react-native-pressable-scale";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Screen } from "@/router/helpers/types";
 import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
+import useScreenDimensions from "@/hooks/useScreenDimensions";
 import { error } from "@/utils/logger/logger";
 
 interface Feature {
@@ -44,6 +45,7 @@ const changelogURL = datasets.changelog.replace("[version]", currentVersion.spli
 
 const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
   const theme = useTheme();
+  const { isTablet } = useScreenDimensions();
   const  { isOnline } = useOnlineStatus();
 
   const [changelog, setChangelog] = useState<Version|null>(null);
@@ -161,7 +163,16 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
             layout={animPapillon(LinearTransition)}
           >
             <PressableScale>
-              <NativeList animated inline>
+              <NativeList
+                animated
+                inline
+                style={{
+                  flex: 1,
+                  width: isTablet ? "50%" : "100%",
+                  alignSelf: "center",
+                  justifyContent: "center",
+                }}
+              >
                 <Image
                   source={{ uri: changelog.illustration }}
                   style={{

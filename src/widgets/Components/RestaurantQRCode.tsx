@@ -13,8 +13,8 @@ import { AccountService } from "@/stores/account/types";
 import { qrcodeFromExternal } from "@/services/qrcode";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteParameters } from "./../../router/helpers/types";
-import { formatCardIdentifier, ServiceCard } from "@/views/account/Restaurant/Menu";
 import { STORE_THEMES } from "@/views/account/Restaurant/Cards/StoreThemes";
+import { formatCardIdentifier, ServiceCard } from "@/utils/external/restaurant";
 import { warn } from "@/utils/logger/logger";
 
 type NavigationProps = StackNavigationProp<RouteParameters, "RestaurantQrCode">;

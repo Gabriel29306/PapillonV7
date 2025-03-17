@@ -17,57 +17,25 @@ import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import MissingItem from "@/components/Global/MissingItem";
 import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
 import PapillonHeader, { PapillonHeaderInsetHeight } from "@/components/Global/PapillonHeader";
-import { PapillonHeaderSelector } from "@/components/Global/PapillonModernHeader";
-import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
-import { LessonsDateModal } from "@/views/account/Lessons/LessonsHeader";
-import MenuCard from "@/views/account/Restaurant/Cards/Card";
-
-// Router type
-import type { Screen } from "@/router/helpers/types";
-
-// Services
-import { balanceFromExternal } from "@/services/balance";
-import { bookDayFromExternal, getBookingsAvailableFromExternal } from "@/services/booking";
-import { getMenu } from "@/services/menu";
-import { qrcodeFromExternal } from "@/services/qrcode";
-import { reservationHistoryFromExternal } from "@/services/reservation-history";
-import { Balance } from "@/services/shared/Balance";
-import { BookingDay, BookingTerminal } from "@/services/shared/Booking";
-import { ReservationHistory } from "@/services/shared/ReservationHistory";
-
-// Stores
-import { useCurrentAccount } from "@/stores/account";
-import { Account, AccountService } from "@/stores/account/types";
-
-// Animations
-import { animPapillon } from "@/utils/ui/animations";
-
-// Styles
-import { STORE_THEMES, StoreTheme } from "@/views/account/Restaurant/Cards/StoreThemes";
 import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { AccountService } from "@/stores/account/types";
+import { STORE_THEMES, StoreTheme } from "./Cards/StoreThemes";
+import MenuCard from "./Cards/Card";
 import { useAlert } from "@/providers/AlertProvider";
 import { warn } from "@/utils/logger/logger";
-
-export const formatCardIdentifier = (identifier: string, dots: number = 4, separator: string = " ") => {
-  if(!identifier) {
-    return "";
-  }
-
-  const visiblePart = identifier.slice(-4);
-  const maskedPart = identifier.slice(-(4 + dots), -4).replace(/./g, "•");
-  return maskedPart + separator + (visiblePart.match(/.{1,4}/g) ?? []).join(" ");
-};
-
-export interface ServiceCard {
-  service: string | AccountService;
-  account: Account | null;
-  identifier: string;
-  balance: never[] | Balance[];
-  history: never[] | ReservationHistory[];
-  cardnumber: string | Blob | null;
-  // @ts-ignore
-  theme: StoreTheme;
-}
+import { ServiceCard } from "@/utils/external/restaurant";
+import { LessonsDateModal } from "@/views/account/Lessons/LessonsHeader";
+import type { Screen } from "@/router/helpers/types";
+import { useCurrentAccount } from "@/stores/account";
+import { BookingDay, BookingTerminal } from "@/services/shared/Booking";
+import { bookDayFromExternal, getBookingsAvailableFromExternal } from "@/services/booking";
+import { getMenu } from "@/services/menu";
+import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
+import { balanceFromExternal } from "@/services/balance";
+import { qrcodeFromExternal } from "@/services/qrcode";
+import { reservationHistoryFromExternal } from "@/services/reservation-history";
+import { animPapillon } from "@/utils/ui/animations";
+import { PapillonHeaderSelector } from "@/components/Global/PapillonModernHeader";
 
 const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   const theme = useTheme();
@@ -373,16 +341,18 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
                   />
                 }
                 title="Commence par connecter un service externe de cantine"
-                description="Papillon te permet d’importer un compte depuis Turboself, ARD, Alize et Izly."
+                description="Papillon te permet de connecter un compte Turboself, ARD, Alise ou Izly."
                 entering={animPapillon(FadeInDown)}
                 exiting={animPapillon(FadeOut)}
                 trailing={
-                  <ButtonCta
-                    value="Ajouter un service"
-                    primary
-                    onPress={() => navigation.navigate("SettingStack", { view: "SettingsExternalServices" })}
-                    style={{ marginTop: 16 }}
-                  />
+                  <View>
+                    <ButtonCta
+                      value="Ajouter un service"
+                      primary
+                      onPress={() => navigation.navigate("SettingStack", { view: "SettingsExternalServices" })}
+                      style={{ marginTop: 16 }}
+                    />
+                  </View>
                 }
               />
             )}

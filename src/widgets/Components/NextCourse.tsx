@@ -156,7 +156,7 @@ const NextCourseLesson: React.FC<{
 
   return (
     <View style={{ width: "100%", marginTop: 10, flex: 1, flexDirection: "row", gap: 10 }}>
-      <ColorIndicator color={subjectData.color} style={{ flex: 0 }} />
+      <ColorIndicator width={8} borderRadius={10} color={subjectData.color} style={{ flex: 0 }} />
       <View style={{ flex: 1, width: "100%", justifyContent: "space-between" }}>
         <Text numberOfLines={1} style={{ color: colors.text, fontSize: 17, fontFamily: "semibold" }}>
           {subjectData.pretty}

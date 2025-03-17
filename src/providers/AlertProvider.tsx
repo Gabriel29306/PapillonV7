@@ -21,6 +21,7 @@ import {
 } from "@/utils/ui/animations";
 import { BlurView } from "expo-blur";
 import NativeTouchable from "@/components/Global/NativeTouchable";
+import useScreenDimensions from "@/hooks/useScreenDimensions";
 
 type AlertAction = {
   title: string;
@@ -63,6 +64,7 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
   const [delays, setDelays] = useState<{ [key: string]: number }>({});
 
   const { colors } = useTheme();
+  const { isTablet } = useScreenDimensions();
   const insets = useSafeAreaInsets();
 
   const showAlert = ({
@@ -132,7 +134,13 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
               </Reanimated.View>
 
               <Reanimated.View
-                style={styles.modalContainer}
+                style={[
+                  styles.modalContainer,
+                  {
+                    width: isTablet ? "50%" : "100%",
+                    alignSelf: "center",
+                  }
+                ]}
                 layout={LinearTransition}
               >
                 <Pressable style={styles.pressable} onPress={hideAlert} />

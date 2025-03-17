@@ -49,6 +49,9 @@ const Router: React.FC = () => {
   };
 
   const [theme, setTheme] = React.useState<Theme>(scheme === "dark" ? PapillonDark : PapillonLight);
+  const account = useCurrentAccount(store => store.account!);
+
+  const [primaryColor, setPrimaryColor] = React.useState<string>("#0000FF");
 
   useEffect(() => {
     switch (whatTheme) {
@@ -64,14 +67,9 @@ const Router: React.FC = () => {
     }
   }, [scheme, whatTheme]);
 
-
-  const account = useCurrentAccount(store => store.account!);
-  if (account?.personalization?.color) {
-
-    if (account.personalization?.color?.hex?.primary) {
-      theme.colors.primary = account.personalization.color.hex.primary;
-    }
-  }
+  useEffect(() => {
+    setPrimaryColor(account?.personalization?.color?.hex?.primary || theme.colors.primary);
+  }, [account?.personalization]);
 
   return (
     <View style={{ flex: 1, backgroundColor: scheme === "dark" ? "#151515" : "#fff" }}>
@@ -96,18 +94,24 @@ const Router: React.FC = () => {
 
       <SafeAreaProvider>
         <GestureHandlerRootView>
-          <NavigationContainer linking={linking} theme={theme} ref={PapillonNavigation}
-            onStateChange={(state) => {
-              let str = "";
-              let view: NavigationState | PartialState<NavigationState> | undefined = state;
-              while (view?.routes) {
-                // @ts-expect-error (view is not undefined here bc of while condition, but ts think it can be)
-                str += "/" + view.routes[view.index].name;
-                // @ts-expect-error (same)
-                view = view.routes[view.index].state;
-              }
-              navigate(str);
-            }}
+          <NavigationContainer linking={linking} theme={{
+            ...theme,
+            colors: {
+              ...theme.colors,
+              primary: primaryColor,
+            },
+          }} ref={PapillonNavigation}
+          onStateChange={(state) => {
+            let str = "";
+            let view: NavigationState | PartialState<NavigationState> | undefined = state;
+            while (view?.routes) {
+              // @ts-expect-error (view is not undefined here bc of while condition, but ts think it can be)
+              str += "/" + view.routes[view.index].name;
+              // @ts-expect-error (same)
+              view = view.routes[view.index].state;
+            }
+            navigate(str);
+          }}
           >
             <View style={{ flex: 1, backgroundColor: scheme === "dark" ? "#151515" : "#fff" }}>
               <AlertProvider>

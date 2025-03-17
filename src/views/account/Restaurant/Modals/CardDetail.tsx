@@ -16,10 +16,10 @@ import { ExternalLink, MoreHorizontal, QrCode, Trash2 } from "lucide-react-nativ
 import { balanceFromExternal } from "@/services/balance";
 import { reservationHistoryFromExternal } from "@/services/reservation-history";
 import { Screen } from "@/router/helpers/types";
-import { formatCardIdentifier } from "../Menu";
 import { LinearGradient } from "expo-linear-gradient";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import PapillonPicker from "@/components/Global/PapillonPicker";
+import { formatCardIdentifier } from "@/utils/external/restaurant";
 import { error, warn } from "@/utils/logger/logger";
 
 const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigation }) => {
