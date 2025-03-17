@@ -187,6 +187,7 @@ jobs:
     - name: ⚙️ Rename apks
       run: |
         cd target-repo/android/app/build/outputs/apk/release/
+        ls
         mv app-arm64-v8a-release.apk Papillon-arm64-v8a-release.apk
         mv app-armeabi-v7a-release.apk Papillon-armeabi-v7a-release.apk
         mv app-universal-release.apk Papillon-universal-release.apk
