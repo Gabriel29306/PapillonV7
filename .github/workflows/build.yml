@@ -118,15 +118,7 @@ jobs:
     # 9. Configurer gradle.properties pour générer des APKs par architecture
     - name: 🔧 Configure Build Gradle for Split APKs
       run: |
-        sed -i '/android {/a \
-        splits { \
-            abi { \
-                enable true \
-                reset() \
-                include "armeabi-v7a", "arm64-v8a", "x86", "x86_64" \
-                universalApk true \
-            } \
-        }' target-repo/android/app/build.gradle
+        sed -i "s/universalApk false/universalApk true/g" android/app/build.gradle
         sed -i '/buildToolsVersion/d' target-repo/android/app/build.gradle
 
     # 10. Récupérer la dernière version distante, y compris les pré-releases
