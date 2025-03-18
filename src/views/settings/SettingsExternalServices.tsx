@@ -1,8 +1,8 @@
 import React from "react";
-import { ScrollView, View, Alert } from "react-native";
+import { ScrollView, View } from "react-native";
 import type { Screen } from "@/router/helpers/types";
 import { useTheme } from "@react-navigation/native";
-import { GraduationCap, Utensils, BookOpen, School, BookmarkMinus, Compass } from "lucide-react-native";
+import { GraduationCap, Utensils, BookOpen, School, BookmarkMinus, Compass, Check, Trash2, BadgeInfo } from "lucide-react-native";
 import ExternalServicesContainerCard from "@/components/Settings/ExternalServicesContainerCard";
 import {
   NativeList,
@@ -13,6 +13,7 @@ import {
 } from "@/components/Global/NativeComponents";
 import { AccountService } from "@/stores/account/types";
 import { useAccounts } from "@/stores/account";
+import { useAlert } from "@/providers/AlertProvider";
 
 const serviceConfig = {
   [AccountService.Pronote]: { icon: GraduationCap, name: "Pronote" },
@@ -26,7 +27,8 @@ const serviceConfig = {
   [AccountService.Parcoursup]: { icon: BookmarkMinus, name: "Parcoursup" },
   [AccountService.Onisep]: { icon: Compass, name: "Onisep" },
   [AccountService.Local]: { icon: GraduationCap, name: "Local" },
-  [AccountService.Multi]: { icon: GraduationCap, name: "Polytechnique Hauts-de-France" }
+  [AccountService.Multi]: { icon: GraduationCap, name: "Polytechnique Hauts-de-France" },
+  [AccountService.PapillonMultiService]: { icon: GraduationCap, name: "Environnement virtuel Papillon" }
 };
 
 const SettingsExternalServices: Screen<"SettingsExternalServices"> = ({
@@ -35,6 +37,7 @@ const SettingsExternalServices: Screen<"SettingsExternalServices"> = ({
   const theme = useTheme();
   const accounts = useAccounts((state) => state.accounts);
   const removeAccount = useAccounts((state) => state.remove);
+  const { showAlert } = useAlert();
 
   const getServiceIcon = (service: AccountService) => {
     const IconComponent = serviceConfig[service]?.icon || GraduationCap;
@@ -51,33 +54,25 @@ const SettingsExternalServices: Screen<"SettingsExternalServices"> = ({
     info += `Établissement : ${account.authentication.schoolID || "N. not"}\n`;
 
 
-    Alert.alert(
-      "Informations du compte",
-      info,
-      [
-        { text: "OK", style: "cancel" },
+    showAlert({
+      title: "Informations du compte",
+      message: info,
+      icon: <BadgeInfo />,
+      actions: [
         {
-          text: "Supprimer",
-          style: "destructive",
-          onPress: () => confirmDeleteAccount(account)
-        }
-      ]
-    );
-  };
-
-  const confirmDeleteAccount = (account: any) => {
-    Alert.alert(
-      "Supprimer le compte",
-      "Es-tu sûr de vouloir supprimer ce compte ?",
-      [
-        { text: "Annuler", style: "cancel" },
+          title: "OK",
+          icon: <Check />,
+          primary: false,
+        },
         {
-          text: "Supprimer",
-          style: "destructive",
-          onPress: () => removeAccount(account.localID)
-        }
+          title: "Supprimer",
+          icon: <Trash2 />,
+          onPress: () => removeAccount(account.localID),
+          danger: true,
+          delayDisable: 3,
+        },
       ]
-    );
+    });
   };
 
   const filteredAccounts = accounts.filter((acc, index) => {

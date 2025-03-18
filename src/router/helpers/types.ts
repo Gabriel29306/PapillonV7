@@ -14,6 +14,9 @@ import {Client} from "pawrd";
 import { Host } from "turboself-api";
 import {Evaluation} from "@/services/shared/Evaluation";
 import { ThemesMeta } from "@/utils/chat/themes/Themes.types";
+import {MultiServiceSpace} from "@/stores/multiService/types";
+import { TimetableClass } from "@/services/shared/Timetable";
+import { ServiceCard } from "@/utils/external/restaurant";
 
 export type RouteParameters = {
   // welcome.index
@@ -31,7 +34,11 @@ export type RouteParameters = {
   PronoteAuthenticationSelector: undefined;
   PronoteGeolocation: undefined;
   PronoteManualLocation: undefined;
-  PronoteInstanceSelector: CurrentPosition;
+  PronoteInstanceSelector: {
+    longitude: number;
+    latitude: number;
+    hideDistance?: boolean;
+  };
   PronoteCredentials: { instanceURL: string; information: pronote.Instance };
   PronoteManualURL?: { url?: string; method?: string };
   PronoteQRCode: undefined;
@@ -86,7 +93,8 @@ export type RouteParameters = {
     title?: string;
     autoAdd?: boolean;
   };
-  LessonDocument: { lesson: Homework };
+  LessonDocument: { lesson: TimetableClass };
+  Week: { outsideNav?: boolean };
 
   Homeworks?: { outsideNav?: boolean };
   HomeworksDocument: { homework: Homework };
@@ -123,30 +131,48 @@ export type RouteParameters = {
   SettingsProfile: undefined;
   SettingsTabs: undefined;
   SettingsAbout: undefined;
+  SettingsSupport: undefined;
   SettingsIcons: undefined;
   SettingsSubjects: undefined;
   SettingsExternalServices: undefined;
   SettingsMagic: undefined;
+  SettingsMultiService: undefined;
+  SettingsMultiServiceSpace: { space: MultiServiceSpace };
   SettingsFlags: undefined;
   SettingsFlagsInfos: { title: string; value: any };
   SettingsAddons: undefined;
   SettingsDevLogs: undefined;
   SettingsDonorsList: undefined;
   SettingsReactions: undefined;
-  SettingsApparence: undefined;
+  SettingsAccessibility: undefined;
 
   Menu?: undefined;
   RestaurantQrCode: {
-    QrCodes: Array<string | Blob>;
+    card: ServiceCard;
   };
   RestaurantHistory: {
     histories: ReservationHistory[];
   };
+  RestaurantCardDetail: {
+    card: ServiceCard;
+  };
+  RestaurantPaymentSuccess: {
+    card: ServiceCard;
+    diff: number;
+  };
 
   Discussions: undefined;
   ChatCreate: undefined;
-  ChatDetails: { handle: Chat, recipients: ChatRecipient[], onThemeChange?: (selectedThemePath: ThemesMeta) => void };
-  ChatThemes: { handle: Chat; themes: ThemesMeta[]; onGoBack?: (selectedThemePath: ThemesMeta) => void };
+  ChatDetails: {
+    handle: Chat;
+    recipients: ChatRecipient[];
+    onThemeChange?: (selectedThemePath: ThemesMeta) => void;
+  };
+  ChatThemes: {
+    handle: Chat;
+    themes: ThemesMeta[];
+    onGoBack?: (selectedThemePath: ThemesMeta) => void;
+  };
   Chat: { handle: Chat };
 
   AccountStack: { onboard: boolean };
@@ -162,7 +188,11 @@ export type RouteParameters = {
   PriceDetectionOnboarding: { accountID: string };
   PriceBeforeScan: { accountID: string };
   PriceAfterScan: { accountID: string };
-  TurboselfAccountSelector: { accounts: Array<Host>, username: string, password: string};
+  TurboselfAccountSelector: {
+    accounts: Array<Host>;
+    username: string;
+    password: string;
+  };
 
   AddonSettingsPage: {
     addon: AddonPlacementManifest;

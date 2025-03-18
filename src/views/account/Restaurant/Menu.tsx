@@ -4,26 +4,24 @@ import {
   ScrollView,
   StyleSheet,
   Switch,
-  Alert,
   ActivityIndicator,
   RefreshControl,
-  Text
+  Text,
+  Dimensions
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import {
   AlertTriangle,
+  BadgeX,
   ChefHat,
-  Clock2,
   CookingPot,
   MapPin,
-  QrCode,
+  Plus,
   Sprout,
   Utensils,
 } from "lucide-react-native";
 
 import type { Screen } from "@/router/helpers/types";
-import RestaurantCard from "@/components/Restaurant/RestaurantCard";
-import { HorizontalList, Item } from "@/components/Restaurant/ButtonList";
 import {
   NativeItem,
   NativeList,
@@ -32,14 +30,12 @@ import {
 } from "@/components/Global/NativeComponents";
 import { useCurrentAccount } from "@/stores/account";
 import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
-import { Balance } from "@/services/shared/Balance";
 import { balanceFromExternal } from "@/services/balance";
 import MissingItem from "@/components/Global/MissingItem";
 import { animPapillon } from "@/utils/ui/animations";
-import Reanimated, { FadeIn, FadeInDown, FadeInUp, FadeOut, FadeOutDown, LinearTransition } from "react-native-reanimated";
+import Reanimated, { FadeIn, FadeInDown, FadeOut, LinearTransition, ZoomIn, ZoomOut } from "react-native-reanimated";
 import { reservationHistoryFromExternal } from "@/services/reservation-history";
 import { qrcodeFromExternal } from "@/services/qrcode";
-import { ReservationHistory } from "@/services/shared/ReservationHistory";
 import { getMenu } from "@/services/menu";
 import type { FoodAllergen, FoodLabel, Menu as PawnoteMenu } from "pawnote";
 import { PapillonHeaderSelector } from "@/components/Global/PapillonModernHeader";
@@ -47,13 +43,23 @@ import AnimatedNumber from "@/components/Global/AnimatedNumber";
 import { LessonsDateModal } from "../Lessons/LessonsHeader";
 import { BookingTerminal, BookingDay } from "@/services/shared/Booking";
 import { bookDayFromExternal, getBookingsAvailableFromExternal } from "@/services/booking";
-import AccountButton from "@/components/Restaurant/AccountButton";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
-import PapillonHeader from "@/components/Global/PapillonHeader";
+import PapillonHeader, { PapillonHeaderInsetHeight } from "@/components/Global/PapillonHeader";
+import { PressableScale } from "react-native-pressable-scale";
+import { ChevronLeft, ChevronRight} from "lucide-react-native";
+import DrawableImportRestaurant from "@/components/Drawables/DrawableImportRestaurant";
+import ButtonCta from "@/components/FirstInstallation/ButtonCta";
+import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { AccountService } from "@/stores/account/types";
+import { STORE_THEMES, StoreTheme } from "./Cards/StoreThemes";
+import MenuCard from "./Cards/Card";
+import { useAlert } from "@/providers/AlertProvider";
+import { ServiceCard } from "@/utils/external/restaurant";
 
 const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   const theme = useTheme();
   const { colors } = theme;
+  const { isOnline } = useOnlineStatus();
 
   const account = useCurrentAccount((store) => store.account);
   const linkedAccounts = useCurrentAccount((store) => store.linkedAccounts);
@@ -63,9 +69,6 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
 
   const currentDate = new Date();
 
-  const [allBalances, setAllBalances] = useState<Balance[] | null>(null);
-  const [allHistories, setAllHistories] = useState<ReservationHistory[] | null>(null);
-  const [allQRCodes, setAllQRCodes] = useState<Array<string | Blob> | null>(null);
   const [allBookings, setAllBookings] = useState<BookingTerminal[] | null>(null);
   const [currentMenu, setCurrentMenu] = useState<PawnoteMenu | null>(null);
   const [currentWeek, setCurrentWeek] = useState<number>(0);
@@ -74,6 +77,9 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   const [isMenuLoading, setMenuLoading] = useState(false);
   const [isInitialised, setIsInitialised] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
+  const [allCards, setAllCards] = useState<Array<ServiceCard> | null>(null);
+
+  const { showAlert } = useAlert();
 
   const refreshData = async () => {
     setIsRefreshing(true);
@@ -152,7 +158,11 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
           : term
       );
       setAllBookings(revertedBookings ?? null);
-      Alert.alert("Erreur", "Une erreur est survenue lors de la réservation du repas");
+      showAlert({
+        title: "Erreur",
+        message: "Une erreur est survenue lors de la réservation du repas",
+        icon: <BadgeX />,
+      });
     }
   };
 
@@ -162,17 +172,31 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
     });
   }, [navigation, route.params, theme.colors.text]);
 
-  useEffect(() => {
+  const fetchCardsData = async () => {
     (async () => {
       try {
-        const newBalances: Balance[] = [];
-        const newHistories: ReservationHistory[] = [];
-        const newQRCodes: Array<string | Blob> = [];
+        const newCards: Array<ServiceCard> = [
+          /* {
+            service: 5,
+            account: null,
+            identifier: "123456789",
+            balance: [{
+              amount: 20.30
+            }],
+            history: [],
+            cardnumber: null,
+            theme: STORE_THEMES[1],
+          } */
+        ];
         const newBookings: BookingTerminal[] = [];
 
         const dailyMenu = account ? await getMenu(account, pickerDate).catch(() => null) : null;
         const accountPromises = linkedAccounts.map(async (account) => {
           try {
+            if (!account || !account.service) {
+              return;
+            }
+
             const [balance, history, cardnumber, booking] = await Promise.all([
               balanceFromExternal(account, isRefreshing).catch(err => {
                 console.warn(`Error fetching balance for account ${account}:`, err);
@@ -192,11 +216,20 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
               })
             ]);
 
-            newBalances.push(...balance);
-            newHistories.push(...history);
             newBookings.push(...booking);
-            if (cardnumber) newQRCodes.push(cardnumber);
 
+            const newCard: ServiceCard = {
+              service: account.service,
+              identifier: account.username,
+              account: account,
+              balance: balance,
+              history: history,
+              cardnumber: cardnumber,
+              // @ts-ignore
+              theme: STORE_THEMES.find((theme) => theme.id === AccountService[account.service]) ?? STORE_THEMES[0] as StoreTheme,
+            };
+
+            newCards.push(newCard);
           } catch (error) {
             setIsInitialised(true);
             console.warn(`An error occurred with account ${account}:`, error);
@@ -204,9 +237,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
         });
 
         await Promise.all(accountPromises);
-        setAllBalances(newBalances.sort((a, b) => a.label.toLowerCase() === "cafetaria" ? 1 : -1));
-        setAllHistories(newHistories);
-        setAllQRCodes(newQRCodes);
+        setAllCards(newCards);
         setAllBookings(newBookings);
         setCurrentMenu(dailyMenu);
         setIsInitialised(true);
@@ -215,20 +246,11 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
         console.warn("An error occurred while fetching data:", error);
       }
     })();
-  }, [linkedAccounts, refreshCount]);
-
-  const fetchQRCode = async () => {
-    if (linkedAccounts) {
-      const qrCodes = await Promise.all(linkedAccounts.map(qrcodeFromExternal));
-      setAllQRCodes(qrCodes.filter((code) => code !== null) as string[]);
-    }
   };
 
   useEffect(() => {
-    // force la regénération du QR code à chaque fois que l'écran est affiché
-    const unsub = navigation.addListener("focus", fetchQRCode);
-    return unsub;
-  }, []);
+    fetchCardsData();
+  }, [linkedAccounts, refreshCount]);
 
   const getLabelIcon = (label: string) => {
     switch (label) {
@@ -304,71 +326,124 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
         showsHorizontalScrollIndicator={false}
+        scrollIndicatorInsets={{ top: 42 }}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
+            progressViewOffset={120}
             onRefresh={() => {
               refreshData();
             }}
           />
         }
       >
-        {!isInitialised ? (
+        <PapillonHeaderInsetHeight route={route} />
+
+        {!isOnline ? (
+          <OfflineWarning cache={false} />
+        ) : !isInitialised ? (
           <ActivityIndicator size="large" style={{ padding: 50 }} />
         ) : (
           <>
-            {allBalances?.length === 0 ? (
-              <View style={{ height: 10 }} />
-            ) : (
-              <>
-                <View style={styles.accountButtonContainer}>
-                  {allBalances!.length > 1 && allBalances?.map((account, index) => (
-                    <AccountButton
-                      key={index}
-                      account={account}
-                      isSelected={selectedIndex === index}
-                      onPress={() => setSelectedIndex(index)}
-                      colors={colors}
-                    />
-                  ))}
-                </View>
 
-                {selectedIndex !== null && allBalances?.[selectedIndex] && (
-                  <Reanimated.View
-                    entering={FadeInUp}
-                    exiting={FadeOutDown}
-                    layout={LinearTransition.springify().mass(1).damping(20).stiffness(300)}
-                  >
-                    <RestaurantCard
-                      solde={allBalances[selectedIndex].amount}
-                      repas={
-                        allBalances?.[selectedIndex]?.remaining != null
-                          ? Math.max(0, allBalances[selectedIndex].remaining || 0)
-                          : null
-                      }
+            {allCards?.length === 0 && !currentMenu && (
+              <MissingItem
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 12,
+                }}
+                leading={
+                  <DrawableImportRestaurant
+                    color={colors.primary}
+                    style={{ marginBottom: 10 }}
+                  />
+                }
+                title="Commence par connecter un service externe de cantine"
+                description="Papillon te permet de connecter un compte Turboself, ARD, Alise ou Izly."
+                entering={animPapillon(FadeInDown)}
+                exiting={animPapillon(FadeOut)}
+                trailing={
+                  <View>
+                    <ButtonCta
+                      value="Ajouter un service"
+                      primary
+                      onPress={() => navigation.navigate("SettingStack", { view: "SettingsExternalServices" })}
+                      style={{ marginTop: 16 }}
                     />
-                  </Reanimated.View>
-                )}
-              </>
+                  </View>
+                }
+              />
             )}
 
-            <HorizontalList style={styles.horizontalList}>
-              <Item
-                title="Historique"
-                icon={<Clock2 color={colors.text} />}
-                onPress={() => navigation.navigate("RestaurantHistory", { histories: allHistories ?? [] })}
-                enable={allHistories?.length !== 0}
-              />
-              <Item
-                title="QR-Code"
-                icon={<QrCode color={colors.text} />}
-                onPress={() => navigation.navigate("RestaurantQrCode", { QrCodes: allQRCodes ?? [] })}
-                enable={allQRCodes?.length !== 0}
-              />
-            </HorizontalList>
+            <View style={{height: 16}} />
 
-            {(currentMenu || (allBookings && allBookings.some((terminal) => terminal.days.some((day) => day.date?.toDateString() === pickerDate.toDateString())))) &&
+            {(allCards ?? [])?.length > 0 && (
+              <ScrollView
+                style={{
+                  width: (Dimensions.get("window").width - 32),
+                  overflow: "visible",
+                  maxHeight: (Dimensions.get("window").width - 32) / 1.72
+                }}
+                contentContainerStyle={{
+                  overflow: "visible",
+                  gap: 6,
+                }}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                scrollEnabled={(allCards ?? [])?.length > 1}
+                decelerationRate={"fast"}
+                snapToInterval={(Dimensions.get("window").width - 32) + 6}
+              >
+                {allCards?.map((card, index) => (
+                  <Reanimated.View
+                    key={index}
+                    style={{
+                      width: Dimensions.get("window").width - 32,
+                    }}
+                  >
+                    <MenuCard
+                      key={index}
+                      card={card}
+                      onPress={() => {
+                        navigation.navigate("RestaurantCardDetail", { card });
+                      }}
+                    />
+                  </Reanimated.View>
+                ))}
+              </ScrollView>
+            )}
+
+            {(currentMenu || (allBookings && allBookings?.some((terminal) => terminal.days.some((day) => day.date?.toDateString() === pickerDate.toDateString())))) &&
               <View style={styles.calendarContainer}>
+                <Reanimated.View
+                  layout={animPapillon(LinearTransition)}
+                  entering={animPapillon(ZoomIn)}
+                  exiting={animPapillon(ZoomOut)}
+                >
+                  <PressableScale
+                    onPress={() => {
+                      onDatePickerSelect(new Date(pickerDate.setDate(pickerDate.getDate() - 1)));
+                      setRefreshCount(refreshCount + 1);
+                    }}
+                    activeScale={0.8}
+                  >
+                    <View
+                      style={[styles.weekPickerText, {
+                        backgroundColor: theme.colors.border,
+                        padding: 8,
+                        borderRadius: 100,
+                      }]}
+                    >
+                      <ChevronLeft
+                        size={24}
+                        color={theme.colors.text}
+                        strokeWidth={2.5}
+                      />
+                    </View>
+                  </PressableScale>
+                </Reanimated.View>
                 <PapillonHeaderSelector loading={isMenuLoading} onPress={() => setShowDatePicker(true)}>
                   <Reanimated.View layout={animPapillon(LinearTransition)}>
                     <Reanimated.View
@@ -386,6 +461,33 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
                     {pickerDate.toLocaleDateString("fr-FR", { month: "long" })}
                   </Reanimated.Text>
                 </PapillonHeaderSelector>
+                <Reanimated.View
+                  layout={animPapillon(LinearTransition)}
+                  entering={animPapillon(ZoomIn)}
+                  exiting={animPapillon(ZoomOut)}
+                >
+                  <PressableScale
+                    onPress={() => {
+                      onDatePickerSelect(new Date(pickerDate.setDate(pickerDate.getDate() + 1)));
+                      setRefreshCount(refreshCount + 1);
+                    }}
+                    activeScale={0.8}
+                  >
+                    <View
+                      style={[styles.weekPickerText, {
+                        backgroundColor: theme.colors.border,
+                        padding: 8,
+                        borderRadius: 100,
+                      }]}
+                    >
+                      <ChevronRight
+                        size={24}
+                        color={theme.colors.text}
+                        strokeWidth={2.5}
+                      />
+                    </View>
+                  </PressableScale>
+                </Reanimated.View>
               </View>
             }
 
@@ -405,7 +507,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
                             trailing={
                               <Switch
                                 value={bookingDay.booked}
-                                disabled={!bookingDay.canBook || allBalances?.every((balance) => balance.remaining === 0)}
+                                disabled={!bookingDay.canBook}
                                 onValueChange={() => handleBookTogglePress(terminal, bookingDay)}
                               />
                             }
@@ -510,14 +612,38 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
                 )}
               </>
               : <>
-                <MissingItem
-                  emoji="🍽️"
-                  title="Aucun menu disponible"
-                  description={"Aucun service de cantine fournissant un menu n'est enregistré."}
-                  entering={animPapillon(FadeInDown)}
-                  exiting={animPapillon(FadeOut)}
-                  style={{ marginTop: 16 }}
-                />
+                {(allCards ?? []).length > 0 && (
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop: 6,
+                    }}
+                  >
+                    <PressableScale
+                      onPress={() => {
+                        navigation.navigate("SettingStack", { view: "SettingsExternalServices" });
+                      }}
+                      style={{
+                        paddingHorizontal: 16,
+                        paddingVertical: 10,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                        borderRadius: 100,
+                        backgroundColor: theme.colors.text + "12",
+                        borderColor: theme.colors.text + "40",
+                        borderWidth: 0,
+                      }}
+                    >
+                      <Plus size={20} strokeWidth={2.5} color={theme.colors.text} />
+                      <NativeText>
+                        Ajouter une carte
+                      </NativeText>
+                    </PressableScale>
+                  </View>
+                )}
               </>}
             <LessonsDateModal
               showDatePicker={showDatePicker}
@@ -534,7 +660,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  scrollViewContent: { padding: 16, paddingTop: 0 },
+  scrollViewContent: { padding: 16, flexGrow: 1 },
   accountButtonContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 16 },
   horizontalList: { marginTop: 10 },
   calendarContainer: { flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 16, marginBottom: -10, gap: 10 },

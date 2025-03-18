@@ -1,5 +1,6 @@
 import createScreen from "@/router/helpers/create-screen";
 import Lessons from "@/views/account/Lessons/Lessons";
+import Week from "@/views/account/Week/Week";
 import Homeworks from "@/views/account/Homeworks/Homeworks";
 import HomeStackScreen from "./home";
 import Menu from "@/views/account/Restaurant/Menu";
@@ -21,6 +22,12 @@ export const screens = [
     tabBarLabel: "Cours",
     tabBarLottie: require("@/../assets/lottie/tab_calendar.json"),
   }),
+  createScreen("Week", Week, {
+    headerTitle: "Semaine",
+    headerShown: false,
+    tabBarLabel: "Semaine",
+    tabBarLottie: require("@/../assets/lottie/tab_calendar.json"),
+  }),
   createScreen("Homeworks", Homeworks, {
     headerTitle: "Devoirs",
     headerShown: false,
@@ -36,6 +43,7 @@ export const screens = [
   createScreen("News", NewsScreen, {
     headerTitle: "Actualités",
     tabBarLabel: "Actualités",
+    headerShown: false,
     tabBarLottie: require("@/../assets/lottie/tab_news.json"),
   }),
   createScreen("Attendance", Attendance, {

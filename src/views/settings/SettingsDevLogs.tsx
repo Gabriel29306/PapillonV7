@@ -1,5 +1,5 @@
 import type { Screen } from "@/router/helpers/types";
-import { ActivityIndicator, Alert, Platform, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { ActivityIndicator, ScrollView, TouchableOpacity } from "react-native";
 import {
   NativeIcon,
   NativeItem,
@@ -25,6 +25,8 @@ import {
   Calendar,
   Folder,
   X,
+  BadgeHelp,
+  SunMoon,
 } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
@@ -35,6 +37,8 @@ import { animPapillon } from "@/utils/ui/animations";
 import { useTheme } from "@react-navigation/native";
 import { useAlert } from "@/providers/AlertProvider";
 import MissingItem from "@/components/Global/MissingItem";
+import formatDate from "@/utils/format/format_date_complets";
+import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
 
 const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
   const { colors } = useTheme();
@@ -49,7 +53,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
     get_logs().then((logs) => {
       setLogs(
         logs.sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
         )
       );
       setLoading(false);
@@ -64,7 +68,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
         paddingTop: 0,
       }}
     >
-      <TextInput
+      <ResponsiveTextInput
         placeholder={"Rechercher"}
         value={searchTerms}
         onChangeText={setSearchTerms}
@@ -87,48 +91,28 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
           logs.length > 0 && (
             <TouchableOpacity
               onPress={() => {
-                if (Platform.OS === "ios") {
-                  Alert.alert(
-                    "Supprimer les logs ?",
-                    "Es-tu sûr de vouloir supprimer toutes les logs ?", [
-                      {
-                        text: "Annuler",
-                        style: "cancel",
+                showAlert({
+                  title: "Supprimer les logs ?",
+                  message: "Es-tu sûr de vouloir supprimer toutes les logs ?",
+                  icon: <BadgeHelp />,
+                  actions: [
+                    {
+                      title: "Annuler",
+                      backgroundColor: colors.card,
+                      icon: <X color={colors.text} />,
+                    },
+                    {
+                      title: "Supprimer",
+                      primary: true,
+                      onPress: () => {
+                        delete_logs();
+                        setLogs([]);
                       },
-                      {
-                        text: "Supprimer",
-                        style: "destructive",
-                        onPress: () => {
-                          delete_logs();
-                          setLogs([]);
-                        },
-                      },
-                    ]
-                  );
-                } else {
-                  showAlert({
-                    title: "Supprimer les logs ?",
-                    message: "Es-tu sûr de vouloir supprimer toutes les logs ?",
-                    actions: [
-                      {
-                        title: "Annuler",
-                        onPress: () => {},
-                        backgroundColor: colors.card,
-                        icon: <X color={colors.text} />,
-                      },
-                      {
-                        title: "Supprimer",
-                        primary: true,
-                        onPress: () => {
-                          delete_logs();
-                          setLogs([]);
-                        },
-                        backgroundColor: "#CF0029",
-                        icon: <Trash2 color="#FFFFFF" />,
-                      },
-                    ],
-                  });
-                }
+                      backgroundColor: "#CF0029",
+                      icon: <Trash2 color="#FFFFFF" />,
+                    },
+                  ],
+                });
               }}
               style={{
                 padding: 5,
@@ -174,7 +158,9 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
                   leading={
                     <NativeIcon
                       icon={
-                        log.type === "ERROR" ? (
+                        log.from === "BACKGROUND" ? (
+                          <SunMoon />
+                        ) : log.type === "ERROR" ? (
                           <CircleX />
                         ) : log.type === "WARN" ? (
                           <TriangleAlert />
@@ -186,7 +172,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
                           <Moon />
                         ) : log.message.toLowerCase().includes("read") ? (
                           <Newspaper />
-                        ) : log.message === "[timetable:updateClasses" ? (
+                        ) : log.message.startsWith("[timetable:updateClasses") ? (
                           <Calendar />
                         ) : log.message.toLowerCase().includes("folder") ? (
                           <Folder />
@@ -195,23 +181,25 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
                         )
                       }
                       color={
-                        log.type === "ERROR"
-                          ? "#BE0B00"
-                          : log.type === "WARN"
-                            ? "#CF6B0F"
-                            : log.type === "INFO"
-                              ? "#0E7CCB"
-                              : log.message.startsWith("User navigate into /")
-                                ? "#28B463"
-                                : log.message === "App in background"
-                                  ? "#1F618D"
-                                  : log.message.toLowerCase().includes("read")
-                                    ? "#D4AC02"
-                                    : log.message === "[timetable:updateClasses"
-                                      ? "#884EA0"
-                                      : log.message.toLowerCase().includes("folder")
-                                        ? "#CA6F1E"
-                                        : "#AAA"
+                        log.from === "BACKGROUND"
+                          ? "#34495E"
+                          : log.type === "ERROR"
+                            ? "#BE0B00"
+                            : log.type === "WARN"
+                              ? "#CF6B0F"
+                              : log.type === "INFO"
+                                ? "#0E7CCB"
+                                : log.message.startsWith("User navigate into /")
+                                  ? "#28B463"
+                                  : log.message === "App in background"
+                                    ? "#1F618D"
+                                    : log.message.toLowerCase().includes("read")
+                                      ? "#D4AC02"
+                                      : log.message.startsWith("[timetable:updateClasses")
+                                        ? "#884EA0"
+                                        : log.message.toLowerCase().includes("folder")
+                                          ? "#CA6F1E"
+                                          : "#AAA"
                       }
                       style={{
                         marginLeft: -6,
@@ -220,7 +208,11 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
                   }
                 >
                   <NativeText variant="title">{log.message}</NativeText>
-                  <NativeText variant="subtitle">{log.date}</NativeText>
+                  <NativeText variant="subtitle">
+                    {formatDate(log.date)} à {new Date(log.date).getHours()}:
+                    {new Date(log.date).getMinutes()}:
+                    {new Date(log.date).getSeconds()}
+                  </NativeText>
                   <NativeText variant="subtitle">{log.from}</NativeText>
                 </NativeItem>
               );
@@ -237,7 +229,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
           <NativeItem animated style={{ paddingVertical: 10 }}>
             <MissingItem
               emoji="💾"
-              title="Aucune log enregistrée"
+              title="Aucun log enregistré"
               description="Il n'y a pas de logs à te présenter."
             />
           </NativeItem>

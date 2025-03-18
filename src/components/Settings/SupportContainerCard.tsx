@@ -2,8 +2,11 @@ import React from "react";
 
 import { View } from "react-native";
 import { NativeItem, NativeList, NativeText } from "../Global/NativeComponents";
+import { MessageCircleQuestion } from "lucide-react-native";
 
-const ApparenceContainerCard = () => {
+const SupportContainerCard = ({ theme }: { theme: any }) => {
+  const { colors } = theme;
+
   return (
     <NativeList>
       <View style={{
@@ -11,23 +14,23 @@ const ApparenceContainerCard = () => {
         justifyContent: "center",
         alignItems: "center",
         overflow: "hidden",
-        backgroundColor: "#1E316A22",
-        flexDirection: "row",
+        backgroundColor: colors.primary + "22",
       }}>
-        <NativeText style={{fontSize: 100, lineHeight: 125}}>
-          🌓
-        </NativeText>
+        <MessageCircleQuestion
+          color={colors.primary}
+          size={80}
+        />
       </View>
       <NativeItem>
         <NativeText variant="title">
-          Mode d'affichage
+          Un problème, une question ?
         </NativeText>
         <NativeText variant="subtitle">
-          Par défaut, Papillon s'adapte à ton thème système. Mais tu peux choisir un thème clair ou sombre.
+          Laisse-nous un message depuis cette page et nous te répondrons dans les plus brefs délais !
         </NativeText>
       </NativeItem>
     </NativeList>
   );
 };
 
-export default ApparenceContainerCard;
+export default SupportContainerCard;

@@ -28,6 +28,7 @@ const TabAnimatedTitle = ({ route, navigation }: TabAnimatedTitleProps) => {
         navigation={navigation}
       />
     ),
+    headerShadowVisible: false,
   };
 };
 

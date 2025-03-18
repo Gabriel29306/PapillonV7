@@ -13,11 +13,11 @@ export default [
     headerTransparent: true,
     headerBackVisible: true,
     animation: Platform.OS === "android" ? "slide_from_bottom" : undefined,
-    animationDuration: 250
+    animationDuration: 250,
   }),
 
   ...pronote,
   ...ecoledirecte,
   ...skolengo,
-  ...identityProvider
+  ...identityProvider,
 ] as const;

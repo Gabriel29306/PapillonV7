@@ -1,32 +1,33 @@
-import React, { useEffect, useRef, useState} from "react";
-import { Image, ActivityIndicator, FlatList, ImageBackground, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView,} from "react-native";
-import { useTheme} from "@react-navigation/native";
+import React, { useEffect, useRef, useState } from "react";
+import { Image, ActivityIndicator, FlatList, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View, KeyboardAvoidingView, } from "react-native";
+import { useTheme } from "@react-navigation/native";
 
-import type {Screen} from "@/router/helpers/types";
-import { NativeText,} from "@/components/Global/NativeComponents";
-import {useCurrentAccount} from "@/stores/account";
-import type {ChatMessage, ChatRecipient} from "@/services/shared/Chat";
-import {ChevronLeft, Send} from "lucide-react-native";
+import type { Screen } from "@/router/helpers/types";
+import { NativeText } from "@/components/Global/NativeComponents";
+import { useCurrentAccount } from "@/stores/account";
+import type { ChatMessage, ChatRecipient } from "@/services/shared/Chat";
+import { ChevronLeft, Send } from "lucide-react-native";
 import parse_initials from "@/utils/format/format_pronote_initials";
 import InitialIndicator from "@/components/News/InitialIndicator";
-import {PapillonModernHeader} from "@/components/Global/PapillonModernHeader";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
+import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import HTMLView from "react-native-htmlview";
-import Reanimated, {FadeIn, FadeInDown, FadeOut} from "react-native-reanimated";
-import {AccountService} from "@/stores/account/types";
+import Reanimated, { FadeIn, FadeInDown, FadeOut } from "react-native-reanimated";
+import { AccountService } from "@/stores/account/types";
 import * as WebBrowser from "expo-web-browser";
-import {WebBrowserPresentationStyle} from "expo-web-browser";
+import { WebBrowserPresentationStyle } from "expo-web-browser";
 import getAndOpenFile from "@/utils/files/getAndOpenFile";
-import {getProfileColorByName} from "@/services/local/default-personalization";
+import { getProfileColorByName } from "@/services/local/default-personalization";
 import { getChatMessages, sendMessageInChat, getChatRecipients } from "@/services/chats";
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
 import MissingItem from "@/components/Global/MissingItem";
 import { animPapillon } from "@/utils/ui/animations";
 import GetThemeForChatId from "@/utils/chat/themes/GetThemeForChat";
 import { Theme } from "@/utils/chat/themes/Themes.types";
-import {type Attachment, AttachmentType} from "@/services/shared/Attachment";
+import { type Attachment, AttachmentType } from "@/services/shared/Attachment";
 import { AutoFileIcon } from "@/components/Global/FileIcon";
 import LinkFavicon from "@/components/Global/LinkFavicon";
+import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
 
 const Chat: Screen<"Chat"> = ({ navigation, route }) => {
   const theme = useTheme();
@@ -335,19 +336,19 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                 />
               )}
             />
-            <View style={{
-              minHeight: 90,
-              paddingVertical: 20,
-              paddingHorizontal: 20,
-              borderTopWidth: 0.5,
-              borderTopColor: colors.text + "22",
-              backgroundColor: theme.dark ? chatTheme?.darkModifier.inputBarBackgroundColor : chatTheme?.lightModifier.inputBarBackgroundColor,
-              flexDirection: "row",
-              alignItems: "flex-start",
-            }}
+            <View
+              style={{
+                paddingVertical: 20,
+                paddingHorizontal: 20,
+                borderTopWidth: 0.5,
+                borderTopColor: colors.text + "22",
+                backgroundColor: theme.dark ? chatTheme?.darkModifier.inputBarBackgroundColor : chatTheme?.lightModifier.inputBarBackgroundColor,
+                flexDirection: "row",
+                alignItems: "flex-start",
+              }}
             >
 
-              <TextInput
+              <ResponsiveTextInput
                 placeholder={"Envoyer un message à " + creatorName}
                 placeholderTextColor={colors.text + "60"}
                 style={{
@@ -363,22 +364,29 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                 onChangeText={(text) => setText(text)}
                 value={text}
               />
-              <TouchableOpacity
+              <View
                 style={{
-                  backgroundColor: theme.dark ? chatTheme?.darkModifier.sendButtonBackgroundColor : chatTheme?.lightModifier.sendButtonBackgroundColor,
-                  width: 56,
-                  height: 40,
-                  borderRadius: 32,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: -5
-                }}
-                onPress={() => {
-                  sendMessageInChat(account, route.params.handle, text);
+                  justifyContent: "flex-end",
+                  alignItems: "flex-end",
                 }}
               >
-                <Send color={"#FFF"} size={24} style={{marginTop: 1, marginLeft: -3}}/>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: theme.dark ? chatTheme?.darkModifier.sendButtonBackgroundColor : chatTheme?.lightModifier.sendButtonBackgroundColor,
+                    width: 56,
+                    height: 40,
+                    borderRadius: 32,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: -5
+                  }}
+                  onPress={() => {
+                    sendMessageInChat(account, route.params.handle, text);
+                  }}
+                >
+                  <Send color={"#FFF"} size={24} style={{marginTop: 1, marginLeft: -3}}/>
+                </TouchableOpacity>
+              </View>
             </View>
             <View style={{height: insets.bottom, backgroundColor: theme.dark ? chatTheme?.darkModifier.inputBarBackgroundColor : chatTheme?.lightModifier.inputBarBackgroundColor }}></View>
           </ImageBackground>

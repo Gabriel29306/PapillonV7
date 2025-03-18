@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { QrCodeIcon, LinkIcon, MapPinIcon, SearchIcon, LockIcon } from "lucide-react-native";
@@ -10,34 +10,18 @@ import MaskStars from "@/components/FirstInstallation/MaskStars";
 import PapillonShineBubble from "@/components/FirstInstallation/PapillonShineBubble";
 import Reanimated, { LinearTransition, FlipInXDown } from "react-native-reanimated";
 import DuoListPressable from "@/components/FirstInstallation/DuoListPressable";
-import { Audio } from "expo-av";
 import { NativeText } from "@/components/Global/NativeComponents";
 import { LinearGradient } from "expo-linear-gradient";
+import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
 const PronoteAuthenticationSelector: Screen<"PronoteAuthenticationSelector"> = ({ navigation }) => {
   const theme = useTheme();
 
   type Methods = "geolocation" | "manual-location" | "manual-url" | "qr-code";
   const [method, setMethod] = useState<Methods | null>(null);
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
 
-  const loadSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require("@/../assets/sound/2.wav")
-    );
-
-    setSound(sound);
-  };
-
-  useEffect(() => {
-    loadSound();
-
-    return () => {
-      sound?.unloadAsync();
-    };
-  }, []);
-
-  const playSound = () => void sound?.replayAsync();
+  const { playSound } = useSoundHapticsWrapper();
+  const LEson = require("@/../assets/sound/2.wav");
 
   const handleConfirmation = () => {
     switch (method) {
@@ -55,7 +39,7 @@ const PronoteAuthenticationSelector: Screen<"PronoteAuthenticationSelector"> = (
         break;
     }
 
-    playSound();
+    playSound(LEson);
   };
 
   return (
@@ -66,7 +50,7 @@ const PronoteAuthenticationSelector: Screen<"PronoteAuthenticationSelector"> = (
         message="Que préfères-tu utiliser pour te connecter à Pronote ?"
         numberOfLines={2}
         width={260}
-        offsetTop={"16%"}
+        offsetTop={"20%"}
       />
 
       <View
@@ -186,7 +170,6 @@ const PronoteAuthenticationSelector: Screen<"PronoteAuthenticationSelector"> = (
       <View style={styles.buttons}>
         <View
           style={{
-            flexDirection: "row",
             gap: 12,
             alignItems: "center",
             marginBottom: 9,
@@ -200,7 +183,6 @@ const PronoteAuthenticationSelector: Screen<"PronoteAuthenticationSelector"> = (
           />
           <NativeText
             style={{
-              flex: 1,
               color: theme.colors.text,
               opacity: 0.5,
               fontSize: 13,

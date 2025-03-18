@@ -12,6 +12,6 @@ export const balance = async (account: ARDAccount): Promise<Balance[]> => {
     currency: "€",
     remaining: wallet.walletName.toLowerCase() !== "cafetaria" ? Math.floor((wallet.walletAmount / mealPrice!)) : null,
     label: wallet.walletName[0].toUpperCase() + wallet.walletName.slice(1).toLowerCase()
-  }));
+  })).reverse();
 
 };

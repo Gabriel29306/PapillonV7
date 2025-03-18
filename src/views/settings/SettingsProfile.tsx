@@ -3,13 +3,15 @@ import { Screen } from "@/router/helpers/types";
 import { useCurrentAccount } from "@/stores/account";
 import { useTheme } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-import { Camera, ChevronDown, ChevronUp, TextCursorInput, User2, UserCircle2, WholeWord } from "lucide-react-native";
+import { BadgeX, Camera, ChevronDown, ChevronUp, ClipboardCopy, TextCursorInput, Undo2, User2, UserCircle2, WholeWord } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, ScrollView, Switch, TextInput } from "react-native";
+import { ActivityIndicator, Image, KeyboardAvoidingView, ScrollView, Switch, TextInput } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
+import { useAlert } from "@/providers/AlertProvider";
 import * as Clipboard from "expo-clipboard";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { getDefaultProfilePicture } from "@/utils/GetRessources/GetDefaultProfilePicture";
+import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
 
 const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
   const theme = useTheme();
@@ -25,6 +27,8 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
 
   const [firstName, setFirstName] = useState(account.studentName?.first ?? "");
   const [lastName, setLastName] = useState(account.studentName?.last ?? "");
+
+  const { showAlert } = useAlert();
 
   // on name change, update the account name
   useEffect(() => {
@@ -48,6 +52,38 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
   const [profilePic, setProfilePic] = useState(account.personalization.profilePictureB64);
   const [loadingPic, setLoadingPic] = useState(false);
 
+  const resetProfilePic = async () => {
+    setLoadingPic(true);
+
+    // Call up the function to obtain the profile picture
+    const img = await getDefaultProfilePicture(account);
+
+    // If the image is undefined, an alert is displayed with an error message
+    if (!img) {
+      showAlert({
+        title: "Erreur",
+        message: "Impossible de récupérer de la photo de profil",
+        icon: <BadgeX />,
+        actions: [
+          {
+            title: "OK",
+            primary: true,
+            icon: <Undo2 />,
+          },
+        ],
+      });
+    } else {
+      // If image available, update profile picture
+      setProfilePic(img);
+      mutateProperty("personalization", {
+        ...account.personalization,
+        profilePictureB64: img,
+      });
+    }
+
+    setLoadingPic(false);
+  };
+
   const updateProfilePic = async () => {
     setLoadingPic(true);
 
@@ -66,7 +102,7 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
       mutateProperty("personalization", {
         ...account.personalization,
         profilePictureB64: img,
-      });
+      }, true);
     }
 
     setLoadingPic(false);
@@ -176,6 +212,21 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
               </NativeText>
             )}
           </NativeItem>
+
+          {profilePic && (
+            <NativeItem
+              chevron={false}
+              onPress={resetProfilePic}
+              icon={<Camera />}
+            >
+              <NativeText variant="title">
+                Réinitialiser la photo de profil
+              </NativeText>
+              <NativeText variant="subtitle">
+                Supprime la photo actuelle et rétablit l'image par défaut.
+              </NativeText>
+            </NativeItem>
+          )}
         </NativeList>
 
         <NativeListHeader
@@ -192,7 +243,7 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
             <NativeText variant="subtitle">
               Prénom
             </NativeText>
-            <TextInput
+            <ResponsiveTextInput
               style={{
                 fontSize: 16,
                 fontFamily: "semibold",
@@ -214,7 +265,7 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
             <NativeText variant="subtitle">
               Nom de famille
             </NativeText>
-            <TextInput
+            <ResponsiveTextInput
               style={{
                 fontSize: 16,
                 fontFamily: "semibold",
@@ -278,7 +329,7 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
           </NativeItem>
         </NativeList>
 
-        {account.identity && Object.keys(account.identity) !== undefined && Object.keys(account.identity).length > 0 && (
+        {Object.keys(account.identity ?? {})?.length > 0 && (
           <NativeListHeader
             label="Informations d'identité"
             trailing={
@@ -307,7 +358,11 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
                 key={"identityData_"+index}
                 onPress={async () => {
                   await Clipboard.setStringAsync(item.value);
-                  Alert.alert("Copié", "L'information a été copiée dans le presse-papier.");
+                  showAlert({
+                    title: "Copié",
+                    message: "L'information a été copiée dans le presse-papier.",
+                    icon: <ClipboardCopy />,
+                  });
                 }}
                 chevron={false}
               >

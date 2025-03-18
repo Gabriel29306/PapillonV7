@@ -1,38 +1,48 @@
-import { useTheme } from "@react-navigation/native";
-import { useEffect, useMemo, useState } from "react";
-import { View, ActivityIndicator, Platform, RefreshControl } from "react-native";
+import {useTheme} from "@react-navigation/native";
+import React, {useEffect, useMemo, useState} from "react";
+import {ActivityIndicator, Platform, RefreshControl, View} from "react-native";
 
-import type { Screen } from "@/router/helpers/types";
-import { useCurrentAccount } from "@/stores/account";
-import { useAttendanceStore } from "@/stores/attendance";
-import { updateAttendanceInCache, updateAttendancePeriodsInCache } from "@/services/attendance";
-import { NativeText } from "@/components/Global/NativeComponents";
-import Reanimated, { FadeIn, FadeOut, LinearTransition } from "react-native-reanimated";
+import type {Screen} from "@/router/helpers/types";
+import {useCurrentAccount} from "@/stores/account";
+import {useAttendanceStore} from "@/stores/attendance";
+import {updateAttendanceInCache, updateAttendancePeriodsInCache} from "@/services/attendance";
+import {NativeText} from "@/components/Global/NativeComponents";
+import Reanimated, {FadeIn, FadeOut, LinearTransition} from "react-native-reanimated";
 import PapillonPicker from "@/components/Global/PapillonPicker";
-import { ChevronDown, Eye, Scale, Timer, UserX } from "lucide-react-native";
-import PapillonHeader from "@/components/Global/PapillonHeader";
-import { animPapillon } from "@/utils/ui/animations";
+import {ChevronDown, Eye, Scale, Timer, UserX} from "lucide-react-native";
+import PapillonHeader, { PapillonHeaderInsetHeight } from "@/components/Global/PapillonHeader";
+import {animPapillon} from "@/utils/ui/animations";
 import AttendanceItem from "./Atoms/AttendanceItem";
-import { getAbsenceTime } from "@/utils/format/attendance_time";
+import {getAbsenceTime} from "@/utils/format/attendance_time";
 import TotalMissed from "./Atoms/TotalMissed";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
-import { protectScreenComponent } from "@/router/helpers/protected-screen";
-import { Observation } from "@/services/shared/Observation";
+import {protectScreenComponent} from "@/router/helpers/protected-screen";
+import {Observation} from "@/services/shared/Observation";
 import MissingItem from "@/components/Global/MissingItem";
-import React from "react";
+import {hasFeatureAccountSetup} from "@/utils/multiservice";
+import {MultiServiceFeature} from "@/stores/multiService/types";
+import {AccountService} from "@/stores/account/types";
+import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 const Attendance: Screen<"Attendance"> = ({ route, navigation }) => {
   const theme = useTheme();
   const account = useCurrentAccount(store => store.account!);
+  const { isOnline } = useOnlineStatus();
+
+  const hasServiceSetup = account.service === AccountService.PapillonMultiService ? hasFeatureAccountSetup(MultiServiceFeature.Attendance, account.localID) : true;
 
   const defaultPeriod = useAttendanceStore(store => store.defaultPeriod);
   const periods = useAttendanceStore(store => store.periods);
   const attendances = useAttendanceStore(store => store.attendances);
 
-
-
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(hasServiceSetup);
+
+  useEffect(() => {
+    if (!isOnline && isLoading) {
+      setLoading(false);
+    }
+  }, [isOnline, isLoading]);
 
   const [userSelectedPeriod, setUserSelectedPeriod] = useState<string | null>(null);
   const selectedPeriod = useMemo(() => userSelectedPeriod ?? defaultPeriod, [userSelectedPeriod, defaultPeriod]);
@@ -229,9 +239,10 @@ const Attendance: Screen<"Attendance"> = ({ route, navigation }) => {
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
+            progressViewOffset={70}
             onRefresh={() => {
               setIsRefreshing(true);
-              if(account.identityProvider?.identifier !== undefined) {
+              if(account.identityProvider?.identifier) {
                 navigation.navigate("BackgroundIdentityProvider");
                 updateAttendanceInCache(account, selectedPeriod).then(() => setIsRefreshing(false));
               }
@@ -242,11 +253,24 @@ const Attendance: Screen<"Attendance"> = ({ route, navigation }) => {
           />
         }
       >
-        {attendances[selectedPeriod] && attendances[selectedPeriod].absences.length === 0 && attendances[selectedPeriod].delays.length === 0 && attendances[selectedPeriod].punishments.length === 0 && Object.keys(attendances_observations_details).length === 0 &&(
+        <PapillonHeaderInsetHeight route={route} />
+
+        {!isOnline && <OfflineWarning cache={true} />}
+
+        {hasServiceSetup && attendances[selectedPeriod] && attendances[selectedPeriod].absences.length === 0 && attendances[selectedPeriod].delays.length === 0 && attendances[selectedPeriod].punishments.length === 0 && Object.keys(attendances_observations_details).length === 0 &&(
           <MissingItem
             title="Aucune absence"
             description="Tu n'as pas d'absences ni de retards pour cette période."
             emoji="🎉"
+            style={{ marginTop: 16 }}
+          />
+        )}
+
+        {!hasServiceSetup && (
+          <MissingItem
+            title="Aucun service connecté"
+            description="Tu n'as pas encore paramétré de service pour cette fonctionnalité."
+            emoji="🤷"
             style={{ marginTop: 16 }}
           />
         )}

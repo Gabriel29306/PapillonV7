@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { View, Switch, Platform, Alert } from "react-native";
+import { View, Switch } from "react-native";
 import {
   NativeItem,
   NativeList,
@@ -16,6 +16,8 @@ import {
   Equal,
   SendToBack,
   Gift,
+  Undo2,
+  BadgeInfo,
 } from "lucide-react-native";
 import {
   NestableDraggableFlatList,
@@ -81,19 +83,20 @@ const SettingsTabs = () => {
 
   const toggleTab = (tab: string) => {
     void (async () => {
-      if (tabs.filter((t) => t.enabled).length === 5 && !tabs.find((t) => t.tab === tab)?.enabled) {
+      const isTabEnabled = tabs.find((t) => t.tab === tab)?.enabled ?? false;
+      const enabledTabsCount = tabs.filter((t) => t.enabled).length;
+
+      if (!isTabEnabled && enabledTabsCount === 5) {
         playFailAnimation();
         return;
       }
 
-      const newTabs = [...tabs];
-      const index = newTabs.findIndex((t) => t.tab === tab);
+      const updatedTabs = tabs.map((t) =>
+        t.tab === tab ? { ...t, enabled: !t.enabled } : t
+      );
 
-      if (index !== -1 && !safeTabs.includes(tab)) {
-        newTabs[index].enabled = !newTabs[index].enabled;
-        setTabs(newTabs);
-        updatePersonalizationTabs(newTabs);
-      }
+      setTabs(updatedTabs);
+      updatePersonalizationTabs(updatedTabs);
     })();
   };
 
@@ -117,18 +120,14 @@ const SettingsTabs = () => {
     const loadTabs = async () => {
       if (account.personalization.tabs) {
         const storedTabs = account.personalization.tabs;
-        const updatedTabs = defaultTabs
-          .filter((defaultTab) =>
-            storedTabs.some((storedTab) => storedTab.name === defaultTab.tab)
-          )
-          .map((defaultTab) => {
-            const storedTab = storedTabs.find((t) => t.name === defaultTab.tab);
-            return {
-              ...defaultTab,
-              enabled: storedTab ? storedTab.enabled : false,
-              installed: true,
-            };
-          });
+        const updatedTabs = storedTabs
+          .map((storedTab) => {
+            const defaultTab = defaultTabs.find((t) => t.tab === storedTab.name);
+            return defaultTab
+              ? { ...defaultTab, enabled: storedTab.enabled, installed: true }
+              : null;
+          })
+          .filter((tab) => tab !== null);
 
         const newTabsFound: Tab[] = defaultTabs.filter((defaultTab) => !storedTabs.some((storedTab) => storedTab.name === defaultTab.tab)).map((tab) => ({ ...tab, installed: true }));
 
@@ -373,9 +372,7 @@ const SettingsTabs = () => {
 
           <NativeListHeader label="Réorganiser les onglets" />
 
-          <NativeList
-            animated
-          >
+          <NativeList>
             {showNewTabsNotification && (
               <NativeItem
                 leading={
@@ -397,6 +394,7 @@ const SettingsTabs = () => {
             )}
 
             <NestableDraggableFlatList
+              key={tabs.map((tab) => tab.tab).join(",")}
               initialNumToRender={tabs.length}
               scrollEnabled={false}
               data={tabs}
@@ -414,10 +412,12 @@ const SettingsTabs = () => {
                       leading={
                         <LottieView
                           source={item.icon}
-                          colorFilters={[{
-                            keypath: "*",
-                            color: theme.colors.text,
-                          }]}
+                          colorFilters={[
+                            {
+                              keypath: "*",
+                              color: theme.colors.text,
+                            }
+                          ]}
                           style={{ width: 24, height: 24, marginVertical: 2 }}
                         />
                       }
@@ -431,40 +431,31 @@ const SettingsTabs = () => {
                             width: 70,
                           }}
                         >
-                          {!safeTabs.includes(item.tab) && (
+                          {!safeTabs.includes(item.tab) && !loading && (
                             <Reanimated.View
                               entering={ZoomIn.springify().mass(1).damping(20).stiffness(300)}
                               exiting={ZoomOut.duration(300)}
                             >
-                              {!loading && (
-                                <PapillonCheckbox
-                                  checked={item.enabled}
-                                  onPress={() => {
-                                    if (!item.enabled && tabs.filter(t => t.enabled).length === 5) {
-                                      if (Platform.OS === "ios") {
-                                        Alert.alert("Information", "Tu ne peux pas ajouter plus de 5 onglets sur la page d'accueil.", [
-                                          {
-                                            text: "OK",
-                                          },
-                                        ]);
-                                      } else {
-                                        showAlert({
-                                          title: "Information",
-                                          message: "Tu ne peux pas ajouter plus de 5 onglets sur la page d'accueil.",
-                                          actions: [
-                                            {
-                                              title: "OK",
-                                              onPress: () => {},
-                                              backgroundColor: theme.colors.card,
-                                            },
-                                          ],
-                                        });
-                                      }
-                                    }
-                                    toggleTab(item.tab);
-                                  }}
-                                />
-                              )}
+                              <PapillonCheckbox
+                                checked={item.enabled}
+                                onPress={() => {
+                                  if (!item.enabled && tabs.filter(t => t.enabled).length === 5) {
+                                    showAlert({
+                                      title: "Information",
+                                      message: "Tu ne peux pas ajouter plus de 5 onglets sur la page d'accueil.",
+                                      icon: <BadgeInfo />,
+                                      actions: [
+                                        {
+                                          title: "OK",
+                                          primary: true,
+                                          icon: <Undo2 />,
+                                        },
+                                      ],
+                                    });
+                                  }
+                                  toggleTab(item.tab);
+                                }}
+                              />
                             </Reanimated.View>
                           )}
 
@@ -476,7 +467,9 @@ const SettingsTabs = () => {
                         </View>
                       }
                     >
-                      <NativeText variant="title">{item.label}</NativeText>
+                      <NativeText variant="title">
+                        {item.label}
+                      </NativeText>
                     </NativeItem>
                   </View>
                 </ShadowDecorator>

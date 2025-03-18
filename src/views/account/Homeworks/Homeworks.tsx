@@ -33,11 +33,15 @@ import * as Haptics from "expo-haptics";
 import MissingItem from "@/components/Global/MissingItem";
 import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
 import {Homework} from "@/services/shared/Homework";
-import {Account} from "@/stores/account/types";
+import {Account, AccountService} from "@/stores/account/types";
 import {Screen} from "@/router/helpers/types";
 import {NativeSyntheticEvent} from "react-native/Libraries/Types/CoreEventTypes";
 import {NativeScrollEvent, ScrollViewProps} from "react-native/Libraries/Components/ScrollView/ScrollView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {hasFeatureAccountSetup} from "@/utils/multiservice";
+import {MultiServiceFeature} from "@/stores/multiService/types";
+import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
+import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 type HomeworksPageProps = {
   index: number;
@@ -60,16 +64,16 @@ const formatDate = (date: string | number | Date): string => {
 const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
   const flatListRef: React.MutableRefObject<FlatList> = useRef(null) as any as React.MutableRefObject<FlatList>;
   const { width } = Dimensions.get("window");
-  const finalWidth = width - (width > 600 ? (
-    320 > width * 0.35 ? width * 0.35 :
-      320
-  ) : 0);
+  const finalWidth = width;
   const insets = useSafeAreaInsets();
+  const { playHaptics } = useSoundHapticsWrapper();
+  const { isOnline } = useOnlineStatus();
 
   const outsideNav = route.params?.outsideNav;
 
   const theme = useTheme();
   const account = useCurrentAccount(store => store.account!);
+  const hasServiceSetup = account.service === AccountService.PapillonMultiService ? hasFeatureAccountSetup(MultiServiceFeature.Homeworks, account.localID) : true;
   const homeworks = useHomeworkStore(store => store.homeworks);
 
   // @ts-expect-error
@@ -81,18 +85,7 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
   }
   const firstDateEpoch = dateToEpochWeekNumber(firstDate);
 
-  // Function to get the current week number since epoch
-  const getCurrentWeekNumber = () => {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    const start = new Date(1970, 0, 0);
-    start.setHours(0, 0, 0, 0);
-    const diff = now.getTime() - start.getTime();
-    const oneWeek = 1000 * 60 * 60 * 24 * 7;
-    return Math.floor(diff / oneWeek) + 1;
-  };
-
-  const currentWeek = getCurrentWeekNumber();
+  const currentWeek = dateToEpochWeekNumber(new Date());
   const [data, setData] = useState(Array.from({ length: 100 }, (_, i) => currentWeek - 50 + i));
 
   const [selectedWeek, setSelectedWeek] = useState(currentWeek);
@@ -116,6 +109,12 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
 
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    if (!isOnline && loading) {
+      setLoading(false);
+    }
+  }, [isOnline, loading]);
 
   const [loadedWeeks, setLoadedWeeks] = useState<number[]>([]);
 
@@ -251,6 +250,8 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
           />
         }
       >
+        {!isOnline && <OfflineWarning cache={true} />}
+
         {groupedHomework && Object.keys(groupedHomework).map((day, index) => (
           <Reanimated.View
             key={day}
@@ -301,12 +302,17 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
                   title="Il ne reste rien à faire"
                   description="Il n'y a aucun devoir non terminé pour cette semaine."
                 />
-                :
-                <MissingItem
-                  emoji="📚"
-                  title="Aucun devoir"
-                  description="Il n'y a aucun devoir pour cette semaine."
-                />}
+                : hasServiceSetup ?
+                  <MissingItem
+                    emoji="📚"
+                    title="Aucun devoir"
+                    description="Il n'y a aucun devoir pour cette semaine."
+                  />
+                  : <MissingItem
+                    title="Aucun service connecté"
+                    description="Tu n'as pas encore paramétré de service pour cette fonctionnalité."
+                    emoji="🤷"
+                  />}
           </Reanimated.View>
         }
       </ScrollView>
@@ -409,7 +415,9 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
             onPress={() => setShowPickerButtons(!showPickerButtons)}
             onLongPress={() => {
               setHideDone(!hideDone);
-              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+              playHaptics("notification", {
+                notification: Haptics.NotificationFeedbackType.Success,
+              });
             }}
             delayLongPress={200}
           >

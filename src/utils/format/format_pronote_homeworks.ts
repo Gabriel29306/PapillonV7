@@ -1,3 +1,5 @@
+import { latexVocabulary } from "@/consts/LatexVocabulary";
+
 type SupportedTags = {
   [key: string]: string | ((text: string) => string);
 };
@@ -6,23 +8,27 @@ function parse_homeworks (content: string): string {
   const supportedTags: SupportedTags = {
     br: "\n",
     strong: (text: string) => `**${text}**`,
+    sub: (text: string) => `_{${text}}`,
+    sup: (text: string) => `^{${text}}`,
   };
 
   const ignoredTags: Set<string> = new Set(["div", "span", "style", "script", "footer", "header"]);
 
-  const tagRegex = /<\/?([a-zA-Z]+)(?:\s[^>]*)?>|([^<]+)/g;
+  const tagRegex = /<\/?([a-zA-Z]+)(?:\s[^>]*)?>|([^<]+)/gm;
 
   const htmlEntities: Record<string, string> = {
     "&nbsp;": " ",
     "&quot;": "\"",
     "&#039;": "'",
+    ...latexVocabulary
   };
 
   // Décodage des entités HTML
   function decodeHtmlEntities (text: string): string {
     return text
       .replace(/&#(\d+);/g, (_, dec) => String.fromCharCode(parseInt(dec, 10)))
-      .replace(/&([a-zA-Z]+);/g, (_, entity) => htmlEntities[entity] || `&${entity};`);
+      .replace(/&([a-zA-Z]+);/g, (_, entity) => htmlEntities[entity] || `&${entity};`)
+      .replace(/[\u2200-\u22FF\u03B1-\u03C9]/g, match => latexVocabulary[match] || match);
   }
 
   let result = "";

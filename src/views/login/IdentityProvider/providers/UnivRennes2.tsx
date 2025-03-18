@@ -78,6 +78,8 @@ const UnivRennes2_Login: Screen<"UnivRennes2_Login"> = ({ navigation }) => {
           rawData: data
         },
 
+        providers: ["ical", "moodle"],
+
         localID: uuid(),
         service: AccountService.Local,
 
@@ -94,7 +96,8 @@ const UnivRennes2_Login: Screen<"UnivRennes2_Login"> = ({ navigation }) => {
 
         personalization: await defaultPersonalization(),
 
-        identity: {}
+        identity: {},
+        serviceData: {}
       };
 
       createStoredAccount(local_account);

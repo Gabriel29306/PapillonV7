@@ -23,10 +23,11 @@ import * as AuthSession from "expo-auth-session";
 import { OID_CLIENT_ID, OID_CLIENT_SECRET, REDIRECT_URI } from "scolengo-api";
 import { useAlert } from "@/providers/AlertProvider";
 import { useAccounts, useCurrentAccount } from "@/stores/account";
-import { Audio } from "expo-av";
 import { authTokenToSkolengoTokenSet } from "@/services/skolengo/skolengo-types";
 import { getSkolengoAccount } from "@/services/skolengo/skolengo-account";
 import { wait } from "@/services/skolengo/data/utils";
+import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
+import { BadgeX, Undo2 } from "lucide-react-native";
 
 // TODO : When the app is not started with Expo Go (so with a prebuild or a release build), use the expo auth-session module completely with the deeplink and without the webview.
 
@@ -41,6 +42,8 @@ const SkolengoWebview: Screen<"SkolengoWebview"> = ({ route, navigation }) => {
 
   const [pageUrl, setPageUrl] = useState<string|null>(null);
   const [discovery, setDiscovery] = useState<AuthSession.DiscoveryDocument | null>(null);
+  const { playSound } = useSoundHapticsWrapper();
+  const LEson = require("@/../assets/sound/3.wav");
 
   const createStoredAccount = useAccounts((store) => store.create);
   const switchTo = useCurrentAccount((store) => store.switchTo);
@@ -57,42 +60,8 @@ const SkolengoWebview: Screen<"SkolengoWebview"> = ({ route, navigation }) => {
 
   let webViewRef = createRef<WebView>();
 
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [sound2, setSound2] = useState<Audio.Sound | null>(null);
-
   useEffect(() => {
-    const loadSound = async () => {
-      const { sound } = await Audio.Sound.createAsync(
-        require("@/../assets/sound/3.wav")
-      );
-      setSound(sound);
-      const sound2 = await Audio.Sound.createAsync(
-        require("@/../assets/sound/4.wav")
-      );
-      setSound2(sound2.sound);
-      await sound.replayAsync();
-    };
-
-    loadSound();
-
-    return () => {
-      if (sound) {
-        sound.unloadAsync();
-      }
-      if (sound2) {
-        sound2.unloadAsync();
-      }
-    };
-  }, []);
-
-  const playSound = async () => {
-    if (sound) {
-      await sound2?.replayAsync();
-    }
-  };
-
-  useEffect(() => {
-    playSound();
+    playSound(LEson);
   }, []);
 
   return (
@@ -203,9 +172,12 @@ const SkolengoWebview: Screen<"SkolengoWebview"> = ({ route, navigation }) => {
                   showAlert({
                     title: "Erreur",
                     message: "Impossible de récupérer le code d'authentification.",
+                    icon: <BadgeX />,
                     actions: [
                       {
                         title: "OK",
+                        primary: true,
+                        icon: <Undo2 />,
                         onPress: () => navigation.goBack(),
                       }
                     ]

@@ -1,14 +1,47 @@
 import { useTheme } from "@react-navigation/native";
-import { ChevronRight } from "lucide-react-native";
-import React, { useLayoutEffect } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { AlertTriangle, BadgeHelp, CheckCheck, ChevronRight, Eraser, Undo2 } from "lucide-react-native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import type { Screen } from "@/router/helpers/types";
-import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
+import {
+  NativeItem,
+  NativeList,
+  NativeListHeader,
+  NativeText
+} from "@/components/Global/NativeComponents";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAlert } from "@/providers/AlertProvider";
+import * as TaskManager from "expo-task-manager";
+import { error, log } from "@/utils/logger/logger";
+import { isExpoGo } from "@/utils/native/expoGoAlert";
+import { papillonNotify } from "@/background/Notifications";
+import PapillonSpinner from "@/components/Global/PapillonSpinner";
+import { registerBackgroundTasks, unsetBackgroundFetch } from "@/background/BackgroundTasks";
 
 const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
   const theme = useTheme();
   const { colors } = theme;
+  const { showAlert } = useAlert();
+  const [loading, setLoading] = useState(false);
+  const [isBackgroundActive, setIsBackgroundActive] = useState<null | boolean>(null);
+
+  useEffect(() => {
+    const checkBackgroundTaskStatus = async () => {
+      try {
+        const isRegistered = await TaskManager.isTaskRegisteredAsync("background-fetch");
+        setTimeout(() => {
+          setIsBackgroundActive(isRegistered);
+        }, 500);
+      } catch (err) {
+        error(`❌ Failed to register background task: ${err}`, "BACKGROUND");
+        setIsBackgroundActive(false);
+      }
+    };
+
+    if (!isExpoGo() && !loading) {
+      checkBackgroundTaskStatus();
+    }
+  }, [isBackgroundActive, loading]);
 
   // add button to header
   useLayoutEffect(() => {
@@ -100,14 +133,26 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
               </NativeText>
             </NativeItem>
 
-            // TODO : create NoteReaction screen
-            {/* <NativeItem
-              onPress={() => navigation.navigate("NoteReaction")}
+            <NativeItem
+              onPress={() => navigation.navigate("GradeReaction", {
+                grade: {
+                  id: "devGrade",
+                  subjectName: "Développement",
+                  description: "Typage avec Vince",
+                  timestamp: new Date().getTime(),
+                  outOf: { value: 7, status: null },
+                  coefficient: 7,
+                  student: { value: 7, status: null },
+                  average: { value: 7, status: null },
+                  max: { value: 7, status: null },
+                  min: { value: 1, status: null }
+                }
+              })}
             >
               <NativeText>
-                NoteReaction
+                GradeReaction
               </NativeText>
-            </NativeItem> */}
+            </NativeItem>
 
             <NativeItem
               onPress={() => navigation.navigate("ColorSelector")}
@@ -160,6 +205,95 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
         </NativeList>
       </View>
 
+
+      {!isExpoGo() && (
+        <View>
+          <NativeListHeader label="Tâches en arrière-plan" />
+
+          <NativeList>
+            <NativeItem
+              leading={
+                isBackgroundActive ? (
+                  <CheckCheck color="#00bd55" />
+                ) : isBackgroundActive === false ? (
+                  <AlertTriangle color="#bd9100" />
+                ) : (
+                  <PapillonSpinner size={24} color={theme.colors.primary} />
+                )
+              }
+            >
+              <NativeText variant="body">
+                {isBackgroundActive === true
+                  ? "Le background est actuellement actif."
+                  : isBackgroundActive === false
+                    ? "Le background n'est pas actif."
+                    : "Vérification du background..."}
+              </NativeText>
+            </NativeItem>
+            {isBackgroundActive !== null && (
+              <NativeItem
+                title={isBackgroundActive ? "Réinitialiser" : "Activer"}
+                onPress={async () => {
+                  setLoading(true);
+                  setIsBackgroundActive(null);
+                  if (isBackgroundActive) {
+                    await unsetBackgroundFetch()
+                      .then(() => log("✅ Background task unregistered", "BACKGROUND"))
+                      .catch((ERRfatal) =>
+                        error(
+                          `❌ Failed to unregister background task: ${ERRfatal}`,
+                          "BACKGROUND"
+                        )
+                      );;
+                  }
+
+                  await registerBackgroundTasks()
+                    .then(() => log("✅ Background task registered", "BACKGROUND"))
+                    .catch((ERRfatal) =>
+                      error(
+                        `❌ Failed to register background task: ${ERRfatal}`,
+                        "BACKGROUND"
+                      )
+                    );
+                  setTimeout(() => {
+                    setLoading(false);
+                  }, 500);
+                }}
+              />
+            )}
+            <NativeItem
+              title={"Test des notifications"}
+              trailing={
+                loading ? (
+                  <View>
+                    <PapillonSpinner
+                      strokeWidth={3}
+                      size={22}
+                      color={theme.colors.text}
+                    />
+                  </View>
+                ) : undefined
+              }
+              disabled={loading}
+              onPress={async () => {
+                setLoading(true);
+                await papillonNotify(
+                  {
+                    id: "test",
+                    title: "Coucou, c'est Papillon 👋",
+                    subtitle: "Test",
+                    body: "Si tu me vois, c'est que tout fonctionne correctement !",
+                  },
+                  "Test"
+                );
+                setTimeout(() => {
+                  setLoading(false);
+                }, 500);
+              }}
+            /></NativeList>
+        </View>
+      )}
+
       <View>
         <NativeListHeader label="Actions destructives" />
 
@@ -167,24 +301,28 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
 
           <NativeItem
             onPress={() => {
-              Alert.alert(
-                "Réinitialisation de Papillon",
-                "Es-tu sûr de vouloir réinitialiser toutes les données de l'application ?",
-                [
+              showAlert({
+                title: "Réinitialisation de Papillon",
+                message: "Es-tu sûr de vouloir réinitialiser toutes les données de l'application ?",
+                icon: <BadgeHelp />,
+                actions: [
                   {
-                    text: "Annuler",
-                    style: "cancel",
+                    title: "Annuler",
+                    icon: <Undo2 />,
+                    primary: false,
                   },
                   {
-                    text: "Réinitialiser",
-                    style: "destructive",
+                    title: "Réinitialiser",
+                    icon: <Eraser />,
                     onPress: () => {
                       AsyncStorage.clear();
                       navigation.popToTop();
                     },
-                  },
-                ],
-              );
+                    danger: true,
+                    delayDisable: 10,
+                  }
+                ]
+              });
             }}
           >
             <NativeText

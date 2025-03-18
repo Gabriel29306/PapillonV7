@@ -30,11 +30,15 @@ import Reanimated, {
   FadeInDown,
   FadeOut,
 } from "react-native-reanimated";
-import PapillonHeader from "@/components/Global/PapillonHeader";
+import PapillonHeader, { PapillonHeaderInsetHeight } from "@/components/Global/PapillonHeader";
 import { SquarePen } from "lucide-react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import { TabLocation } from "pawnote";
+import {hasFeatureAccountSetup} from "@/utils/multiservice";
+import {MultiServiceFeature} from "@/stores/multiService/types";
+import { timestampToString } from "@/utils/format/DateHelper";
+import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 // Voir la documentation de `react-navigation`.
 //
@@ -47,10 +51,12 @@ LogBox.ignoreLogs([
 
 const Discussions: Screen<"Discussions"> = ({ navigation, route }) => {
   const theme = useTheme();
+  const { isOnline } = useOnlineStatus();
 
   const { colors } = theme;
 
   const account = useCurrentAccount((state) => state.account!);
+  const hasServiceSetup = account.service === AccountService.PapillonMultiService ? hasFeatureAccountSetup(MultiServiceFeature.Chats, account.localID) : true;
 
   const [chats, setChats] = useState<Chat[] | null>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -98,7 +104,7 @@ const Discussions: Screen<"Discussions"> = ({ navigation, route }) => {
   return (
     <>
       <PapillonHeader route={route} navigation={navigation}>
-        {supported && enabled && (
+        {isOnline && supported && enabled && (
           <TouchableOpacity
             style={{
               flex: 1,
@@ -122,7 +128,7 @@ const Discussions: Screen<"Discussions"> = ({ navigation, route }) => {
             padding: 20,
           }}
         >
-          {!supported ? (
+          {hasServiceSetup && !supported ? (
             <MissingItem
               emoji="🚧"
               title="Fonctionnalité en construction"
@@ -131,7 +137,7 @@ const Discussions: Screen<"Discussions"> = ({ navigation, route }) => {
               exiting={animPapillon(FadeOut)}
               style={{ paddingVertical: 26 }}
             />
-          ) : !enabled && (
+          ) : hasServiceSetup && !enabled && (
             <MissingItem
               emoji="💬"
               title="Discussions désactivées"
@@ -141,6 +147,14 @@ const Discussions: Screen<"Discussions"> = ({ navigation, route }) => {
               style={{ paddingVertical: 26 }}
             />
           )}
+          {!hasServiceSetup && (
+            <MissingItem
+              title="Aucun service connecté"
+              description="Tu n'as pas encore paramétré de service pour cette fonctionnalité."
+              emoji="🤷"
+              style={{ marginTop: 16 }}
+            />
+          )}
         </View>
       ) : (
         <ScrollView
@@ -148,9 +162,14 @@ const Discussions: Screen<"Discussions"> = ({ navigation, route }) => {
             padding: 20,
             paddingTop: 0,
           }}
+          scrollIndicatorInsets={{ top: 42 }}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         >
-          {!chats ? (
+          <PapillonHeaderInsetHeight route={route} />
+
+          {!isOnline ? (
+            <OfflineWarning cache={false} />
+          ) : !chats ? (
             <Reanimated.View
               entering={FadeIn.springify().mass(1).damping(20).stiffness(300)}
               exiting={
@@ -229,7 +248,7 @@ const Discussions: Screen<"Discussions"> = ({ navigation, route }) => {
                     <NativeText variant={"subtitle"}>{getChatCreator(chat)}</NativeText>
                   </View>
                   <NativeText>{chat.subject || "Aucun sujet"}</NativeText>
-                  <NativeText variant={"subtitle"}>Il y a {Math.floor((new Date().getTime() - new Date(chat.date).getTime()) / (1000 * 60 * 60 * 24))} jours</NativeText>
+                  <NativeText variant={"subtitle"}>{timestampToString(chat.date.getTime())}</NativeText>
                 </NativeItem>
               ))}
             </NativeList>

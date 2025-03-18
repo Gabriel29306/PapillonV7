@@ -2,8 +2,10 @@ import { type Account, AccountService } from "@/stores/account/types";
 import { useGradesStore } from "@/stores/grades";
 import type { Period } from "./shared/Period";
 import type { AverageOverview, Grade } from "./shared/Grade";
-import {error } from "@/utils/logger/logger";
+import { error, log } from "@/utils/logger/logger";
 import { checkIfSkoSupported } from "./skolengo/default-personalization";
+import {MultiServiceFeature} from "@/stores/multiService/types";
+import {getFeatureAccount} from "@/utils/multiservice";
 
 const getDefaultPeriod = (periods: Period[]): string => {
   const now = Date.now();
@@ -32,15 +34,25 @@ export async function updateGradesPeriodsInCache <T extends Account> (account: T
       break;
     }
     case AccountService.Local: {
-      periods = [
-        {
-          name: "Toutes",
-          startTimestamp: 1609459200,
-          endTimestamp: 1622505600
-        },
-      ];
-      defaultPeriod = "Toutes";
-      break;
+      if (account.identityProvider.identifier == "iut-lannion") {
+        const { saveIUTLanPeriods } = await import("./iutlan/grades");
+        const data = await saveIUTLanPeriods(account);
+
+        periods = data.periods;
+        defaultPeriod = data.defaultPeriod;
+        break;
+      }
+      else {
+        periods = [
+          {
+            name: "Toutes",
+            startTimestamp: 1609459200,
+            endTimestamp: 1622505600
+          },
+        ];
+        defaultPeriod = "Toutes";
+        break;
+      }
     }
     case AccountService.Skolengo: {
       if(!checkIfSkoSupported(account, "Grades")) {
@@ -53,6 +65,14 @@ export async function updateGradesPeriodsInCache <T extends Account> (account: T
       defaultPeriod = getDefaultPeriod(periods);
 
       break;
+    }
+    case AccountService.PapillonMultiService: {
+      const service = getFeatureAccount(MultiServiceFeature.Grades, account.localID);
+      if (!service) {
+        log("No service set in multi-service space for feature \"Grades\"", "multiservice");
+        break;
+      }
+      return await updateGradesPeriodsInCache(service);
     }
     default:
       throw new Error("Service not implemented");
@@ -91,7 +111,7 @@ export async function updateGradesAndAveragesInCache <T extends Account> (accoun
       case AccountService.Local: {
         if (account.identityProvider.identifier == "iut-lannion") {
           const { saveIUTLanGrades } = await import("./iutlan/grades");
-          const data = await saveIUTLanGrades(account);
+          const data = await saveIUTLanGrades(account, periodName);
 
           grades = data.grades;
           averages = data.averages;
@@ -120,12 +140,20 @@ export async function updateGradesAndAveragesInCache <T extends Account> (accoun
 
         break;
       }
+      case AccountService.PapillonMultiService: {
+        const service = getFeatureAccount(MultiServiceFeature.Grades, account.localID);
+        if (!service) {
+          log("No service set in multi-service space for feature \"Grades\"", "multiservice");
+          break;
+        }
+        return await updateGradesAndAveragesInCache(service, periodName);
+      }
       default:
         throw new Error(`Service (${AccountService[account.service]}) not implemented for this request`);
     }
     useGradesStore.getState().updateGradesAndAverages(periodName, grades, averages);
   }
   catch (err) {
-    error(`not updated, see:${err}`, "updateGradesAndAveragesInCache");
+    error(`grades not updated, see:${err}`, "updateGradesAndAveragesInCache");
   }
 }

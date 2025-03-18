@@ -11,6 +11,7 @@ import { updateTimetableForWeekInCache } from "@/services/timetable";
 import MissingItem from "@/components/Global/MissingItem";
 import { TimetableItem } from "../../Lessons/Atoms/Item";
 import { getHolidayEmoji } from "@/utils/format/holidayEmoji";
+import PapillonLoading from "@/components/Global/PapillonLoading";
 
 interface TimetableElementProps {
   onImportance: (value: number) => unknown;
@@ -88,13 +89,10 @@ const TimetableElement: React.FC<TimetableElementProps> = ({ onImportance }) => 
   };
 
   const fetchTimetable = async () => {
-    if (!timetables[currentWeekNumber] && account.instance) {
+    if (account.instance) {
       setLoading(true);
-      try {
-        await updateTimetableForWeekInCache(account, currentWeekNumber);
-      } finally {
-        setLoading(false);
-      }
+      await updateTimetableForWeekInCache(account, currentWeekNumber);
+      setLoading(false);
     }
   };
 
@@ -130,10 +128,8 @@ const TimetableElement: React.FC<TimetableElementProps> = ({ onImportance }) => 
         exiting={FadeOut.duration(300)}
       >
         <NativeItem animated style={{ paddingVertical: 10 }}>
-          <MissingItem
-            emoji="⏳"
+          <PapillonLoading
             title="Chargement de l'emploi du temps"
-            description="Patiente, s'il te plaît..."
           />
         </NativeItem>
       </NativeList>

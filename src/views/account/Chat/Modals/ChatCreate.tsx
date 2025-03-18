@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
   ScrollView,
-  TextInput,
   View,
   StyleSheet,
   ActivityIndicator,
   Platform,
-  Alert,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
@@ -20,7 +18,7 @@ import {
 import { useCurrentAccount } from "@/stores/account";
 import { Recipient } from "@/services/shared/Recipient";
 import { createDiscussion, createDiscussionRecipients } from "@/services/chats";
-import { PenTool, Tag } from "lucide-react-native";
+import { BadgeHelp, PenTool, Send, Tag, Undo2 } from "lucide-react-native";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import PapillonCheckbox from "@/components/Global/PapillonCheckbox";
 import { getProfileColorByName } from "@/services/local/default-personalization";
@@ -28,6 +26,8 @@ import InitialIndicator from "@/components/News/InitialIndicator";
 import parse_initials from "@/utils/format/format_pronote_initials";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
+import { useAlert } from "@/providers/AlertProvider";
+import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
 
 const ChatCreate: Screen<"ChatCreate"> = ({ navigation }) => {
   const theme = useTheme();
@@ -63,6 +63,8 @@ const ChatCreate: Screen<"ChatCreate"> = ({ navigation }) => {
     ]);
   };
 
+  const { showAlert } = useAlert();
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -76,7 +78,7 @@ const ChatCreate: Screen<"ChatCreate"> = ({ navigation }) => {
         <NativeList>
           <NativeItem chevron={false} icon={<Tag />}>
             <NativeText variant="subtitle">Sujet</NativeText>
-            <TextInput
+            <ResponsiveTextInput
               style={[styles.textInput, { color: theme.colors.text }]}
               placeholder="Sujet de ton message"
               placeholderTextColor={theme.colors.text + "80"}
@@ -86,7 +88,7 @@ const ChatCreate: Screen<"ChatCreate"> = ({ navigation }) => {
           </NativeItem>
           <NativeItem chevron={false} icon={<PenTool />}>
             <NativeText variant="subtitle">Contenu</NativeText>
-            <TextInput
+            <ResponsiveTextInput
               style={{
                 fontSize: 16,
                 fontFamily: "semibold",
@@ -173,26 +175,28 @@ const ChatCreate: Screen<"ChatCreate"> = ({ navigation }) => {
       </ScrollView>
       <View style={[styles.fixedButtonContainer, {backgroundColor: colors.background}]}>
         <ButtonCta primary value={"Créer la discussion"} disabled={!(content && selectedRecipients.length > 0)} onPress={() => {
-          console.log("onPress");
           if (!subject) {
-            Alert.alert(
-              "Veux-tu continuer sans objet ?",
-              "Tu es sur le point de créer une discussion sans objet. Veux-tu continuer ?",
-              [
+            showAlert({
+              title: "Veux-tu continuer sans objet ?",
+              message: "Tu es sur le point de créer une discussion sans objet. Veux-tu continuer ?",
+              icon: <BadgeHelp />,
+              actions: [
                 {
-                  text: "Annuler",
-                  style: "cancel",
+                  title: "Annuler",
+                  icon: <Undo2 />,
+                  primary: false,
+                  backgroundColor: theme.colors.primary,
                 },
                 {
-                  text: "Continuer",
+                  title: "Continuer",
+                  icon: <Send />,
                   onPress: () => {
                     createDiscussion(account, "Aucun objet", content, selectedRecipients);
                     navigation.goBack();
                   },
-                },
-              ],
-              { cancelable: true }
-            );
+                }
+              ]
+            });
           } else {
             createDiscussion(account, subject, content, selectedRecipients);
             navigation.goBack();

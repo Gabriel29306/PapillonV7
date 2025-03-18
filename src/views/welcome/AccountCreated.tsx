@@ -13,48 +13,13 @@ import PapillonShineBubble from "@/components/FirstInstallation/PapillonShineBub
 import * as Haptics from "expo-haptics";
 
 import { useCurrentAccount } from "@/stores/account";
-import { Audio } from "expo-av";
+import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
 const AccountCreated: Screen<"AccountCreated"> = ({ navigation }) => {
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [sound2, setSound2] = useState<Audio.Sound | null>(null);
-
   const account = useCurrentAccount((state) => state.account!);
-
-  const loadSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require("@/../assets/sound/5.wav")
-    );
-
-    setSound(sound);
-
-    const { sound: sound2 } = await Audio.Sound.createAsync(
-      require("@/../assets/sound/6.wav")
-    );
-
-    setSound2(sound2);
-  };
-
-  useEffect(() => {
-    loadSound();
-
-    return () => {
-      sound?.unloadAsync();
-      sound2?.unloadAsync();
-    };
-  }, []);
-
-  const playSound = async () => {
-    if (sound) {
-      await sound.replayAsync();
-    }
-  };
-
-  const playSound2 = async () => {
-    if (sound) {
-      await sound2?.replayAsync();
-    }
-  };
+  const { playHaptics, playSound } = useSoundHapticsWrapper();
+  const LEson5 = require("@/../assets/sound/5.wav");
+  const LEson6 = require("@/../assets/sound/6.wav");
 
   let name = !account.studentName?.first ? null
     : account.studentName?.first;
@@ -75,7 +40,9 @@ const AccountCreated: Screen<"AccountCreated"> = ({ navigation }) => {
       // loop 20 times
       for (let i = 0; i < 15; i++) {
         setTimeout(() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          playHaptics("impact", {
+            impact: Haptics.ImpactFeedbackStyle.Medium,
+          });
         }, i * 20);
       }
     });
@@ -130,14 +97,14 @@ const AccountCreated: Screen<"AccountCreated"> = ({ navigation }) => {
           primary
           onPress={() => {
             navigation.navigate("ColorSelector");
-            playSound();
+            playSound(LEson5);
           }}
         />
         <ButtonCta
           value="Ignorer cette étape"
           onPress={() => {
             navigation.navigate("AccountStack", { onboard: true });
-            playSound2();
+            playSound(LEson6);
           }}
         />
       </View>

@@ -53,6 +53,8 @@ const Muli_Login: Screen<"Multi_Login"> = ({ route, navigation }) => {
           refreshAuthToken: account.userData.refreshAuthToken || "",
         },
         personalization: await defaultPersonalization(account),
+        serviceData: {},
+        providers: []
       };
 
       createStoredAccount(local_account);

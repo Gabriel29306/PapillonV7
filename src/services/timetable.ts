@@ -2,8 +2,9 @@ import { type Account, AccountService } from "@/stores/account/types";
 import { useTimetableStore } from "@/stores/timetable";
 import { epochWNToPronoteWN, weekNumberToDateRange } from "@/utils/epochWeekNumber";
 import { checkIfSkoSupported } from "./skolengo/default-personalization";
-import { error } from "@/utils/logger/logger";
-import { fetchIcalData } from "./local/ical";
+import { error, log } from "@/utils/logger/logger";
+import {MultiServiceFeature} from "@/stores/multiService/types";
+import {getFeatureAccount} from "@/utils/multiservice";
 import { WeekFrequency } from "./shared/Timetable";
 
 /**
@@ -46,13 +47,18 @@ export async function updateTimetableForWeekInCache <T extends Account> (account
       useTimetableStore.getState().updateClasses(epochWeekNumber, timetable);
       break;
     }
+    case AccountService.PapillonMultiService: {
+      const service = getFeatureAccount(MultiServiceFeature.Timetable, account.localID);
+      if (!service) {
+        log("No service set in multi-service space for feature \"Timetable\"", "multiservice");
+        break;
+      }
+      return updateTimetableForWeekInCache(service, epochWeekNumber, force);
+    }
     default: {
       throw new Error("Service not implemented.");
     }
   }
-
-  // Fetch iCal data
-  await fetchIcalData(account, force);
 }
 
 /**

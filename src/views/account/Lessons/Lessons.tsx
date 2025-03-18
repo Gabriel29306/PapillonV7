@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FlatList, View, Dimensions, ViewToken } from "react-native";
+import { FlatList, View, ViewToken } from "react-native";
 import { StyleSheet } from "react-native";
 import type { Screen } from "@/router/helpers/types";
 import { useCurrentAccount } from "@/stores/account";
@@ -22,7 +22,7 @@ import { animPapillon } from "@/utils/ui/animations";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import AnimatedNumber from "@/components/Global/AnimatedNumber";
-import { CalendarPlus, Eye, MoreVertical } from "lucide-react-native";
+import { CalendarPlus, Eye, EyeOff, MoreVertical } from "lucide-react-native";
 import {
   PapillonHeaderAction,
   PapillonHeaderSelector,
@@ -32,9 +32,15 @@ import {
 import PapillonPicker from "@/components/Global/PapillonPicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WeekFrequency } from "@/services/shared/Timetable";
+import {AccountService} from "@/stores/account/types";
+import {hasFeatureAccountSetup} from "@/utils/multiservice";
+import {MultiServiceFeature} from "@/stores/multiService/types";
+import { fetchIcalData } from "@/services/local/ical";
+import useScreenDimensions from "@/hooks/useScreenDimensions";
 
 const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
   const account = useCurrentAccount((store) => store.account!);
+  const hasServiceSetup = account.service === AccountService.PapillonMultiService ? hasFeatureAccountSetup(MultiServiceFeature.Timetable, account.localID) : true;
   const mutateProperty = useCurrentAccount((store) => store.mutateProperty);
 
   const timetables = useTimetableStore((store) => store.timetables);
@@ -48,6 +54,12 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
 
   const [shouldShowWeekFrequency, setShouldShowWeekFrequency] = useState(account.personalization.showWeekFrequency);
   const [weekFrequency, setWeekFrequency] = useState<WeekFrequency | null>(null);
+
+  const { width, height, isTablet } = useScreenDimensions();
+  const finalWidth = width - (isTablet ? (
+    320 > width * 0.35 ? width * 0.35 :
+      320
+  ) : 0);
 
   useEffect(() => {
     // add all week numbers in timetables to loadedWeeks
@@ -97,8 +109,8 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
   const loadTimetableWeek = async (weekNumber: number, force = false) => {
     if (
       (currentlyLoadingWeeks.current.has(weekNumber) ||
-				loadedWeeks.current.has(weekNumber)) &&
-			!force
+        loadedWeeks.current.has(weekNumber)) &&
+      !force
     ) {
       return;
     }
@@ -111,6 +123,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
 
     try {
       await updateTimetableForWeekInCache(account, weekNumber, force);
+      await fetchIcalData(account, force);
       currentlyLoadingWeeks.current.add(weekNumber);
     } finally {
       currentlyLoadingWeeks.current.delete(weekNumber);
@@ -139,6 +152,28 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
   };
 
   const flatListRef = useRef<FlatList | null>(null);
+
+  useEffect(() => {
+    if (flatListRef.current) {
+      const normalizeDate = (date: Date) => {
+        const newDate = new Date(date);
+        newDate.setHours(0, 0, 0, 0);
+        return newDate;
+      };
+
+      const index = data.findIndex(
+        (d) => normalizeDate(d).getTime() === normalizeDate(pickerDate).getTime()
+      );
+
+      if (index >= 0) {
+        flatListRef.current.scrollToIndex({
+          index,
+          animated: true,
+        });
+      }
+    }
+  }, [width, height]);
+
   const [data, setData] = useState(() => {
     const today = new Date();
     return Array.from({ length: 100 }, (_, i) => {
@@ -148,51 +183,56 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
       return date;
     });
   });
-  const renderItem = useCallback(({ item: date }: { item: Date }) => {
-    const weekNumber = getWeekFromDate(date);
-    return (
-      <View style={{ width: Dimensions.get("window").width }}>
-        <Page
-          paddingTop={outsideNav ? 80 : insets.top + 56}
-          current={date.getTime() === pickerDate.getTime()}
-          date={date}
-          day={getAllLessonsForDay(date)}
-          weekExists={
-            timetables[weekNumber] && timetables[weekNumber].length > 0
-          }
-          refreshAction={() => loadTimetableWeek(weekNumber, true)}
-          loading={loadingWeeks.includes(weekNumber)}
-        />
-      </View>
-    );
-  },
-  [
-    pickerDate,
-    timetables,
-    loadingWeeks,
-    outsideNav,
-    insets,
-    getAllLessonsForDay,
-    loadTimetableWeek,
-  ],
+  const renderItem = useCallback(
+    ({ item: date }: { item: Date }) => {
+      const weekNumber = getWeekFromDate(date);
+      return (
+        <View style={{ width: finalWidth, height: "100%" }}>
+          <Page
+            hasServiceSetup={hasServiceSetup}
+            paddingTop={outsideNav ? 80 : insets.top + 56}
+            current={true}
+            date={date}
+            day={getAllLessonsForDay(date)}
+            weekExists={
+              timetables[weekNumber] && timetables[weekNumber].length > 0
+            }
+            refreshAction={() => loadTimetableWeek(weekNumber, true)}
+            loading={loadingWeeks.includes(weekNumber)}
+          />
+        </View>
+      );
+    },
+    [
+      pickerDate,
+      timetables,
+      loadingWeeks,
+      outsideNav,
+      insets,
+      finalWidth,
+      getAllLessonsForDay,
+      loadTimetableWeek,
+    ]
   );
 
-  const onViewableItemsChanged = useCallback(({ viewableItems }: { viewableItems: ViewToken<Date>[] }) => {
-    if (viewableItems.length > 0) {
-      const newDate = viewableItems[0].item;
-      setPickerDate(newDate);
-      loadTimetableWeek(getWeekFromDate(newDate), false);
-    }
-  },
-  [loadTimetableWeek],
+  const onViewableItemsChanged = useCallback(
+    ({ viewableItems }: { viewableItems: ViewToken<Date>[] }) => {
+      if (viewableItems.length > 0) {
+        const newDate = viewableItems[0].item;
+        setPickerDate(newDate);
+        loadTimetableWeek(getWeekFromDate(newDate), false);
+      }
+    },
+    [loadTimetableWeek]
   );
 
-  const getItemLayout = useCallback((_: any, index: number) => ({
-    length: Dimensions.get("window").width,
-    offset: Dimensions.get("window").width * index,
-    index,
-  }),
-  [],
+  const getItemLayout = useCallback(
+    (_: any, index: number) => ({
+      length: finalWidth,
+      offset: finalWidth * index,
+      index,
+    }),
+    [finalWidth]
   );
 
   const askForReview = async () => {
@@ -375,18 +415,26 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
             {
               icon: <CalendarPlus />,
               label: "Importer un iCal",
+              subtitle: "Ajouter un calendrier depuis une URL",
+              sfSymbol: "calendar.badge.plus",
               onPress: () => {
                 navigation.navigate("LessonsImportIcal", {});
               }
             },
-            ...(weekFrequency != null) ? [{
-              icon: <Eye />,
-              label: "Afficher type sem.",
+            account.service !== AccountService.Pronote ? {
+              icon: shouldShowWeekFrequency ? <EyeOff /> : <Eye />,
+              label: shouldShowWeekFrequency
+                ? "Masquer alternance semaine"
+                : "Afficher alternance semaine",
+              subtitle: shouldShowWeekFrequency
+                ? "Masquer semaine paire / impaire"
+                : "Afficher semaine paire / impaire",
+              sfSymbol: "eye",
               onPress: () => {
                 setShouldShowWeekFrequency(!shouldShowWeekFrequency);
               },
               checked: shouldShowWeekFrequency,
-            }] : []
+            } : null,
           ]}
         >
           <PapillonHeaderAction
@@ -412,7 +460,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
         onEndReached={() => {
           // Charger plus de dates si nécessaire
           const lastDate = data[data.length - 1];
-          const newDates = Array.from({ length: 30 }, (_, i) => {
+          const newDates = Array.from({ length: 34 }, (_, i) => {
             const date = new Date(lastDate);
             date.setDate(lastDate.getDate() + i + 1);
             return date;
@@ -423,6 +471,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
       />
 
       <LessonsDateModal
+        topOffset={insets.top + 60}
         showDatePicker={showDatePicker}
         setShowDatePicker={setShowDatePicker}
         currentDate={pickerDate}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import type { Screen } from "@/router/helpers/types";
 import {
   TextInput,
@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Keyboard,
   KeyboardEvent,
+  SafeAreaView,
 } from "react-native";
 import pronote from "pawnote";
 import Reanimated, {
@@ -19,6 +20,8 @@ import Reanimated, {
   ZoomOut,
   Easing,
   ZoomInEasyDown,
+  FadeInRight,
+  FadeOut,
 } from "react-native-reanimated";
 import determinateAuthenticationView from "@/services/pronote/determinate-authentication-view";
 import MaskStars from "@/components/FirstInstallation/MaskStars";
@@ -28,10 +31,14 @@ import DuoListPressable from "@/components/FirstInstallation/DuoListPressable";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "@react-navigation/native";
 
-import { Search, X, GraduationCap } from "lucide-react-native";
+import {Search, X, GraduationCap, SearchX} from "lucide-react-native";
 import { useAlert } from "@/providers/AlertProvider";
 import { Audio } from "expo-av";
 import getInstancesFromDataset from "@/services/pronote/dataset_geolocation";
+import * as WebBrowser from "expo-web-browser";
+import PapillonSpinner from "@/components/Global/PapillonSpinner";
+import { anim2Papillon } from "@/utils/ui/animations";
+import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
 
 const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
   route: { params },
@@ -59,6 +66,8 @@ const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const routes = navigation.getState()?.routes;
   const prevRoute = routes[routes.length - 2];
 
@@ -71,6 +80,23 @@ const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
     setKeyboardOpen(false);
     setKeyboardHeight(0);
   };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (loading ? (
+        <Reanimated.View
+          entering={anim2Papillon(FadeInRight)}
+          exiting={anim2Papillon(FadeOut)}
+        >
+          <PapillonSpinner
+            size={22}
+            strokeWidth={3}
+            color={colors.primary}
+          />
+        </Reanimated.View>
+      ) : <View />)
+    });
+  }, [navigation, loading]);
 
   useEffect(() => {
     Keyboard.addListener("keyboardDidShow", keyboardDidShow);
@@ -102,6 +128,8 @@ const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
   useEffect(() => {
     if (params) {
       void (async function () {
+        // setLoading(true);
+
         const dataset_instances = await getInstancesFromDataset(
           params.longitude,
           params.latitude
@@ -148,6 +176,7 @@ const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
         // On met à jour les instances.
         setInstances(instances);
         setOriginalInstances(instances);
+        // setLoading(false);
       })();
     }
   }, [params]);
@@ -164,17 +193,10 @@ const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
   }, [search, originalInstances]);
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          paddingTop: insets.top,
-        },
-      ]}
-    >
+    <SafeAreaView style={styles.container}>
       <MaskStars />
 
-      <View style={{ height: insets.top }} />
+      <View style={{ height: insets.top, marginTop: "10%" }} />
 
       {!keyboardOpen && (
         <Reanimated.View
@@ -186,9 +208,8 @@ const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
           <PapillonShineBubble
             message={"Voici les établissements que j'ai trouvé !"}
             numberOfLines={2}
-            width={250}
+            width={260}
             noFlex
-            style={{ marginTop: 0, zIndex: 9999 }}
           />
         </Reanimated.View>
       )}
@@ -207,7 +228,7 @@ const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
       >
         <Search size={24} color={colors.text + "55"} />
 
-        <TextInput
+        <ResponsiveTextInput
           ref={searchInputRef}
           placeholder="Rechercher un établissement"
           placeholderTextColor={colors.text + "55"}
@@ -321,26 +342,56 @@ const PronoteInstanceSelector: Screen<"PronoteInstanceSelector"> = ({
                       <GraduationCap size={24} color={colors.text + "88"} />
                     }
                     onPress={async () => {
-                      determinateAuthenticationView(
+                      setLoading(true);
+                      await determinateAuthenticationView(
                         instance.url,
                         navigation,
                         showAlert
                       );
+                      setLoading(false);
                     }}
                     text={instance.name}
                     subtext={
-                      prevRoute.name === "PronoteManualLocation"
+                      params.hideDistance
                         ? undefined
                         : `à ${instance.distance.toFixed(2)}km de ta position`
                     }
                   />
                 </Reanimated.View>
               ))}
+              <Reanimated.View
+                style={{ width: "100%" }}
+                layout={LinearTransition.springify()
+                  .mass(1)
+                  .stiffness(150)
+                  .damping(20)}
+                entering={
+                  instances.length < 10 && !hasSearched
+                    ? FlipInXDown.springify().delay(100 * instances.length)
+                  // @ts-expect-error
+                    : ZoomInEasyDown.duration(400).easing(Easing.bezier(0.25, 0.1, 0.25, 1)).delay(30 * instances.length)
+                }
+                exiting={instances.length < 10 ? FadeOutUp : void 0}
+              >
+                <DuoListPressable
+                  leading={
+                    <SearchX size={24} color={colors.text + "88"} />
+                  }
+                  onPress={async () => {
+                    await WebBrowser.openBrowserAsync("https://support.papillon.bzh//articles/351104-frequency-asked-questions#etab-not-found", {
+                      controlsColor: "#0E7CCB",
+                      presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
+                    });
+                  }}
+                  text={"Je ne trouve pas mon établissement..."}
+                />
+              </Reanimated.View>
             </Reanimated.View>
+            <View style={{height: 36}} />
           </Reanimated.ScrollView>
         </Reanimated.View>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -348,9 +399,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
     gap: 20,
-    paddingTop: -40,
   },
 
   overScrollContainer: {

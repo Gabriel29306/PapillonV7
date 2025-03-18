@@ -5,13 +5,35 @@ import  {
 } from "@/services/shared/Grade";
 import uuid from "@/utils/uuid-v4";
 
-export const saveIUTLanGrades = async (account: LocalAccount): Promise<{
+export const saveIUTLanGrades = async (account: LocalAccount, periodName: string): Promise<{
   grades: Grade[];
   averages: AverageOverview;
 }> => {
   try {
+    // console.log(periodName);
+
     // Il faudrait peut-être penser à typer cette partie, tous les types sont any :(
-    const scodocData = account.identityProvider.rawData;
+    const data = account.serviceData.semestres as any;
+    const scodocData = data[periodName] as any;
+
+    if (!scodocData) {
+      return {
+        grades: [],
+        averages: {
+          classOverall: {
+            value: null,
+            disabled: true,
+            status: null,
+          },
+          overall: {
+            value: null,
+            disabled: true,
+            status: null,
+          },
+          subjects: []
+        }
+      };
+    }
 
     const ressources = (scodocData["relevé"] as any).ressources;
     const saes = (scodocData["relevé"] as any).saes;
@@ -167,4 +189,37 @@ export const saveIUTLanGrades = async (account: LocalAccount): Promise<{
       }
     };
   }
+};
+
+export const saveIUTLanPeriods = async (account: LocalAccount): Promise<any> => {
+  const scodocData = account.identityProvider.rawData;
+
+  const semestresData = account.serviceData.semestres as any;
+
+  const semestres = (scodocData["semestres"] as any).map((semestre: any) => {
+    const semestreName = "Semestre " + semestre.semestre_id;
+    const innerData = semestresData[semestreName] as any;
+
+    const startTime = innerData["relevé"].semestre.date_debut ? new Date(innerData["relevé"].semestre.date_debut).getTime() : 1609459200;
+    const endTime = innerData["relevé"].semestre.date_fin ? new Date(innerData["relevé"].semestre.date_fin).getTime() : 1622505600;
+
+    return {
+      name: semestreName,
+      startTimestamp: startTime,
+      endTimestamp: endTime,
+    };
+  });
+
+  const finalData = {
+    periods: semestres.length > 0 ? semestres : [
+      {
+        name: "Toutes",
+        startTimestamp: 1609459200,
+        endTimestamp: 1622505600
+      },
+    ],
+    defaultPeriod: semestres.length > 0 ? semestres[semestres.length - 1].name : "Toutes"
+  };
+
+  return finalData;
 };

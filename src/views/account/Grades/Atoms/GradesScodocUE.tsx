@@ -2,33 +2,36 @@ import AnimatedNumber from "@/components/Global/AnimatedNumber";
 import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
 import { useAlert } from "@/providers/AlertProvider";
 import { PrimaryAccount } from "@/stores/account/types";
+import { anim2Papillon } from "@/utils/ui/animations";
+import { adjustColor } from "@/utils/ui/colors";
 
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
 import { useTheme } from "@react-navigation/native";
 import { ChevronDown, ChevronUp, Info } from "lucide-react-native";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Image, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Reanimated, { FadeIn, FadeInDown, FadeOut, FadeOutUp, LinearTransition } from "react-native-reanimated";
 
-const GradesScodocUE = ({ account, navigation }: { account: PrimaryAccount, navigation: any }) => {
+const GradesScodocUE = ({ account, navigation, selectedPeriod }: { account: PrimaryAccount, navigation: any, selectedPeriod: string }) => {
   try {
-    const { colors } = useTheme();
+    const theme = useTheme();
+    const colors = theme.colors as any;
     const { showAlert } = useAlert();
 
-    // @ts-expect-error
-    const ues = account.identityProvider?.rawData["relevé"]["ues"];
+    const data = account.serviceData.semestres as any;
+    const grades = data[selectedPeriod];
+
+    const ues = grades["relevé"]["ues"];
     const uekeys = Object.keys(ues);
 
     if (uekeys.length === 0) {
       return null;
     }
 
-    // @ts-expect-error
-    const ressources = account.identityProvider?.rawData["relevé"]["ressources"];
-    // @ts-expect-error
-    const saes = account.identityProvider?.rawData["relevé"]["saes"];
+    const ressources = grades["relevé"]["ressources"];
+    const saes = grades["relevé"]["saes"];
 
     const finalUes = uekeys.map((ue) => {
       return {
@@ -38,15 +41,28 @@ const GradesScodocUE = ({ account, navigation }: { account: PrimaryAccount, navi
     });
 
     return (
-      <>
+      <Reanimated.View
+        layout={anim2Papillon(LinearTransition)}
+        entering={anim2Papillon(FadeInDown).duration(300)}
+        exiting={anim2Papillon(FadeOutUp).duration(100)}
+      >
         <NativeListHeader
+          animated
           label="Unités d'enseignement"
+          style={{
+            marginTop: 16,
+            marginBottom: -14,
+          }}
           trailing={
             <TouchableOpacity
+              style={{
+                width: 24,
+                height: 24,
+              }}
               onPress={() => showAlert({
-                icon: <Info />,
                 title: "Unités d'enseignement",
-                message: `Les données, rangs et notes sont fournies par les services de ${account.identityProvider?.name}.`
+                message: `Les données, rangs et notes sont fournies par les services de ${account.identityProvider?.name}.`,
+                icon: <Info />,
               })}
             >
               <Image
@@ -54,7 +70,6 @@ const GradesScodocUE = ({ account, navigation }: { account: PrimaryAccount, navi
                   width: 24,
                   height: 24,
                   borderRadius: 8,
-                  marginVertical: -8,
                   borderColor: colors.text + "32",
                   borderWidth: 1,
                 }}
@@ -64,8 +79,8 @@ const GradesScodocUE = ({ account, navigation }: { account: PrimaryAccount, navi
           }
         />
 
-        <NativeList>
-          {finalUes.map((ue) => {
+        <NativeList animated layout={anim2Papillon(LinearTransition)}>
+          {finalUes.map((ue, i) => {
             interface ueGrade {
               key: string,
               type: "ressources" | "saes"
@@ -116,9 +131,8 @@ const GradesScodocUE = ({ account, navigation }: { account: PrimaryAccount, navi
             }
 
             return (
-              <>
+              <View key={(ue.name ?? ue.moyenne.value) + "-ue:" + i}>
                 <NativeItem
-                  key={ue.name}
                   chevron={false}
                   style={{
                     backgroundColor: (ue.color || colors.primary) + "26",
@@ -131,12 +145,17 @@ const GradesScodocUE = ({ account, navigation }: { account: PrimaryAccount, navi
                         alignItems: "center",
                         justifyContent: "center",
                         borderRadius: 8,
-                        borderColor: colors.text + "32",
+                        borderColor: adjustColor(ue.color, theme.dark ? 180 : -100) + "32",
                         borderWidth: 1,
                       }}
                       onPress={navigateToSubject}
                     >
-                      <NativeText variant="subtitle">
+                      <NativeText
+                        variant="subtitle"
+                        style={{
+                          color: adjustColor(ue.color, theme.dark ? 180 : -100),
+                        }}
+                      >
                         {ue.name}
                       </NativeText>
                     </TouchableOpacity>
@@ -193,7 +212,7 @@ const GradesScodocUE = ({ account, navigation }: { account: PrimaryAccount, navi
                           entering={FadeIn.duration(100)}
                           exiting={FadeOut.duration(100)}
                         >
-                          {opened ? <ChevronUp size={24} color={colors.text} /> : <ChevronDown size={24} color={colors.text} />}
+                          {opened ? <ChevronUp opacity={0.7} size={24} color={colors.text} /> : <ChevronDown opacity={0.7} size={24} color={colors.text} />}
                         </Reanimated.View>
                       </TouchableOpacity>
                     </View>
@@ -205,6 +224,9 @@ const GradesScodocUE = ({ account, navigation }: { account: PrimaryAccount, navi
                     <NativeText
                       variant="body"
                       numberOfLines={2}
+                      style={{
+                        color: adjustColor(ue.color, theme.dark ? 180 : -100)
+                      }}
                     >
                       {ue.titre}
                     </NativeText>
@@ -213,7 +235,10 @@ const GradesScodocUE = ({ account, navigation }: { account: PrimaryAccount, navi
 
                 {opened && grades.map((gra,i) => (
                   <NativeItem
+                    key={gra.key + "-grade:" + i + "-ue:" + (ue.name ?? ue.moyenne.value)}
                     separator={i !== Object.keys(grades).length - 1}
+                    entering={i < 16 ? anim2Papillon(FadeInDown).delay(40 * i) : FadeIn.duration(100)}
+                    exiting={FadeOut.duration(100)}
                     leading={
                       <NativeText
                         variant="subtitle"
@@ -285,16 +310,17 @@ const GradesScodocUE = ({ account, navigation }: { account: PrimaryAccount, navi
                     </NativeText>
                   </NativeItem>
                 ))}
-              </>
+              </View>
             );
           })}
         </NativeList>
-      </>
+      </Reanimated.View>
     );
   }
   catch (e) {
+    console.error(e);
     return null;
   }
 };
 
-export default GradesScodocUE;
+export default memo(GradesScodocUE);
