@@ -14,6 +14,7 @@ import { NativeText } from "@/components/Global/NativeComponents";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import { isExpoGo } from "@/utils/native/expoGoAlert";
 import { useAlert } from "@/providers/AlertProvider";
+import { Grade } from "@/services/shared/Grade";
 import { error } from "@/utils/logger/logger";
 
 // Types
@@ -21,15 +22,6 @@ interface SubjectData {
   color: string;
   pretty: string;
   emoji: string;
-}
-
-interface Grade {
-  id: string;
-  student: { value: number | null };
-  outOf: { value: number | null };
-  coefficient: number | null;
-  subjectName: string;
-  timestamp: number;
 }
 
 // Helper Functions
@@ -61,7 +53,10 @@ const createReel = async (
     imagewithouteffect: imageWithoutEffect,
     subjectdata: getSubjectData(grade.subjectName),
     grade: {
-      value: grade.student.value?.toString() ?? "",
+      value:
+        (grade.student.disabled
+          ? grade.student.status
+          : grade.student.value?.toFixed(2)) ?? "",
       outOf: grade.outOf.value?.toString() ?? "",
       coef: grade.coefficient?.toString() ?? "",
     }
@@ -138,7 +133,7 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
 
     try {
       const photo = await cameraRef.current?.takePictureAsync({
-        quality: 0.5,
+        quality: 0.75,
         skipProcessing: true,
       });
       if (!photo?.uri) return;
@@ -148,7 +143,7 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
         try {
           const compositeUri = await captureRef(composerRef, {
             format: "png",
-            quality: 0.5,
+            quality: 0.75,
           });
           const reel = await createReel(grade, compositeUri, photo.uri);
           useGradesStore.setState((state) => ({
@@ -233,7 +228,11 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
                 </Text>
               </View>
               <View style={styles.scoreContainer}>
-                <Text style={styles.scoreText}>{grade.student.value}</Text>
+                <Text style={styles.scoreText}>
+                  {grade.student.disabled
+                    ? grade.student.status
+                    : grade.student.value?.toFixed(2)}
+                </Text>
                 <Text style={styles.maxScoreText}>/{grade.outOf.value}</Text>
               </View>
             </View>

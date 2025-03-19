@@ -169,20 +169,23 @@ const NextCourseLesson: React.FC<{
           borderCurve: "continuous",
           alignSelf: "flex-start",
         }}>
-          <Text
-            numberOfLines={1}
-            style={{
-              color: subjectData.color,
-              fontSize: 15,
-              fontFamily: "semibold",
-            }}
-          >
-            {nextCourse.room
-              ? nextCourse.room.includes(",")
-                ? "Plusieurs salles dispo."
-                : nextCourse.room
-              : "Salle inconnue"}
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text
+              numberOfLines={1}
+              style={{
+                color: subjectData.color,
+                fontSize: 15,
+                fontFamily: "semibold",
+              }}
+            >
+              {nextCourse.room
+                ? nextCourse.room.includes(",")
+                  ? "Plusieurs salles"
+                  : nextCourse.room
+                : "Salle inconnue"}
+            </Text>
+          </View>
+
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8, opacity: 0.5 }}>
           <Clock size={20} color={colors.text} />

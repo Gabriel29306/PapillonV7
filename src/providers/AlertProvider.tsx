@@ -1,27 +1,13 @@
 import { useTheme } from "@react-navigation/native";
 import { Check } from "lucide-react-native";
-import React, {
-  createContext,
-  useState,
-  useContext,
-  ReactNode,
-  useEffect,
-} from "react";
+import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
 import { Modal, View, Text, StyleSheet, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Reanimated, {
-  FadeIn,
-  FadeOut,
-  LinearTransition,
-} from "react-native-reanimated";
-import {
-  anim2Papillon,
-  PapillonContextEnter,
-  PapillonContextExit,
-} from "@/utils/ui/animations";
+import Reanimated, { FadeIn, FadeOut, LinearTransition } from "react-native-reanimated";
 import { BlurView } from "expo-blur";
 import NativeTouchable from "@/components/Global/NativeTouchable";
 import useScreenDimensions from "@/hooks/useScreenDimensions";
+import { anim2Papillon, PapillonContextEnter, PapillonContextExit } from "@/utils/ui/animations";
 
 type AlertAction = {
   title: string;
@@ -83,21 +69,18 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
     setAlert({ title, message, icon, actions });
     setVisible(true);
 
-    const initialDelays: { [key: string]: number } = {};
-    actions.forEach((action) => {
-      if (action.delayDisable) {
-        initialDelays[action.title] = action.delayDisable;
-      } else {
-        initialDelays[action.title] = 0;
-      }
-    });
+    const initialDelays = actions.reduce((acc, action) => {
+      acc[action.title] = action.delayDisable || 0;
+      return acc;
+    }, {} as { [key: string]: number });
+
     setDelays(initialDelays);
   };
 
-  function hideAlert () {
+  const hideAlert = () => {
     setVisible(false);
     setTimeout(() => setAlert(null), 150);
-  }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -112,18 +95,15 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
       });
     }, 1000);
 
-    setTimeout(() => {
-      return () => clearInterval(interval);
-    }, 1000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <AlertContext.Provider value={{ showAlert }}>
       {children}
-
       {alert && (
         <Modal transparent onRequestClose={hideAlert} animationType="none">
-          {visible &&
+          {visible && (
             <View style={{ flex: 1 }}>
               <Reanimated.View
                 entering={FadeIn.duration(150)}
@@ -136,10 +116,7 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
               <Reanimated.View
                 style={[
                   styles.modalContainer,
-                  {
-                    width: isTablet ? "50%" : "100%",
-                    alignSelf: "center",
-                  }
+                  { width: isTablet ? "50%" : "100%", alignSelf: "center" },
                 ]}
                 layout={LinearTransition}
               >
@@ -147,10 +124,7 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
                 <Reanimated.View
                   style={[
                     styles.alertBox,
-                    {
-                      backgroundColor: colors.card,
-                      marginBottom: 10 + insets.bottom,
-                    },
+                    { backgroundColor: colors.card, marginBottom: 10 + insets.bottom },
                   ]}
                   entering={PapillonContextEnter}
                   exiting={PapillonContextExit}
@@ -158,10 +132,10 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
                   <View style={styles.contentContainer}>
                     <View style={styles.titleContainer}>
                       {alert.icon &&
-                      React.cloneElement(alert.icon, {
-                        color: colors.text,
-                        size: 24,
-                      })}
+                        React.cloneElement(alert.icon, {
+                          color: colors.text,
+                          size: 24,
+                        })}
                       <Text style={[styles.title, { color: colors.text }]}>
                         {alert.title}
                       </Text>
@@ -177,8 +151,8 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
                       {
                         borderColor: colors.text + "20",
                         backgroundColor: colors.text + "06",
-                        flexDirection:
-                      (alert.actions ?? []).length > 2 ? "column" : "row",
+                        // @ts-expect-error
+                        flexDirection: alert.actions?.length > 2 ? "column" : "row",
                         alignItems: "center",
                       },
                     ]}
@@ -197,11 +171,11 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
                           key={title}
                           layout={anim2Papillon(LinearTransition)}
                           style={[
-                            (alert.actions?.length === 1 || (alert.actions ?? []).length > 2) && styles.singleButtonContainer,
-                            {
-                              borderRadius: 300,
-                              overflow: "hidden",
-                            }
+                            // @ts-expect-error
+                            alert.actions?.length === 1 || alert.actions?.length > 2
+                              ? styles.singleButtonContainer
+                              : null,
+                            { borderRadius: 300, overflow: "hidden" },
                           ]}
                         >
                           <NativeTouchable
@@ -210,16 +184,13 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
                               hideAlert();
                               onPress?.();
                             }}
-                            contentContainerStyle={{
-                              borderRadius: 300,
-                              overflow: "hidden",
-                            }}
+                            contentContainerStyle={{ borderRadius: 300, overflow: "hidden" }}
                             style={[
-                              (alert.actions?.length === 1 || (alert.actions ?? []).length > 2) && styles.singleButtonContainer,
-                              {
-                                borderRadius: 300,
-                                overflow: "hidden",
-                              }
+                              // @ts-expect-error
+                              alert.actions?.length === 1 || alert.actions?.length > 2
+                                ? styles.singleButtonContainer
+                                : null,
+                              { borderRadius: 300, overflow: "hidden" },
                             ]}
                           >
                             <Reanimated.View
@@ -229,16 +200,17 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
                                 {
                                   justifyContent: "center",
                                   alignItems: "center",
-                                },
-                                {
                                   borderRadius: 300,
                                   overflow: "hidden",
                                 },
-                                (alert.actions?.length === 1 || (alert.actions ?? []).length > 2) && styles.singleButton,
+                                // @ts-expect-error
+                                alert.actions?.length === 1 || alert.actions?.length > 2
+                                  ? styles.singleButton
+                                  : null,
                                 primary && !danger
                                   ? {
                                     backgroundColor:
-                                (backgroundColor ?? colors.primary) + (delays[title] > 0 ? "99" : ""),
+                                        (backgroundColor ?? colors.primary) + (delays[title] > 0 ? "99" : ""),
                                   }
                                   : danger
                                     ? { backgroundColor: "#BE0B00" + (delays[title] > 0 ? "99" : "") }
@@ -246,10 +218,10 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
                               ]}
                             >
                               {icon &&
-                        React.cloneElement(icon, {
-                          color: primary || danger ? "#ffffff" : colors.text,
-                          size: 24,
-                        })}
+                                React.cloneElement(icon, {
+                                  color: primary || danger ? "#ffffff" : colors.text,
+                                  size: 24,
+                                })}
                               <Reanimated.Text
                                 layout={anim2Papillon(LinearTransition)}
                                 style={[
@@ -259,24 +231,22 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
                                 ]}
                               >
                                 {title}
-                                {delays[title] !== undefined && delays[title] > 0
-                                  ? ` (${delays[title]})`
-                                  : ""}
+                                {delays[title] > 0 ? ` (${delays[title]})` : ""}
                               </Reanimated.Text>
 
-                              {delays[title] !== undefined &&
-                            <Reanimated.View
-                              layout={LinearTransition}
-                              style={{
-                                position: "absolute",
-                                top: 0,
-                                right: 0,
-                                width: parseInt((delays[title] / (delayDisable ? (delayDisable - 1) : 2)) * 120 + "%"),
-                                height: "200%",
-                                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                              }}
-                            />
-                              }
+                              {delays[title] > 0 && (
+                                <Reanimated.View
+                                  layout={LinearTransition}
+                                  style={{
+                                    position: "absolute",
+                                    top: 0,
+                                    right: 0,
+                                    width: `${(delays[title] / (delayDisable || 1)) * 120}%`,
+                                    height: "200%",
+                                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                  }}
+                                />
+                              )}
                             </Reanimated.View>
                           </NativeTouchable>
                         </Reanimated.View>
@@ -286,7 +256,7 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
                 </Reanimated.View>
               </Reanimated.View>
             </View>
-          }
+          )}
         </Modal>
       )}
     </AlertContext.Provider>
@@ -321,6 +291,7 @@ const styles = StyleSheet.create({
     borderCurve: "continuous",
     width: "100%",
     transformOrigin: "bottom center",
+    overflow: "hidden",
   },
   contentContainer: {
     gap: 10,
@@ -369,12 +340,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontFamily: "medium",
-  },
-  primaryButton: {
-    paddingHorizontal: 16,
-  },
-  notPrimaryButton: {
-    paddingHorizontal: 16,
   },
   primaryButtonText: {
     color: "#ffffff",

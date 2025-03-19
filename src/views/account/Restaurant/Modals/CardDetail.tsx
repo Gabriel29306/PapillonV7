@@ -4,7 +4,7 @@ import Reanimated from "react-native-reanimated";
 import React, { useState } from "react";
 import { NativeItem, NativeList, NativeText } from "@/components/Global/NativeComponents";
 
-import { formatDistance } from "date-fns";
+import { differenceInDays, formatDistance } from "date-fns";
 import { fr } from "date-fns/locale";
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
 import { useTheme } from "@react-navigation/native";
@@ -278,62 +278,109 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
             )}
           </View>
 
+          {card?.balance[0].remaining !== null && (
+            <NativeList inline>
+              <NativeItem
+                trailing={
+                  <NativeText
+                    variant="titleLarge"
+                    style={{
+                      marginRight: 10,
+                      fontFamily: "semibold",
+                      fontSize: 26,
+                      lineHeight: 28,
+                      color: card.balance[0].remaining > 1 ? "#00C853" : "#FF1744",
+                    }}
+                  >
+                    {card.balance[0].remaining.toFixed(0)}
+                  </NativeText>
+                }
+              >
+                <NativeText variant="title">
+                  Repas restants
+                </NativeText>
+                <NativeText variant="subtitle">
+                  Tarif estimé à {card.balance[0].price?.toFixed(2)} €
+                </NativeText>
+              </NativeItem>
+            </NativeList>
+          )}
+
           {card?.history.length > 0 && (
             <NativeList inline>
-              {card.history.sort((a: any, b: any) => b.timestamp - a.timestamp).map((history, i) => (
-                <NativeItem
-                  key={"cardhistory-"+i}
-                  leading={
-                    <Image
-                      source={defaultProfilePicture(card.service as AccountService)}
-                      style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: 6,
-                        overflow: "hidden",
-                        borderWidth: 1,
-                        borderColor: theme.colors.border,
-                      }}
-                    />
-                  }
-                  trailing={
-                    <View
-                      style={{
-                        paddingRight: 10,
-                      }}
-                    >
-                      {history.amount > 0 ? (
-                        <NativeText
-                          variant="title"
-                          style={{
-                            fontFamily: "medium",
-                            color: "#00C853",
-                          }}
-                        >
-                          +{history.amount.toFixed(2)} €
-                        </NativeText>
-                      ) : (
-                        <NativeText
-                          variant="title"
-                          style={{
-                            fontFamily: "medium",
-                            color: "#FF1744",
-                          }}
-                        >
-                          -{(-history.amount).toFixed(2)} €
-                        </NativeText>
-                      )}
-                    </View>
-                  }
-                >
-                  <NativeText variant="title">
-                    {history.label}
-                  </NativeText>
-                  <NativeText variant="subtitle">
-                    il y a {formatDistance(new Date(history.timestamp), new Date(), { locale: fr })}
-                  </NativeText>
-                </NativeItem>
-              ))}
+              {card.history
+                .filter((event) => !isNaN(new Date(event.timestamp).getTime()))
+                .sort((a: any, b: any) => b.timestamp - a.timestamp)
+                .map((history, i) => (
+                  <NativeItem
+                    key={"cardhistory-"+i}
+                    leading={
+                      <Image
+                        source={defaultProfilePicture(card.service as AccountService)}
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: 6,
+                          overflow: "hidden",
+                          borderWidth: 1,
+                          borderColor: theme.colors.border,
+                        }}
+                      />
+                    }
+                    trailing={
+                      <View
+                        style={{
+                          paddingRight: 10,
+                        }}
+                      >
+                        {history.amount > 0 ? (
+                          <NativeText
+                            variant="title"
+                            style={{
+                              fontFamily: "medium",
+                              color: "#00C853",
+                            }}
+                          >
+                            +{history.amount.toFixed(2)} €
+                          </NativeText>
+                        ) : (
+                          <NativeText
+                            variant="title"
+                            style={{
+                              fontFamily: "medium",
+                              color: "#FF1744",
+                            }}
+                          >
+                            -{(-history.amount).toFixed(2)} €
+                          </NativeText>
+                        )}
+                      </View>
+                    }
+                  >
+                    <NativeText variant="title">
+                      {history.label}
+                    </NativeText>
+
+                    {new Date(history.timestamp) && differenceInDays(new Date(), new Date(history.timestamp)) < 30 ? (
+                      <NativeText variant="subtitle">
+                        il y a {formatDistance(new Date(history.timestamp), new Date(), { locale: fr })} • {new Date(history.timestamp).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          weekday: "short",
+                          month: "short",
+                        })}
+                      </NativeText>
+                    ) : (
+                      <NativeText variant="subtitle">
+                        {new Date(history.timestamp).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          weekday: "long",
+                          month: "long",
+                          year: new Date(history.timestamp).getFullYear() !== new Date().getFullYear() ? "numeric" : undefined,
+                        })}
+                      </NativeText>
+                    )}
+                  </NativeItem>
+                ))}
             </NativeList>
           )}
 

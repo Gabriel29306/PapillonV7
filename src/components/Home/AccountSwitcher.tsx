@@ -2,12 +2,14 @@ import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { ChevronDown } from "lucide-react-native";
-
 import Reanimated, {
-  LinearTransition, ZoomIn,
-  ZoomOut
+  interpolateColor,
+  LinearTransition,
+  useAnimatedStyle,
+  ZoomIn,
+  ZoomOut,
+  SharedValue
 } from "react-native-reanimated";
-
 import { useCurrentAccount } from "@/stores/account";
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
 import PapillonSpinner from "../Global/PapillonSpinner";
@@ -15,31 +17,66 @@ import { animPapillon } from "@/utils/ui/animations";
 import { BlurView } from "expo-blur";
 
 const ReanimatedBlurView = Reanimated.createAnimatedComponent(BlurView);
+const AnimatedChevronDown = Reanimated.createAnimatedComponent(ChevronDown);
 
 const AccountSwitcher: React.FC<{
-  small?: boolean,
-  opened?: boolean,
-  modalOpen?: boolean,
-  translationY?: Reanimated.SharedValue<number>,
-  loading?: boolean,
+  small?: boolean;
+  opened?: boolean;
+  modalOpen?: boolean;
+  translationY?: SharedValue<number>;
+  loading?: boolean;
 }> = ({ small, opened, modalOpen, translationY, loading }) => {
   const theme = useTheme();
   const { colors } = theme;
-
-  const account = useCurrentAccount(store => store.account!);
+  const account = useCurrentAccount((store) => store.account!);
 
   const shouldHideName = account.personalization.hideNameOnHomeScreen || false;
   const shouldHidePicture = account.personalization.hideProfilePicOnHomeScreen || false;
 
-  const AnimatedChevronDown = Reanimated.createAnimatedComponent(ChevronDown);
+  const iconAnimatedStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      translationY?.value || 0,
+      [200, 251],
+      ["#FFF", colors.text]
+    ),
+    marginLeft: -6,
+  }));
+
+  const renderProfilePicture = () => {
+    if (shouldHidePicture) {
+      return <View style={{ marginLeft: -8, height: small ? 30 : 28 }} />;
+    }
+    return (
+      <Image
+        source={
+          account.personalization.profilePictureB64 &&
+          account.personalization.profilePictureB64.trim() !== ""
+            ? { uri: account.personalization.profilePictureB64 }
+            : defaultProfilePicture(account.service, account.identityProvider?.name || "")
+        }
+        style={[
+          styles.avatar,
+          {
+            backgroundColor: colors.text + "22",
+            height: small ? 30 : 28,
+            width: small ? 30 : 28,
+            borderColor: modalOpen ? colors.text + "20" : "#FFFFFF32",
+          },
+        ]}
+      />
+    );
+  };
 
   return (
     <Reanimated.View
       style={{
-        backgroundColor:
-          opened ?
-            theme.dark && !modalOpen ? "#00000044" : "#FFFFFF22"
-            : modalOpen ? colors.text + "10" : "#FFFFFF12",
+        backgroundColor: opened
+          ? theme.dark && !modalOpen
+            ? "#00000044"
+            : "#FFFFFF22"
+          : modalOpen
+            ? colors.text + "10"
+            : "#FFFFFF12",
         borderRadius: 12,
         borderCurve: "continuous",
         overflow: "hidden",
@@ -61,9 +98,7 @@ const AccountSwitcher: React.FC<{
           layout={animPapillon(LinearTransition)}
           style={[
             styles.accountSwitcher,
-            loading && {
-              shadowOpacity: 0,
-            },
+            loading && { shadowOpacity: 0 },
             small && {
               paddingHorizontal: 0,
               shadowOpacity: 0,
@@ -71,41 +106,14 @@ const AccountSwitcher: React.FC<{
               borderRadius: 0,
               paddingVertical: 0,
               backgroundColor: "transparent",
-            }
+            },
           ]}
         >
           <Reanimated.View
-            style={[
-              {
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 12,
-              },
-            ]}
+            style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
             layout={animPapillon(LinearTransition)}
           >
-            {!shouldHidePicture ? (
-              <Image
-                source={(account.personalization.profilePictureB64 && account.personalization.profilePictureB64.trim() !== "") ? { uri: account.personalization.profilePictureB64 } : defaultProfilePicture(account.service, account.identityProvider?.name || "")}
-                style={[
-                  styles.avatar,
-                  {
-                    backgroundColor: colors.text + "22",
-                    height: small ? 30 : 28,
-                    width: small ? 30 : 28,
-                    borderColor: modalOpen ? colors.text + "20" : "#FFFFFF32",
-                  }
-                ]}
-              />
-            ) : (
-              <View style={[
-                {
-                  marginLeft: -8,
-                  height: small ? 30 : 28,
-                }
-              ]} />
-            )}
-
+            {renderProfilePicture()}
             <Reanimated.Text
               style={{
                 color: modalOpen && !opened ? colors.text : "#FFF",
@@ -116,11 +124,10 @@ const AccountSwitcher: React.FC<{
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {account.studentName ? (
-                account.studentName?.first + (shouldHideName ? "" : " " + account.studentName.last)
-              ) : "Mon compte"}
+              {account.studentName
+                ? account.studentName.first + (shouldHideName ? "" : " " + account.studentName.last)
+                : "Mon compte"}
             </Reanimated.Text>
-
             {loading && (
               <PapillonSpinner
                 size={20}
@@ -131,17 +138,11 @@ const AccountSwitcher: React.FC<{
                 exiting={animPapillon(ZoomOut)}
               />
             )}
-
-            <Reanimated.View
-              layout={animPapillon(LinearTransition)}
-            >
+            <Reanimated.View layout={animPapillon(LinearTransition)}>
               <AnimatedChevronDown
                 size={24}
                 strokeWidth={2.3}
-                color={modalOpen && !opened ? colors.text : "#FFF"}
-                style={{
-                  marginLeft: -6,
-                }}
+                style={iconAnimatedStyle}
               />
             </Reanimated.View>
           </Reanimated.View>
@@ -164,18 +165,12 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     gap: 6,
   },
-
   avatar: {
-    height: 28,
     aspectRatio: 1,
     borderRadius: 24,
     backgroundColor: "#00000010",
     borderColor: "#00000020",
     borderWidth: 1,
-  },
-
-  accountSwitcherText: {
-
   },
 });
 
