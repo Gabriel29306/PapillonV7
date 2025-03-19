@@ -65,7 +65,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   const scrollRef = useAnimatedRef<AnimatedScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
 
-  const account = useCurrentAccount(store => store.account!);
+  const account = useCurrentAccount((store) => store.account!);
   const accounts = useAccounts((store) => store.accounts);
 
   useEffect(() => {

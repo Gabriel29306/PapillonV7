@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { RouteParameters, Screen } from "@/router/helpers/types";
-import { View, StyleSheet, TouchableOpacity, KeyboardEvent, Keyboard } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Keyboard } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import determinateAuthenticationView from "@/services/pronote/determinate-authentication-view";
 
@@ -26,7 +26,7 @@ const PronoteManualURL: Screen<"PronoteManualURL"> = ({ route, navigation }) => 
 
   const { showAlert } = useAlert();
 
-  const keyboardDidShow = (event: KeyboardEvent) => {
+  const keyboardDidShow = () => {
     setKeyboardOpen(true);
   };
 

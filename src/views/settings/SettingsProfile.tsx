@@ -16,8 +16,8 @@ import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextIn
 const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
-  const account = useCurrentAccount(store => store.account!);
-  const mutateProperty = useCurrentAccount(store => store.mutateProperty);
+  const account = useCurrentAccount((store) => store.account!);
+  const mutateProperty = useCurrentAccount((store) => store.mutateProperty);
 
   const oldFirstName = account.studentName?.first ?? "";
   const oldLastName = account.studentName?.last ?? "";

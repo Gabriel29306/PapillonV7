@@ -11,7 +11,7 @@ import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useAlert } from "@/providers/AlertProvider";
 import { Check, WifiOff } from "lucide-react-native";
 
-const ExternalAccountSelector: Screen<"ExternalAccountSelector"> = ({ navigation, route }) => {
+const ExternalAccountSelector: Screen<"ExternalAccountSelector"> = ({ navigation }) => {
   const { isOnline } = useOnlineStatus();
   const { showAlert } = useAlert();
 

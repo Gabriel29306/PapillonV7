@@ -55,7 +55,7 @@ export async function updateGradesPeriodsInCache <T extends Account> (account: T
       }
     }
     case AccountService.Skolengo: {
-      if(!checkIfSkoSupported(account, "Grades")) {
+      if (!checkIfSkoSupported(account, "Grades")) {
         error("[updateGradesPeriodsInCache]: This Skolengo instance doesn't support Grades.", "skolengo");
         break;
       }
@@ -77,8 +77,8 @@ export async function updateGradesPeriodsInCache <T extends Account> (account: T
     default:
       throw new Error("Service not implemented");
   }
-  if(periods.length === 0) return;
-  if(!defaultPeriod) defaultPeriod = getDefaultPeriod(periods);
+  if (periods.length === 0) return;
+  if (!defaultPeriod) defaultPeriod = getDefaultPeriod(periods);
   useGradesStore.getState().updatePeriods(periods, defaultPeriod);
 }
 
@@ -128,7 +128,7 @@ export async function updateGradesAndAveragesInCache <T extends Account> (accoun
         break;
       }
       case AccountService.Skolengo: {
-        if(!checkIfSkoSupported(account, "Grades")) {
+        if (!checkIfSkoSupported(account, "Grades")) {
           error("[updateGradesAndAveragesInCache]: This Skolengo instance doesn't support Grades.", "skolengo");
           break;
         }

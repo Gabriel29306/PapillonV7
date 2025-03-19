@@ -25,7 +25,7 @@ export async function updateHomeworkForWeekInCache <T extends Account> (account:
         break;
       }
       case AccountService.Skolengo: {
-        if(!checkIfSkoSupported(account, "Homeworks")) {
+        if (!checkIfSkoSupported(account, "Homeworks")) {
           error("[updateHomeworkForWeekInCache]: This Skolengo instance doesn't support Homeworks.", "skolengo");
           break;
         }

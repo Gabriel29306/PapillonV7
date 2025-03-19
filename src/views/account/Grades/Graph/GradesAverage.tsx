@@ -86,10 +86,10 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
     let hst = getAveragesHistory(grades, "student", overall ?? void 0);
     if (hst.length === 0) return;
 
-    let cla = getAveragesHistory(grades, "average", classOverall ?? void 0);
+    const cla = getAveragesHistory(grades, "average", classOverall ?? void 0);
 
-    let maxAvg = getPronoteAverage(grades, "max");
-    let minAvg = getPronoteAverage(grades, "min");
+    const maxAvg = getPronoteAverage(grades, "max");
+    const minAvg = getPronoteAverage(grades, "min");
 
     setGradesHistory(hst);
     setHLength(hst.length);

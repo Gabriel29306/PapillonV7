@@ -27,7 +27,7 @@ const RestaurantQRCodeWidget = forwardRef(({
   const theme = useTheme();
   const { colors } = theme;
 
-  const linkedAccounts = useCurrentAccount(store => store.linkedAccounts);
+  const linkedAccounts = useCurrentAccount((store) => store.linkedAccounts);
   const navigation = useNavigation<NavigationProps>();
   const [allCards, setAllCards] = useState<Array<ServiceCard> | null>(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -49,7 +49,7 @@ const RestaurantQRCodeWidget = forwardRef(({
       const accountPromises = linkedAccounts.map(async (account) => {
         try {
           const [cardnumber] = await Promise.all([
-            qrcodeFromExternal(account).catch(err => {
+            qrcodeFromExternal(account).catch((err) => {
               warn(`Error fetching QR code for account ${account.username}:` + err, "RestaurantQRCodeWidget/qrcodeFromExternal");
               return "0";
             }),
@@ -74,7 +74,7 @@ const RestaurantQRCodeWidget = forwardRef(({
 
       await Promise.all(accountPromises);
       setAllCards(newCards);
-      setHidden(!(allCards?.some(card => card.cardnumber) && currentHour >= 11 && currentHour <= 14));
+      setHidden(!(allCards?.some((card) => card.cardnumber) && currentHour >= 11 && currentHour <= 14));
       setLoading(false);
     }();
   }, [linkedAccounts, setHidden]);

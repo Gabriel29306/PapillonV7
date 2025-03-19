@@ -38,8 +38,8 @@ const AddonPage: Screen<"AddonPage"> = ({ navigation, route }) => {
         requestNavigate={(url, data) => {
           //find the placement
           let index = -1;
-          for(let i = 0; i < addon.manifest.placement.length; i++){
-            if(addon.manifest.placement[i].name == url){
+          for (let i = 0; i < addon.manifest.placement.length; i++){
+            if (addon.manifest.placement[i].name == url){
               index = i;
               break;
             }
@@ -50,7 +50,6 @@ const AddonPage: Screen<"AddonPage"> = ({ navigation, route }) => {
               message: "La page accédée n'a pas été trouvée.",
               icon: <BadgeX />,
             }); //TODO: transfer error to webview
-            return;
           } else {
             let newAddon: AddonPlacementManifest = { manifest: addon.manifest, index: index };
             // @ts-ignore "Very hard to type, need to think about"

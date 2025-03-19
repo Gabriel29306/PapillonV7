@@ -37,8 +37,8 @@ export async function updateEvaluationPeriodsInCache <T extends Account> (accoun
     default:
       throw new Error("Service not implemented");
   }
-  if(periods.length === 0) return;
-  if(!defaultPeriod) defaultPeriod = getDefaultPeriod(periods);
+  if (periods.length === 0) return;
+  if (!defaultPeriod) defaultPeriod = getDefaultPeriod(periods);
   useEvaluationStore.getState().updatePeriods(periods, defaultPeriod);
 }
 

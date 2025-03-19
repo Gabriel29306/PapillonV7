@@ -16,8 +16,8 @@ const USER_AGENT = "USPNAPP/1.0.1 CFNetwork/1568.200.41 Darwin/24.1.0";
 
 const UnivSorbonneParisNord_login: Screen<"UnivSorbonneParisNord_login"> = ({ navigation }) => {
   const theme = useTheme();
-  const createStoredAccount = useAccounts(store => store.create);
-  const switchTo = useCurrentAccount(store => store.switchTo);
+  const createStoredAccount = useAccounts((store) => store.create);
+  const switchTo = useCurrentAccount((store) => store.switchTo);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
 

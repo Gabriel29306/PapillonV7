@@ -228,7 +228,7 @@ const AddonsWebview: React.FC<AddonsWebviewProps> = ({
                 }
 
                 // CONSOLE.LOG
-                if(["log", "error", "warn", "info"].indexOf(data.type) !== -1){
+                if (["log", "error", "warn", "info"].indexOf(data.type) !== -1){
                   let type = data.type;
                   let str_type = String(type[0]).toUpperCase() + String(type).slice(1);
                   log(`[ADDON][${addon.name}] ${str_type} : ${data.message}`, "AddonsWebview");

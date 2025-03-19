@@ -57,7 +57,7 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    if(!changelog) {
+    if (!changelog) {
       setLoading(true);
       fetch(changelogURL + "#update=" + uuid()) // #TODO : remove, it's for development
         .then((response) => response.json())
@@ -317,10 +317,10 @@ const ChangelogFeature: React.FC<{ feature: Feature, navigation: any, theme: any
         </View>
         <NativeItem
           onPress={(feature.href || feature.navigation) ? () => {
-            if(feature.href) {
+            if (feature.href) {
               Linking.openURL(feature.href);
             }
-            else if(feature.navigation) {
+            else if (feature.navigation) {
               try {
                 navigation.goBack();
                 navigation.navigate(feature.navigation);

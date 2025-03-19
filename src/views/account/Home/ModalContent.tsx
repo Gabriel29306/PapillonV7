@@ -4,7 +4,7 @@ import Reanimated, { FadeInUp, FadeOutDown, LinearTransition } from "react-nativ
 import { Sparkles, X } from "lucide-react-native";
 import { useTheme } from "@react-navigation/native";
 import PackageJSON from "../../../../package.json";
-import { Dimensions, View } from "react-native";
+import { Dimensions, View, TouchableOpacity } from "react-native";
 
 import { Elements, type Element } from "./ElementIndex";
 import { animPapillon } from "@/utils/ui/animations";
@@ -14,7 +14,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { defaultTabs } from "@/consts/DefaultTabs";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteParameters } from "@/router/helpers/types";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 interface ModalContentProps {

@@ -252,7 +252,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
 
             setTimeout(() => {
               AsyncStorage.getItem("review_given").then((value) => {
-                if(!value) {
+                if (!value) {
                   askForReview();
                   AsyncStorage.setItem("review_given", "true");
                 }
@@ -280,7 +280,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
     const lastDate = data[data.length - 1];
 
     let updatedData = [...data];
-    const uniqueDates = new Set(updatedData.map(d => d.getTime()));
+    const uniqueDates = new Set(updatedData.map((d) => d.getTime()));
 
     if (newDate < firstDate) {
       const dates = [];

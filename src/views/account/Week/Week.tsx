@@ -242,11 +242,11 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
   const [events, setEvents] = React.useState<CalendarKitEventItem[]>([]);
 
   useEffect(() => {
-    if(!timetables) return;
+    if (!timetables) return;
 
     const nevts = Object.values(timetables)
       .flat()
-      .map(event => ({
+      .map((event) => ({
         id: event.id.toString(),
         title: event.title,
         start: { dateTime: new Date(event.startTimestamp) },
@@ -283,7 +283,7 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
   const [openedIcalModal, setOpenedIcalModal] = React.useState(false);
 
   React.useEffect(() => {
-    if(events.length === 0 && (account?.personalization?.icalURLs?.length || 0) > 0) {
+    if (events.length === 0 && (account?.personalization?.icalURLs?.length || 0) > 0) {
       setIsLoading(true);
       requestAnimationFrame(async () => {
         const weekNumber = dateToEpochWeekNumber(new Date());

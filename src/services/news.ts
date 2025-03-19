@@ -24,7 +24,7 @@ export async function updateNewsInCache <T extends Account> (account: T): Promis
       break;
     }
     case AccountService.Skolengo: {
-      if(!checkIfSkoSupported(account, "News")) {
+      if (!checkIfSkoSupported(account, "News")) {
         error("[updateNewsInCache]: This Skolengo instance doesn't support News.", "skolengo");
         break;
       }

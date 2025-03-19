@@ -11,9 +11,7 @@ import {
 
 import { WebView } from "react-native-webview";
 import type { Screen } from "@/router/helpers/types";
-import {
-  SafeAreaView
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import MaskStars from "@/components/FirstInstallation/MaskStars";
 
@@ -49,7 +47,7 @@ const SkolengoWebview: Screen<"SkolengoWebview"> = ({ route, navigation }) => {
 
   useEffect(() => {
     getSkolengoURL(route.params.school).then((skourl) => {
-      if(skourl) {
+      if (skourl) {
         setPageUrl(skourl.url);
         setDiscovery(skourl.discovery);
       }
@@ -193,7 +191,7 @@ const SkolengoWebview: Screen<"SkolengoWebview"> = ({ route, navigation }) => {
                     code: code,
                     redirectUri: REDIRECT_URI,
                   },
-                  discovery!
+                  discovery
                 ).then(async (token) => {
                   setLoginStep("Initialisation du compte...");
                   const newToken = authTokenToSkolengoTokenSet(token);
@@ -205,7 +203,7 @@ const SkolengoWebview: Screen<"SkolengoWebview"> = ({ route, navigation }) => {
                   const skolengoAccount = await getSkolengoAccount({
                     school: route.params.school,
                     tokenSet: newToken,
-                    discovery: discovery!
+                    discovery
                   });
 
                   setLoginStep("Finalisation du compte...");
@@ -226,7 +224,7 @@ const SkolengoWebview: Screen<"SkolengoWebview"> = ({ route, navigation }) => {
 
               return true;
             }}
-            source={{ uri: pageUrl || "" }}
+            source={{ uri: pageUrl ?? "" }}
             setSupportMultipleWindows={false}
             originWhitelist={["http://*", "https://*", "skoapp-prod://*"]}
             incognito={true} // Prevent to keep cookies on webview load.
@@ -281,7 +279,7 @@ const getSkolengoURL =  async (school: School) => {
 // eslint-disable-next-line
 const loginSkolengoWorkflow = async (school: School) => {
   const skolengoUrl = await getSkolengoURL(school);
-  if(!skolengoUrl) return;
+  if (!skolengoUrl) return;
   const res = await skolengoUrl.authRes.promptAsync(skolengoUrl.discovery, {
     url: skolengoUrl.url,
   });

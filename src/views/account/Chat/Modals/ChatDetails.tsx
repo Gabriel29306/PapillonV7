@@ -87,12 +87,12 @@ const ChatDetails: Screen<"ChatDetails"> = ({ navigation, route }) => {
             <View style={styles.themeItem}>
               <View style={{ flex: 1, flexDirection: "row", gap: 10, alignItems: "center" }}>
                 <Image
-                  source={availableThemes.find(theme => theme.path === actualTheme)?.icon}
+                  source={availableThemes.find((theme) => theme.path === actualTheme)?.icon}
                   style={{ width: 35, height: 35, borderRadius: 25 / 2 }}
                 />
                 <View>
                   <NativeText>Thème</NativeText>
-                  <NativeText variant="subtitle">{availableThemes.find(theme => theme.path === actualTheme)?.name}</NativeText>
+                  <NativeText variant="subtitle">{availableThemes.find((theme) => theme.path === actualTheme)?.name}</NativeText>
                 </View>
               </View>
             </View>

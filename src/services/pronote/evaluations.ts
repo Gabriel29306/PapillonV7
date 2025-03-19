@@ -29,13 +29,13 @@ export const getEvaluationsPeriods = (account: PronoteAccount): { periods: Perio
 
 export const getEvaluations = async (account: PronoteAccount, periodName: string): Promise<Array<Evaluation>> => {
   const tab = getTab(account); // Vérifie aussi la validité de `account.instance`.
-  const period = tab.periods.find(p => p.name === periodName);
+  const period = tab.periods.find((p) => p.name === periodName);
   if (!period)
     throw new Error("La période sélectionnée n'a pas été trouvée.");
 
   const overview = await pronote.evaluations(account.instance!, period);
 
-  const evaluations: Array<Evaluation> = overview.map(e => ({
+  const evaluations: Array<Evaluation> = overview.map((e) => ({
     id: buildLocalID(e),
     name: e.name,
     subjectId: e.subject.id,
@@ -44,7 +44,7 @@ export const getEvaluations = async (account: PronoteAccount, periodName: string
     timestamp: e.date.getTime(),
     coefficient: e.coefficient,
     levels: e.levels,
-    skills: e.skills.map(s => ({
+    skills: e.skills.map((s) => ({
       coefficient: s.coefficient,
       level: getLevel(s.abbreviation),
       domainName: s.domainName,

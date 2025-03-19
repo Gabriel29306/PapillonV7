@@ -170,7 +170,7 @@ async function get_addons_list (): Promise<AddonManifest[]> {
         continue;
       }
 
-      manifest.placement.forEach(placement => {
+      manifest.placement.forEach((placement) => {
         placement.main = FileSystem.documentDirectory + "addons/" + addon + "/" + placement.main;
       });
 

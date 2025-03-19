@@ -13,7 +13,7 @@ import { useAlert } from "@/providers/AlertProvider";
 const PriceError: Screen<"PriceError"> = ({ navigation, route }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const update = useAccounts(store => store.update);
+  const update = useAccounts((store) => store.update);
   const account = route.params?.account;
   const accountId = route.params?.accountId;
 

@@ -178,19 +178,19 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
             }
 
             const [balance, history, cardnumber, booking] = await Promise.all([
-              balanceFromExternal(account, isRefreshing).catch(err => {
+              balanceFromExternal(account, isRefreshing).catch((err) => {
                 warn(`Error fetching balance for account ${account.username}:` + err, "Menu/balanceFromExternal");
                 return [];
               }),
-              reservationHistoryFromExternal(account).catch(err => {
+              reservationHistoryFromExternal(account).catch((err) => {
                 warn(`Error fetching history for account ${account.username}:` + err, "Menu/reservationHistoryFromExternal");
                 return [];
               }),
-              qrcodeFromExternal(account).catch(err => {
+              qrcodeFromExternal(account).catch((err) => {
                 warn(`Error fetching QR code for account ${account.username}:` + err, "Menu/qrcodeFromExternal");
                 return "0";
               }),
-              getBookingsAvailableFromExternal(account, getWeekNumber(new Date()), isRefreshing).catch(err => {
+              getBookingsAvailableFromExternal(account, getWeekNumber(new Date()), isRefreshing).catch((err) => {
                 warn(`Error fetching bookings for account ${account.username}:` + err, "Menu/getBookingsAvailableFromExternal");
                 return [];
               })
@@ -275,7 +275,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
           opacity={0.6}
         />
         <NativeText variant="subtitle">
-          Allergènes : {allergens.map(allergen => allergen.name).join(", ")}
+          Allergènes : {allergens.map((allergen) => allergen.name).join(", ")}
         </NativeText>
       </View>
     );

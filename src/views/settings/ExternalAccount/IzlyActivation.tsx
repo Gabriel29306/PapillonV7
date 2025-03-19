@@ -21,8 +21,8 @@ const IzlyActivation: Screen<"IzlyActivation"> = ({ navigation, route }) => {
   const { colors } = theme;
   const insets = useSafeAreaInsets();
 
-  const linkExistingExternalAccount = useCurrentAccount(store => store.linkExistingExternalAccount);
-  const create = useAccounts(store => store.create);
+  const linkExistingExternalAccount = useCurrentAccount((store) => store.linkExistingExternalAccount);
+  const create = useAccounts((store) => store.create);
   const [loading, setLoading] = useState(false);
 
   const secret = route.params?.password;

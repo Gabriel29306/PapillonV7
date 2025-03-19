@@ -14,7 +14,7 @@ const defaultSkolengoPersonalization = async (instance: SkolengoAccount["instanc
     MagicNews: true,
     profilePictureB64: void 0,
 
-    tabs: defaultTabs.filter(current => skoTabs.includes(current.tab)).map((tab, index) => ({
+    tabs: defaultTabs.filter((current) => skoTabs.includes(current.tab)).map((tab, index) => ({
       name: tab.tab,
       enabled: index <= 4
     }))
@@ -34,4 +34,4 @@ const getServiceConfig =(instance: SkolengoAccount["instance"])=> Promise.all([
 export default defaultSkolengoPersonalization;
 
 export const checkIfSkoSupported = (account: SkolengoAccount, service: Tab): boolean =>
-  account.personalization.tabs?.some(tab => tab.name === service && tab.enabled) || false;
+  account.personalization.tabs?.some((tab) => tab.name === service && tab.enabled) || false;

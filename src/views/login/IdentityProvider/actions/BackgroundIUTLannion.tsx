@@ -53,7 +53,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
   let username = params?.username || null;
   let password = params?.password || null;
 
-  const account = useCurrentAccount(store => store.account);
+  const account = useCurrentAccount((store) => store.account);
 
   const url = "https://notes9.iutlan.univ-rennes1.fr/";
   const firstLogin = params?.firstLogin || false;
@@ -61,8 +61,8 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
 
   const [step, setStep] = React.useState("Chargement du portail");
 
-  if(!firstLogin) {
-    if(account?.service == AccountService.Local && account.credentials) {
+  if (!firstLogin) {
+    if (account?.service == AccountService.Local && account.credentials) {
       username = account.credentials.username;
       password = account.credentials.password;
     }
@@ -71,14 +71,14 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
     }
   }
 
-  const createStoredAccount = useAccounts(store => store.create);
-  const switchTo = useCurrentAccount(store => store.switchTo);
-  const mutateProperty = useCurrentAccount(store => store.mutateProperty);
+  const createStoredAccount = useAccounts((store) => store.create);
+  const switchTo = useCurrentAccount((store) => store.switchTo);
+  const mutateProperty = useCurrentAccount((store) => store.mutateProperty);
 
   const { showAlert } = useAlert();
 
   const useData = async (data: any) => {
-    if(firstLogin) {
+    if (firstLogin) {
       await actionFirstLogin(data);
     }
     else {
@@ -156,7 +156,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
       await retreiveNextSemestre(newCurrentSemestre, semestresToRetrieve);
     }
     else {
-      if(firstLogin) {
+      if (firstLogin) {
         queueMicrotask(() => {
           // Reset the navigation stack to the "Home" screen.
           // Prevents the user from going back to the login screen.
@@ -233,7 +233,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
   const [redirectCount, setRedirectCount] = React.useState(0);
 
   const injectPassword = () => {
-    if(redirectCount >= 2) {
+    if (redirectCount >= 2) {
       showAlert({
         title: "Erreur",
         message: "Impossible de se connecter au portail du l'IUT de Lannion. Vérifie tes identifiants et réessaye.",
@@ -315,21 +315,21 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
         onLoad={(data) => {
           const url = data.nativeEvent.url;
 
-          if(url.startsWith("https://sso-cas.univ-rennes.fr//login?")) {
+          if (url.startsWith("https://sso-cas.univ-rennes.fr//login?")) {
             injectPassword();
           }
 
-          if(url.startsWith("https://notes9.iutlan.univ-rennes1.fr/") && canExtractJSON) {
+          if (url.startsWith("https://notes9.iutlan.univ-rennes1.fr/") && canExtractJSON) {
             redirectToData();
             setCanExtractJSON(false);
           }
 
-          if(url.startsWith("https://notes9.iutlan.univ-rennes1.fr/services/data.php?q=relev%C3%A9Etudiant&semestre=")) {
+          if (url.startsWith("https://notes9.iutlan.univ-rennes1.fr/services/data.php?q=relev%C3%A9Etudiant&semestre=")) {
             wbref.current?.injectJavaScript(`
               window.ReactNativeWebView.postMessage("semestre:"+document.body.innerText);
             `);
           }
-          else if(url.startsWith("https://notes9.iutlan.univ-rennes1.fr/services/data.php")) {
+          else if (url.startsWith("https://notes9.iutlan.univ-rennes1.fr/services/data.php")) {
             wbref.current?.injectJavaScript(`
               window.ReactNativeWebView.postMessage("firstLogin:"+document.body.innerText);
             `);
@@ -355,12 +355,12 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
 
         onMessage={(event) => {
           try {
-            if(event.nativeEvent.data.startsWith("firstLogin:")) {
+            if (event.nativeEvent.data.startsWith("firstLogin:")) {
               const data = event.nativeEvent.data.replace("firstLogin:", "");
               const parsedData = JSON.parse(data);
               useData(parsedData);
             }
-            else if(event.nativeEvent.data.startsWith("semestre:")) {
+            else if (event.nativeEvent.data.startsWith("semestre:")) {
               const data = event.nativeEvent.data.replace("semestre:", "");
               const parsedData = JSON.parse(data);
               processSemestre(parsedData);

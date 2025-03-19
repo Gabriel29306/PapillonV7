@@ -85,9 +85,7 @@ const SettingsIcons: Screen<"SettingsIcons"> = ({ navigation }) => {
         paddingTop: 0,
       }}
     >
-      <IconsContainerCard
-        theme={theme}
-      />
+      <IconsContainerCard/>
 
       {Object.keys(data).map((key, index) => (
         <View key={index}>
@@ -172,7 +170,7 @@ const SettingsIcons: Screen<"SettingsIcons"> = ({ navigation }) => {
                           });
                         }}
                       >
-                        <Sparkles color={colors.primary} style={{ marginRight: 10 }}/>
+                        <Sparkles color={colors.primary} style={{ marginRight: 10 }} />
                       </TouchableOpacity>
                     ) : null}
 

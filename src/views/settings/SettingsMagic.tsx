@@ -1,6 +1,5 @@
 import React from "react";
 import { ScrollView, Switch } from "react-native";
-import { useTheme } from "@react-navigation/native";
 import type { Screen } from "@/router/helpers/types";
 // Ensure this file contains valid regex patterns
 import MagicContainerCard from "@/components/Settings/MagicContainerCard";
@@ -8,10 +7,9 @@ import { NativeIconGradient, NativeItem, NativeList, NativeListHeader, NativeTex
 import { ArrowUpNarrowWide, BookDashed } from "lucide-react-native";
 import { useCurrentAccount } from "@/stores/account";
 
-const SettingsMagic: Screen<"SettingsMagic"> = ({ navigation }) => {
-  const theme = useTheme();
-  const account = useCurrentAccount(store => store.account);
-  const mutateProperty = useCurrentAccount(store => store.mutateProperty);
+const SettingsMagic: Screen<"SettingsMagic"> = () => {
+  const account = useCurrentAccount((store) => store.account);
+  const mutateProperty = useCurrentAccount((store) => store.mutateProperty);
 
   return (
     <ScrollView
@@ -19,7 +17,7 @@ const SettingsMagic: Screen<"SettingsMagic"> = ({ navigation }) => {
         paddingHorizontal: 15,
       }}
     >
-      <MagicContainerCard theme={theme} />
+      <MagicContainerCard/>
 
       <NativeListHeader label="Actualités" />
       <NativeList>

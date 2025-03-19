@@ -84,7 +84,7 @@ const SkolengoInstanceSelector: Screen<"SkolengoInstanceSelector"> = ({
         const newInstances = await Skolengo.searchSchool({ text: search }, 20);
         // On limite à 20 instances.
         newInstances.splice(20);
-        if(_debSearch !== debouncedSearch) return; // if the search has changed, we don't update the instances.
+        if (_debSearch !== debouncedSearch) return; // if the search has changed, we don't update the instances.
         setInstances(newInstances);
         setHasSearched(true);
       }

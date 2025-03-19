@@ -7,8 +7,8 @@ import LoginView from "@/components/Templates/LoginView";
 import { Screen } from "@/router/helpers/types";
 
 const ExternalTurboselfLogin: Screen<"ExternalTurboselfLogin"> = ({ navigation }) => {
-  const linkExistingExternalAccount = useCurrentAccount(store => store.linkExistingExternalAccount);
-  const create = useAccounts(store => store.create);
+  const linkExistingExternalAccount = useCurrentAccount((store) => store.linkExistingExternalAccount);
+  const create = useAccounts((store) => store.create);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -8,7 +8,7 @@ const ChatThemes: Screen<"ChatThemes"> = ({ navigation, route }) => {
   return (
     <ScrollView style={styles.container}>
       <NativeList>
-        {themes.map(theme => (
+        {themes.map((theme) => (
           <NativeItem
             key={theme.path}
             onPress={() => {

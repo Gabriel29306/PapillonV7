@@ -15,7 +15,7 @@ import { useCurrentAccount } from "@/stores/account";
 const ExternalAccountSelectMethod: Screen<"ExternalAccountSelectMethod"> = ({ navigation, route }) => {
   const theme = useTheme();
   const { colors } = theme;
-  const account = useCurrentAccount(store => store.account!);
+  const account = useCurrentAccount((store) => store.account!);
 
   return (
     <ScrollView

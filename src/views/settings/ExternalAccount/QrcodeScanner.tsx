@@ -13,7 +13,7 @@ import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
 const QrcodeScanner: Screen<"QrcodeScanner"> = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
-  const update = useAccounts(store => store.update);
+  const update = useAccounts((store) => store.update);
   const accountID = route.params?.accountID;
   const [hasPermission, setHasPermission] = React.useState<boolean | null>(null);
   const [scanned, setScanned] = React.useState(false);

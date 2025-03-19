@@ -54,7 +54,7 @@ export const refreshSkolengoToken = async (refreshToken: string, discovery: Disc
   formData.append("grant_type", "refresh_token");
   formData.append("refresh_token", refreshToken);
 
-  if(!discovery.tokenEndpoint) throw new Error("[SKOLENGO] ERR - No token endpoint in discovery document");
+  if (!discovery.tokenEndpoint) throw new Error("[SKOLENGO] ERR - No token endpoint in discovery document");
 
   return await fetch(discovery.tokenEndpoint, {
     method: "POST",
@@ -62,12 +62,12 @@ export const refreshSkolengoToken = async (refreshToken: string, discovery: Disc
       Authorization: "Basic "+b64encode(OID_CLIENT_ID + ":" + OID_CLIENT_SECRET),
     },
     body: formData
-  }).then((response) => response.json()).then(d => authTokenToSkolengoTokenSet(d));
+  }).then((response) => response.json()).then((d) => authTokenToSkolengoTokenSet(d));
 };
 
 const getJWTClaims = (token: string): SkolengoJWT => {
   const dataPart = token.split(".")?.at(1)?.replace(/-/g, "+").replace(/_/g, "/");
-  if(!dataPart) throw new Error("[SKOLENGO] ERR - No data part in token");
+  if (!dataPart) throw new Error("[SKOLENGO] ERR - No data part in token");
   const data = JSON.parse(b64decode(dataPart));
   return data;
 };
@@ -80,7 +80,7 @@ export const getSkolengoAccount = async (authConfig: SkolengoAuthConfig, userInf
     {
       refreshToken: async (tokenSet): Promise<SkolengoTokenSet> =>
       {
-        if(!tokenSet.refresh_token) throw new Error("[SKOLENGO] ERR - No refresh token");
+        if (!tokenSet.refresh_token) throw new Error("[SKOLENGO] ERR - No refresh token");
         return refreshSkolengoToken(tokenSet.refresh_token, authConfig.discovery);
       },
       onTokenRefresh: async (tokenSet) => {
@@ -94,7 +94,7 @@ export const getSkolengoAccount = async (authConfig: SkolengoAuthConfig, userInf
       handlePronoteError: true
     }
   );
-  if(!userInfo) userInfo = await skolengoAccount.getUserInfo();
+  if (!userInfo) userInfo = await skolengoAccount.getUserInfo();
   const jwtDecoded = getJWTClaims(skolengoAccount.tokenSet.id_token!);
   const account: SkolengoAccount = {
     service: AccountService.Skolengo,

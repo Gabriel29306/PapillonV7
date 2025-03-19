@@ -40,8 +40,8 @@ const PronoteQRCode: Screen<"PronoteQRCode"> = ({ navigation }) => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 
-  const createStoredAccount = useAccounts(store => store.create);
-  const switchTo = useCurrentAccount(store => store.switchTo);
+  const createStoredAccount = useAccounts((store) => store.create);
+  const switchTo = useCurrentAccount((store) => store.switchTo);
 
   const { colors } = theme;
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);

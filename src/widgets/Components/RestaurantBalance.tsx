@@ -18,7 +18,7 @@ const RestaurantBalanceWidget = forwardRef(({
   const theme = useTheme();
   const { colors } = theme;
 
-  const linkedAccounts = useCurrentAccount(store => store.linkedAccounts);
+  const linkedAccounts = useCurrentAccount((store) => store.linkedAccounts);
   const [balances, setBalances] = useState<Balance[] | null>(null);
   const [currentBalanceIndex, setCurrentBalanceIndex] = useState(0);
 
@@ -37,8 +37,8 @@ const RestaurantBalanceWidget = forwardRef(({
           balances.push(...balance);
         }
       }
-      setBalances(balances.filter(balance => balance.label.toLowerCase() !== "cafetaria"));
-      setHidden(balances.length === 0 || balances.every(balance => balance.remaining === 0));
+      setBalances(balances.filter((balance) => balance.label.toLowerCase() !== "cafetaria"));
+      setHidden(balances.length === 0 || balances.every((balance) => balance.remaining === 0));
       setLoading(false);
     }();
   }, [linkedAccounts, setHidden]);

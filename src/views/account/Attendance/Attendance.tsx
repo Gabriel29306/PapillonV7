@@ -25,14 +25,14 @@ import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 const Attendance: Screen<"Attendance"> = ({ route, navigation }) => {
   const theme = useTheme();
-  const account = useCurrentAccount(store => store.account!);
+  const account = useCurrentAccount((store) => store.account!);
   const { isOnline } = useOnlineStatus();
 
   const hasServiceSetup = account.service === AccountService.PapillonMultiService ? hasFeatureAccountSetup(MultiServiceFeature.Attendance, account.localID) : true;
 
-  const defaultPeriod = useAttendanceStore(store => store.defaultPeriod);
-  const periods = useAttendanceStore(store => store.periods);
-  const attendances = useAttendanceStore(store => store.attendances);
+  const defaultPeriod = useAttendanceStore((store) => store.defaultPeriod);
+  const periods = useAttendanceStore((store) => store.periods);
+  const attendances = useAttendanceStore((store) => store.attendances);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setLoading] = useState(hasServiceSetup);
@@ -108,7 +108,7 @@ const Attendance: Screen<"Attendance"> = ({ route, navigation }) => {
     let totalDelayHours = 0;
     let totalDelayMinutes = 0;
 
-    attendances[selectedPeriod]?.absences.forEach(absence => {
+    attendances[selectedPeriod]?.absences.forEach((absence) => {
       if (!absence.justified)  {
         totalUnJustifiedHours += parseInt(absence.hours.split("h")[0]);
         totalUnJustifiedMinutes += parseInt(absence.hours.split("h")[1]);
@@ -121,7 +121,7 @@ const Attendance: Screen<"Attendance"> = ({ route, navigation }) => {
       totalAbsenceMinutes += parseInt(absence.hours.split("h")[1]);
     });
 
-    attendances[selectedPeriod]?.delays.forEach(delay => {
+    attendances[selectedPeriod]?.delays.forEach((delay) => {
       const origMins = delay.duration;
       const missed = {
         hours: Math.floor(origMins / 60),
@@ -198,7 +198,7 @@ const Attendance: Screen<"Attendance"> = ({ route, navigation }) => {
           >
             <PapillonPicker
               delay={0}
-              data={periods.map(period => period.name)}
+              data={periods.map((period) => period.name)}
               selected={userSelectedPeriod ?? selectedPeriod}
               onSelectionChange={setUserSelectedPeriod}
               direction="right"
@@ -239,7 +239,7 @@ const Attendance: Screen<"Attendance"> = ({ route, navigation }) => {
             progressViewOffset={70}
             onRefresh={() => {
               setIsRefreshing(true);
-              if(account.identityProvider?.identifier) {
+              if (account.identityProvider?.identifier) {
                 navigation.navigate("BackgroundIdentityProvider");
                 updateAttendanceInCache(account, selectedPeriod).then(() => setIsRefreshing(false));
               }
@@ -294,7 +294,7 @@ const Attendance: Screen<"Attendance"> = ({ route, navigation }) => {
           />
         )}
 
-        {Object.keys(attendances_observations_details).map(sectionName => (
+        {Object.keys(attendances_observations_details).map((sectionName) => (
           <AttendanceItem
             key={sectionName}
             title={sectionName}

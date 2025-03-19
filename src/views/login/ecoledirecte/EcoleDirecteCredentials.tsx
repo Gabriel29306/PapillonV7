@@ -41,8 +41,8 @@ const EcoleDirecteCredentials: Screen<"EcoleDirecteCredentials"> = ({ navigation
 
   const theme = useTheme();
 
-  const createStoredAccount = useAccounts(store => store.create);
-  const switchTo = useCurrentAccount(store => store.switchTo);
+  const createStoredAccount = useAccounts((store) => store.create);
+  const switchTo = useCurrentAccount((store) => store.switchTo);
 
   const handleLogin = async (username: string, password: string, currentSession = session) => {
     try {

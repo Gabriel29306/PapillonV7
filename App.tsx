@@ -1,3 +1,4 @@
+import "@/background/BackgroundTasks";
 import Router from "@/router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -30,7 +31,7 @@ export default function App () {
   const [appState, setAppState] = useState(AppState.currentState);
   const currentAccount = useCurrentAccount((store) => store.account);
   const switchTo = useCurrentAccount((store) => store.switchTo);
-  const accounts = useAccounts((store) => store.accounts).filter(account => !account.isExternal);
+  const accounts = useAccounts((store) => store.accounts).filter((account) => !account.isExternal);
 
   const [fontsLoaded] = useFonts({
     light: require("./assets/fonts/FixelText-Light.ttf"),
@@ -111,7 +112,7 @@ export default function App () {
           break;
         }
       }
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
     await AsyncStorage.removeItem("@background_timestamp");
   }, [currentAccount, switchTo, getBackgroundTimeLimit]);

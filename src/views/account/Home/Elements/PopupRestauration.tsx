@@ -15,8 +15,8 @@ interface PopupRestaurationProps {
 
 const PopupRestauration: React.FC<PopupRestaurationProps> = ({ onImportance }) => {
   const { colors } = useTheme();
-  const account = useCurrentAccount(store => store.account!);
-  const mutateProperty = useCurrentAccount(store => store.mutateProperty);
+  const account = useCurrentAccount((store) => store.account!);
+  const mutateProperty = useCurrentAccount((store) => store.mutateProperty);
 
   const ImportanceHandler = () => {
     let hours = new Date().getHours();

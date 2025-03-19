@@ -74,7 +74,7 @@ const PronoteManualLocation: Screen<"PronoteManualLocation"> = ({ navigation }) 
       }
 
       // We set the loading state to true.
-      setMunicipalities(prev => ({
+      setMunicipalities((prev) => ({
         loading: true,
         results: prev.results // Keep the previous results while it's loading.
       }));

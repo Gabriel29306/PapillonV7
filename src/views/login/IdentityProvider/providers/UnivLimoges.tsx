@@ -15,8 +15,8 @@ import { useAlert } from "@/providers/AlertProvider";
 import { BadgeX, Check } from "lucide-react-native";
 
 const UnivLimoges_Login: Screen<"UnivLimoges_Login"> = ({ navigation }) => {
-  const createStoredAccount = useAccounts(store => store.create);
-  const switchTo = useCurrentAccount(store => store.switchTo);
+  const createStoredAccount = useAccounts((store) => store.create);
+  const switchTo = useCurrentAccount((store) => store.switchTo);
   const theme = useTheme();
 
   const { showAlert } = useAlert();

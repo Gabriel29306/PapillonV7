@@ -429,7 +429,7 @@ const SettingsTabs = () => {
                               <PapillonCheckbox
                                 checked={item.enabled}
                                 onPress={() => {
-                                  if (!item.enabled && tabs.filter(t => t.enabled).length === 5) {
+                                  if (!item.enabled && tabs.filter((t) => t.enabled).length === 5) {
                                     showAlert({
                                       title: "Information",
                                       message: "Tu ne peux pas ajouter plus de 5 onglets sur la page d'accueil.",

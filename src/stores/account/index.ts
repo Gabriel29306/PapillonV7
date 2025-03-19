@@ -124,7 +124,7 @@ export const useCurrentAccount = create<CurrentAccountStore>()((set, get) => ({
     for (const associatedAccount of associatedAccounts) {
       if (!(typeof associatedAccount.instance === "undefined"))
         continue;
-      const { instance, authentication } = await reload(associatedAccount).catch(err => {
+      const { instance, authentication } = await reload(associatedAccount).catch((err) => {
         error(`failed to reload associated account: ${err} !`, "switchTo");
         return {
           instance: associatedAccount.instance,
@@ -216,7 +216,7 @@ export const useAccounts = create<AccountsStore>()(
         // 2. If a multi-service has no more associated accounts, it must be deleted (because a space is like a "group" of accounts, and without any associated accounts it does not work anymore⁾
 
         // Fetching the accounts corresponding to spaces
-        const spacesAccounts: PapillonMultiServiceSpace[]  = get().accounts.filter(account => account.service === AccountService.PapillonMultiService) as PapillonMultiServiceSpace[];
+        const spacesAccounts: PapillonMultiServiceSpace[]  = get().accounts.filter((account) => account.service === AccountService.PapillonMultiService) as PapillonMultiServiceSpace[];
         for (const spaceAccount of spacesAccounts) {
 
           // The account deleted above is associated to this space
@@ -225,7 +225,7 @@ export const useAccounts = create<AccountsStore>()(
 
             // Remove the link to the account (and to every feature to which it is linked)
             spaceAccount.associatedAccountsLocalIDs.splice(spaceAccount.associatedAccountsLocalIDs.indexOf(localID), 1);
-            const space = useMultiService.getState().spaces.find(space => space.accountLocalID === spaceAccount.localID) as MultiServiceSpace;
+            const space = useMultiService.getState().spaces.find((space) => space.accountLocalID === spaceAccount.localID) as MultiServiceSpace;
             Object.entries(space.featuresServices).map(([key, value]) => {
               if (value === localID) {
                 space.featuresServices[key as MultiServiceFeature] = undefined;
@@ -233,7 +233,7 @@ export const useAccounts = create<AccountsStore>()(
             });
             useMultiService.getState().update(spaceAccount.localID, "featuresServices", space.featuresServices);
             set((state) => ({
-              accounts: state.accounts.map(account =>
+              accounts: state.accounts.map((account) =>
                 account.localID === spaceAccount.localID ? spaceAccount : account
               )
             }));

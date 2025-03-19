@@ -58,7 +58,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
   });
 
   React.useEffect(() => {
-    get_addons_list().then(r => {
+    get_addons_list().then((r) => {
       setStorageAddons(r);
     });
   }, []);

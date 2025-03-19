@@ -1,7 +1,6 @@
 import React from "react";
-import { Platform, View } from "react-native";
+import { Platform, View, TouchableOpacity } from "react-native";
 import { TabAnimatedTitleLeft, TabAnimatedTitleRight } from "./TabAnimatedTitle";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { ArrowLeft } from "lucide-react-native";
 import { type RouteProp, useTheme } from "@react-navigation/native";
 import type { RouteParameters } from "@/router/helpers/types";

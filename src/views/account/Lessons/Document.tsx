@@ -361,7 +361,7 @@ const LessonDocument: Screen<"LessonDocument"> = ({ route, navigation }) => {
                           value={`<body>${desc}</body>`}
                           stylesheet={stylesText}
                           addLineBreaks={false}
-                          onLinkPress={url => openUrl(url) }
+                          onLinkPress={(url) => openUrl(url) }
                           key={"res_html_" + index}
                         />
                       }

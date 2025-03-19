@@ -22,8 +22,8 @@ interface HomeworksElementProps {
 }
 
 const HomeworksElement: React.FC<HomeworksElementProps> = ({ navigation, onImportance }) => {
-  const account = useCurrentAccount(store => store.account!);
-  const homeworks = useHomeworkStore(store => store.homeworks);
+  const account = useCurrentAccount((store) => store.account!);
+  const homeworks = useHomeworkStore((store) => store.homeworks);
 
   const [loading, setLoading] = useState(false);
 
@@ -35,8 +35,8 @@ const HomeworksElement: React.FC<HomeworksElementProps> = ({ navigation, onImpor
 
     let score = 0;
     const hw = homeworks[dateToEpochWeekNumber(actualDay)]
-      .filter(hw => hw.due / 1000 >= Date.now() / 1000 && hw.due / 1000 <= Date.now() / 1000 + 7 * 24 * 60 * 60)
-      .filter(hw => !hw.done);
+      .filter((hw) => hw.due / 1000 >= Date.now() / 1000 && hw.due / 1000 <= Date.now() / 1000 + 7 * 24 * 60 * 60)
+      .filter((hw) => !hw.done);
 
     const date = new Date();
     if (date.getHours() >= 17 && date.getHours() < 22)

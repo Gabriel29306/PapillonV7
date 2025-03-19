@@ -52,7 +52,7 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
     navigation.addListener("beforeRemove", () => {
       if (shouldShowReviewOnClose) {
         AsyncStorage.getItem("review_given").then((value) => {
-          if(!value) {
+          if (!value) {
             askForReview();
             AsyncStorage.setItem("review_given", "true");
           }

@@ -43,8 +43,12 @@ module.exports = [
       "@stylistic/space-before-function-paren": ["error", "always"],
       "@stylistic/no-extra-semi": "error",
       "@stylistic/no-mixed-spaces-and-tabs": "error",
-      "unused-imports/no-unused-imports": "error",
       "@stylistic/object-curly-spacing": ["error", "always"],
+      "@stylistic/keyword-spacing": ["error", {
+        "before": true
+      }],
+      "@stylistic/arrow-parens": "error",
+      "unused-imports/no-unused-imports": "error",
       "no-unused-vars": ["error", {
         "args": "none"
       }],

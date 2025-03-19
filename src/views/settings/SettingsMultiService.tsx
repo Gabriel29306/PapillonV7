@@ -23,11 +23,11 @@ import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextIn
 
 const SettingsMultiService: Screen<"SettingsMultiService"> = ({ navigation }) => {
   const theme = useTheme();
-  const toggleMultiService = useMultiService(store => store.toggleEnabledState);
-  const multiServiceEnabled = useMultiService(store => store.enabled);
-  const multiServiceSpaces = useMultiService(store => store.spaces);
-  const createMultiServiceSpace = useMultiService(store => store.create);
-  const deleteMultiServiceSpace = useMultiService(store => store.remove);
+  const toggleMultiService = useMultiService((store) => store.toggleEnabledState);
+  const multiServiceEnabled = useMultiService((store) => store.enabled);
+  const multiServiceSpaces = useMultiService((store) => store.spaces);
+  const createMultiServiceSpace = useMultiService((store) => store.create);
+  const deleteMultiServiceSpace = useMultiService((store) => store.remove);
   const accounts = useAccounts();
   const currentAccount = useCurrentAccount();
 
@@ -97,7 +97,7 @@ const SettingsMultiService: Screen<"SettingsMultiService"> = ({ navigation }) =>
       personalization: {
         profilePictureB64: selectedImage || undefined,
         tabs: defaultTabs
-          .filter(current => defaultSpaceTabs.includes(current.tab))
+          .filter((current) => defaultSpaceTabs.includes(current.tab))
           .map((tab, index) => ({
             name: tab.tab,
             enabled: index <= 4
@@ -145,7 +145,7 @@ const SettingsMultiService: Screen<"SettingsMultiService"> = ({ navigation }) =>
         paddingBottom: 25
       }}
     >
-      <MultiServiceContainerCard theme={theme} />
+      <MultiServiceContainerCard/>
 
       <NativeListHeader label="Options" />
       <NativeList>

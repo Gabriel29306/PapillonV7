@@ -33,7 +33,7 @@ const Header: React.FC<{
   scrolled,
   navigation,
 }) => {
-  const account = useCurrentAccount(store => store.account!);
+  const account = useCurrentAccount((store) => store.account!);
   const [tabs, setTabs] = useState<Tab[]>([
     { name: "Attendance", enabled: true },
     { name: "Discussions", enabled: true },
@@ -82,7 +82,7 @@ const Header: React.FC<{
       />
 
       {!isTablet && (
-        tabs.filter(tab => !tab.enabled).length === 0 ?
+        tabs.filter((tab) => !tab.enabled).length === 0 ?
           <PressableScale
             style={{
               height: 38,
@@ -136,7 +136,7 @@ const Header: React.FC<{
             >
               {tabs.map((tab, index) => {
                 if (tab.name === "Home") return null;
-                const defaultTab = defaultTabs.find(curr => curr.tab === tab.name);
+                const defaultTab = defaultTabs.find((curr) => curr.tab === tab.name);
 
                 if (tab.enabled) return null;
                 if (!defaultTab) return null;

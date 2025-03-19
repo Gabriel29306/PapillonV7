@@ -115,7 +115,7 @@ const HorizontalDatePicker = ({ onDateSelect, onCurrentDatePress, initialDate = 
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    const dateIndex = dates.findIndex(date => isSameDay(date, initialDate));
+    const dateIndex = dates.findIndex((date) => isSameDay(date, initialDate));
     if (dateIndex !== -1) {
       const diffFromCenter = dateIndex - centerIndex;
       if (Math.abs(diffFromCenter) <= SCROLL_THRESHOLD) {

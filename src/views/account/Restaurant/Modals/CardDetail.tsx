@@ -38,11 +38,11 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
     const updateCardData = async () => {
       try {
         const [balance, history] = await Promise.all([
-          balanceFromExternal(route.params.card.account as ExternalAccount).catch(err => {
+          balanceFromExternal(route.params.card.account as ExternalAccount).catch((err) => {
             warn(`Error fetching balance for account ${account?.name}:` + err, "CardDetail/balanceFromExternal");
             return [];
           }),
-          reservationHistoryFromExternal(route.params.card.account as ExternalAccount).catch(err => {
+          reservationHistoryFromExternal(route.params.card.account as ExternalAccount).catch((err) => {
             warn(`Error fetching history for account ${account?.name}:` + err, "CardDetail/reservationHistoryFromExternal");
             return [];
           })

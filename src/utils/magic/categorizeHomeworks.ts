@@ -6,7 +6,7 @@ const detectionData: DetectionJson = detectionJson;
 
 function detectCategory (input: string): string | null {
   for (const [category, patterns] of Object.entries(detectionData)) {
-    if (patterns.some(pattern => new RegExp(pattern, "i").test(input))) {
+    if (patterns.some((pattern) => new RegExp(pattern, "i").test(input))) {
       return category;
     }
   }

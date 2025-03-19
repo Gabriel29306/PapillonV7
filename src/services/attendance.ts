@@ -61,8 +61,8 @@ export async function updateAttendancePeriodsInCache <T extends Account> (accoun
       periods = [
         {
           name: "Toutes",
-          startTimestamp: Math.min(...output.map(e=>e.startTimestamp)),
-          endTimestamp: Math.max(...output.map(e=>e.endTimestamp)),
+          startTimestamp: Math.min(...output.map((e)=>e.startTimestamp)),
+          endTimestamp: Math.max(...output.map((e)=>e.endTimestamp)),
         },
       ];
 
@@ -124,7 +124,7 @@ export async function updateAttendanceInCache <T extends Account> (account: T, p
       break;
     }
     case AccountService.Skolengo: {
-      if(!checkIfSkoSupported(account, "Attendance")) {
+      if (!checkIfSkoSupported(account, "Attendance")) {
         error("[updateAttendanceInCache]: This Skolengo instance doesn't support Homeworks.", "skolengo");
         break;
       }

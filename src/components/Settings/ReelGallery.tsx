@@ -97,7 +97,7 @@ const ReelGallery = ({ reels }: ReelGalleryProps) => {
   const numColumns = 2;
 
   // Vérification des reels valides
-  const validReels = reels.filter(reel =>
+  const validReels = reels.filter((reel) =>
     reel &&
     typeof reel.id === "string" &&
     reel.grade &&

@@ -24,8 +24,8 @@ const LessonsImportIcal: Screen<"LessonsImportIcal"> = ({ route, navigation }) =
   const defaultIcal = route.params?.ical || "";
   const autoAdd = route.params?.autoAdd || false;
 
-  const account = useCurrentAccount(store => store.account!);
-  const mutateProperty = useCurrentAccount(store => store.mutateProperty);
+  const account = useCurrentAccount((store) => store.account!);
+  const mutateProperty = useCurrentAccount((store) => store.mutateProperty);
 
   const [url, setUrl] = React.useState(defaultIcal);
 
@@ -40,7 +40,7 @@ const LessonsImportIcal: Screen<"LessonsImportIcal"> = ({ route, navigation }) =
   useEffect(() => {
     if (!account.instance) return;
     if (defaultIcal && autoAdd) {
-      if(account.personalization.icalURLs?.filter(u => u.url === defaultIcal).length === 0) {
+      if (account.personalization.icalURLs?.filter((u) => u.url === defaultIcal).length === 0) {
         saveIcal().then(() => {
           if (autoAdd) {
             navigation.goBack();
@@ -59,8 +59,8 @@ const LessonsImportIcal: Screen<"LessonsImportIcal"> = ({ route, navigation }) =
     const oldUrls = account.personalization.icalURLs || [];
 
     await fetch(url)
-      .then(response => response.text())
-      .then(text => {
+      .then((response) => response.text())
+      .then((text) => {
         const parsed = ical.parseString(text);
         let newParsed = parsed;
         newParsed.events = [];

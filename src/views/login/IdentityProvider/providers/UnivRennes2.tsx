@@ -61,8 +61,8 @@ const UnivRennes2_Login: Screen<"UnivRennes2_Login"> = ({ navigation }) => {
 
   const webViewRef = React.useRef<WebView>(null);
 
-  const createStoredAccount = useAccounts(store => store.create);
-  const switchTo = useCurrentAccount(store => store.switchTo);
+  const createStoredAccount = useAccounts((store) => store.create);
+  const switchTo = useCurrentAccount((store) => store.switchTo);
 
   const [isLoading, setIsLoading] = React.useState(true);
   const [isLoadingText, setIsLoadingText] = React.useState("Connexion en cours...");

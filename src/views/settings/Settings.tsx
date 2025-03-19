@@ -59,10 +59,10 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
   const theme = useTheme();
   const { colors } = theme;
   const insets = useSafeAreaInsets();
-  const account = useCurrentAccount(store => store.account!);
+  const account = useCurrentAccount((store) => store.account!);
   const [ addons, setAddons ] = useState<Array<AddonPlacementManifest>>([]);
   const [devModeEnabled, setDevModeEnabled] = useState(false);
-  const defined = useFlagsStore(state => state.defined);
+  const defined = useFlagsStore((state) => state.defined);
   const [click, setClick] = useState<true | false>(false);
   const { isTablet } = useScreenDimensions();
 

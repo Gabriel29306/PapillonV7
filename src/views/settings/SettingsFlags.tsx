@@ -12,8 +12,8 @@ import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextIn
 
 const SettingsFlags: Screen<"SettingsFlags"> = ({ navigation }) => {
   const { flags, remove, set } = useFlagsStore();
-  const account = useCurrentAccount(store => store.account!);
-  const externals = useCurrentAccount(store => store.linkedAccounts);
+  const account = useCurrentAccount((store) => store.account!);
+  const externals = useCurrentAccount((store) => store.linkedAccounts);
   const { colors } = useTheme();
   const textInputRef = useRef<TextInput>(null);
 

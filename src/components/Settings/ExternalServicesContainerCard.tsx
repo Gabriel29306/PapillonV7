@@ -4,7 +4,7 @@ import { View } from "react-native";
 import LottieView from "lottie-react-native";
 import { NativeItem, NativeList, NativeText } from "../Global/NativeComponents";
 
-const ExternalServicesContainerCard = ({ theme }: { theme: any }) => {
+const ExternalServicesContainerCard = () => {
 
   return (
     <NativeList>

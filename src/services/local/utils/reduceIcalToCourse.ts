@@ -3,7 +3,7 @@ import { TimetableClass } from "@/services/shared/Timetable";
 function extractNames (text: string) {
   const pattern = /\b([A-ZÀ-Ÿ]+)\s+([A-ZÀ-Ÿ][a-zà-ÿ]+)\b/g;
   const matches = [...text.matchAll(pattern)];
-  return matches.map(match => `${match[1]} ${match[2]}`);
+  return matches.map((match) => `${match[1]} ${match[2]}`);
 }
 
 export const reduceIcalToCourse = (course: any, identityProvider: any, url: string): TimetableClass => {
