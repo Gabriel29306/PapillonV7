@@ -11,9 +11,5 @@
     "android",
     "lint"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "sonarlint.connectedMode.project": {
-    "connectionId": "gabriel29306",
-    "projectKey": "Gabriel29306_PapillonV7"
-  }
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
