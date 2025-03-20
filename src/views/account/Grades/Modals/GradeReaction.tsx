@@ -15,6 +15,7 @@ import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import { isExpoGo } from "@/utils/native/expoGoAlert";
 import { useAlert } from "@/providers/AlertProvider";
 import { Grade } from "@/services/shared/Grade";
+import useScreenDimensions from "@/hooks/useScreenDimensions";
 import { error } from "@/utils/logger/logger";
 
 // Types
@@ -91,6 +92,7 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
     }
   };
 
+  const { isTablet } = useScreenDimensions();
   const { showAlert } = useAlert();
 
   // Setup permissions
@@ -202,7 +204,14 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
     :
     (
       <View style={styles.container}>
-        <View ref={composerRef} style={[styles.cameraContainer, { marginTop: inset.top + 10 }]}>
+        <View ref={composerRef} style={[
+          styles.cameraContainer,
+          {
+            marginTop: inset.top + 75,
+            maxHeight: isTablet ? "65%" : "75%",
+          }
+        ]}
+        >
           <Image
             source={require("../../../../../assets/images/mask_logotype.png")}
             tintColor={"#FFFFFF50"}
@@ -263,7 +272,6 @@ const styles = StyleSheet.create({
   cameraContainer: {
     alignSelf: "center",
     width: "90%",
-    height: 550,
     borderRadius: 16,
     overflow: "hidden",
   },

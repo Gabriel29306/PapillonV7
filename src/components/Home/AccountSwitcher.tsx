@@ -143,6 +143,7 @@ const AccountSwitcher: React.FC<{
                 size={24}
                 strokeWidth={2.3}
                 style={iconAnimatedStyle}
+                color={modalOpen && !opened ? colors.text : "#FFF"}
               />
             </Reanimated.View>
           </Reanimated.View>
