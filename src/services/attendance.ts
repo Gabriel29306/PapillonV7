@@ -61,8 +61,8 @@ export async function updateAttendancePeriodsInCache <T extends Account> (accoun
       periods = [
         {
           name: "Toutes",
-          startTimestamp: Math.min(...output.map((e)=>e.startTimestamp)),
-          endTimestamp: Math.max(...output.map((e)=>e.endTimestamp)),
+          startTimestamp: Math.min(...output.map((e) => e.startTimestamp)),
+          endTimestamp: Math.max(...output.map((e) => e.endTimestamp)),
         },
       ];
 

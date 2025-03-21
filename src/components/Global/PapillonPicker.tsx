@@ -116,7 +116,7 @@ const PapillonPicker: React.FC<PapillonPickerProps> = ({
         <Reanimated.View
           layout={animated && animPapillon(LinearTransition)}
           style={styles.children}
-          onLayout={(event)=> {
+          onLayout={(event) => {
             const height = event.nativeEvent.layout.height;
             setContentHeight(height);
           }}

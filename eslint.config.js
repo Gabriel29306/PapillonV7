@@ -48,6 +48,7 @@ module.exports = [
         "before": true
       }],
       "@stylistic/arrow-parens": "error",
+      "@stylistic/arrow-spacing": "error",
       "unused-imports/no-unused-imports": "error",
       "no-unused-vars": ["error", {
         "args": "none"

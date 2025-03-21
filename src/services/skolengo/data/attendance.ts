@@ -17,7 +17,7 @@ const dateIntervalToTime = (from: Date, to: Date) => {
   }
 };
 
-const _strs = (strs: (string|null|undefined)[], defaultStr: string) => strs.filter((e)=>e && e.trim().length > 0).length > 0 ? strs.filter((e)=>e && e.trim().length > 0).join(" - ") : defaultStr;
+const _strs = (strs: (string|null|undefined)[], defaultStr: string) => strs.filter((e) => e && e.trim().length > 0).length > 0 ? strs.filter((e) => e && e.trim().length > 0).join(" - ") : defaultStr;
 
 export const getAttendance = async (account: SkolengoAccount): Promise<Attendance> => {
   if (!account.instance)
@@ -34,7 +34,7 @@ export const getAttendance = async (account: SkolengoAccount): Promise<Attendanc
     observations: []
   };
 
-  absences.map((e)=>e.currentState).forEach((absence) => {
+  absences.map((e) => e.currentState).forEach((absence) => {
     switch (absence.absenceType as SupportedAbsenceType) {
 
       case ("ABSENCE"):

@@ -72,7 +72,7 @@ const getJWTClaims = (token: string): SkolengoJWT => {
   return data;
 };
 
-export const getSkolengoAccount = async (authConfig: SkolengoAuthConfig, userInfo?: User)=>{
+export const getSkolengoAccount = async (authConfig: SkolengoAuthConfig, userInfo?: User) => {
   const skolengoAccount = new Skolengo(
     null,
     authConfig.school,

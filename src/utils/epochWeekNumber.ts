@@ -40,7 +40,7 @@ const dayToWeekCommonDay = (date: Date): Date => {
   return _date;
 };
 
-export const epochWNToDate = (epochWeekNumber: number)=>dayToWeekCommonDay(weekNumberToMiddleDate(epochWeekNumber));
+export const epochWNToDate = (epochWeekNumber: number) => dayToWeekCommonDay(weekNumberToMiddleDate(epochWeekNumber));
 
 export const epochWNToPronoteWN = (epochWeekNumber: number, account: PronoteAccount) =>
   translateToWeekNumber(epochWNToDate(epochWeekNumber), account.instance?.instance.firstMonday || pronoteFirstDate) || 1;

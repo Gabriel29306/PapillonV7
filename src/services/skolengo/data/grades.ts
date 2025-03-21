@@ -14,8 +14,8 @@ const decodeGradeNumber = (value?:number | null): GradeValue =>
 const getSubjectMinMax = (evalSubj: Evaluation): { min: GradeValue, max:GradeValue, outOf: GradeValue } => {
   const outOf = decodeGradeNumber(evalSubj.scale || SKOLENGO_DEFAULT_SCALE);
   if (evalSubj.evaluations.filter((e) => e.evaluationResult.mark !== null && !e.evaluationResult.nonEvaluationReason).length === 0) return { min: { value: null, disabled: true, status: null } , max: { value: null, disabled: true, status: null }, outOf };
-  const [minimum, maximum] = evalSubj.evaluations.filter((e)=>e.evaluationResult.mark !== null)
-    .map((e)=>((e.evaluationResult.mark!)/(e.scale || SKOLENGO_DEFAULT_SCALE)) * (evalSubj.scale || SKOLENGO_DEFAULT_SCALE))
+  const [minimum, maximum] = evalSubj.evaluations.filter((e) => e.evaluationResult.mark !== null)
+    .map((e) => ((e.evaluationResult.mark!)/(e.scale || SKOLENGO_DEFAULT_SCALE)) * (evalSubj.scale || SKOLENGO_DEFAULT_SCALE))
     .reduce(([minAcc, maxAcc], e) => [Math.min(minAcc, e), Math.max(maxAcc, e)], [evalSubj.scale || SKOLENGO_DEFAULT_SCALE, 0]);
   return { min: { value: minimum, disabled: false, status: null } , max: { value: maximum, disabled: false, status: null }, outOf };
 };
