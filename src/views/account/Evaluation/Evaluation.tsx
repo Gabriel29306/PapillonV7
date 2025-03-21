@@ -1,23 +1,23 @@
-import React, {Suspense, useEffect, useMemo, useRef, useState} from "react";
-import {View, ScrollView, RefreshControl, Platform, ActivityIndicator} from "react-native";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { View, ScrollView, RefreshControl, Platform, ActivityIndicator } from "react-native";
 import type { Screen } from "@/router/helpers/types";
-import {useTheme} from "@react-navigation/native";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
-import {PapillonHeaderSelector, PapillonModernHeader} from "@/components/Global/PapillonModernHeader";
-import {useCurrentAccount} from "@/stores/account";
-import Reanimated, {FadeInUp, FadeOutDown} from "react-native-reanimated";
-import {animPapillon} from "@/utils/ui/animations";
-import {ChevronDown} from "lucide-react-native";
+import { useTheme } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PapillonHeaderSelector, PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
+import { useCurrentAccount } from "@/stores/account";
+import Reanimated, { FadeInUp, FadeOutDown } from "react-native-reanimated";
+import { animPapillon } from "@/utils/ui/animations";
+import { ChevronDown } from "lucide-react-native";
 import PapillonPicker from "@/components/Global/PapillonPicker";
-import {updateEvaluationPeriodsInCache, updateEvaluationsInCache} from "@/services/evaluation";
-import {useEvaluationStore} from "@/stores/evaluation";
-import {EvaluationsPerSubject} from "@/services/shared/Evaluation";
+import { updateEvaluationPeriodsInCache, updateEvaluationsInCache } from "@/services/evaluation";
+import { useEvaluationStore } from "@/stores/evaluation";
+import { EvaluationsPerSubject } from "@/services/shared/Evaluation";
 import MissingItem from "@/components/Global/MissingItem";
 import Subject from "@/views/account/Evaluation/Subject/Subject";
 import EvaluationsLatestList from "@/views/account/Evaluation/Latest/LatestEvaluations";
-import {AccountService} from "@/stores/account/types";
-import {hasFeatureAccountSetup} from "@/utils/multiservice";
-import {MultiServiceFeature} from "@/stores/multiService/types";
+import { AccountService } from "@/stores/account/types";
+import { hasFeatureAccountSetup } from "@/utils/multiservice";
+import { MultiServiceFeature } from "@/stores/multiService/types";
 import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 const Evaluation: Screen<"Evaluation"> = ({ route, navigation }) => {
@@ -126,7 +126,21 @@ const Evaluation: Screen<"Evaluation"> = ({ route, navigation }) => {
       <PapillonModernHeader outsideNav={outsideNav}>
         <PapillonPicker
           delay={0}
-          data={periods.map((period) => period.name)}
+          data={periods.map((period) => {
+            return {
+              label: period.name,
+              subtitle:
+              new Date(period.startTimestamp as number).toLocaleDateString(
+                "fr-FR",
+                {
+                  month: "long",
+                  day: "numeric",
+                }
+              ),
+              onPress: () => setUserSelectedPeriod(period.name),
+              checked: period.name === selectedPeriod,
+            };
+          })}
           selected={userSelectedPeriod ?? selectedPeriod}
           onSelectionChange={setUserSelectedPeriod}
         >

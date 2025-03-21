@@ -3,7 +3,7 @@ import { Screen } from "@/router/helpers/types";
 import { useCurrentAccount } from "@/stores/account";
 import { useTheme } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-import { BadgeX, Camera, ChevronDown, ChevronUp, ClipboardCopy, TextCursorInput, Undo2, User2, UserCircle2, WholeWord } from "lucide-react-native";
+import { BadgeX, Camera, CameraOff, ChevronDown, ChevronUp, ClipboardCopy, TextCursorInput, Trash, Undo2, User2, UserCircle2, WholeWord } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Image, KeyboardAvoidingView, ScrollView, Switch, TextInput } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -16,11 +16,11 @@ import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextIn
 const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
-  const account = useCurrentAccount(store => store.account!);
-  const mutateProperty = useCurrentAccount(store => store.mutateProperty);
+  const account = useCurrentAccount((store) => store.account!);
+  const mutateProperty = useCurrentAccount((store) => store.mutateProperty);
 
-  const [oldFirstName, setOldFirstName] = useState(account.studentName?.first ?? "");
-  const [oldLastName, setOldLastName] = useState(account.studentName?.last ?? "");
+  const oldFirstName = account.studentName?.first ?? "";
+  const oldLastName = account.studentName?.last ?? "";
 
   const firstNameRef = useRef<TextInput>(null);
   const lastNameRef = useRef<TextInput>(null);
@@ -70,6 +70,18 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
             primary: true,
             icon: <Undo2 />,
           },
+          {
+            title: "Supprimer la photo",
+            primary: false,
+            onPress: () => {
+              setProfilePic(undefined);
+              mutateProperty("personalization", {
+                ...account.personalization,
+                profilePictureB64: undefined,
+              });
+            },
+            icon: <Trash />,
+          }
         ],
       });
     } else {
@@ -217,7 +229,7 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
             <NativeItem
               chevron={false}
               onPress={resetProfilePic}
-              icon={<Camera />}
+              icon={<CameraOff />}
             >
               <NativeText variant="title">
                 Réinitialiser la photo de profil
@@ -293,7 +305,7 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
               <Switch
                 value={!hideNameOnHomeScreen}
                 onValueChange={() => setHideNameOnHomeScreen(!hideNameOnHomeScreen)}
-                trackColor={{false: theme.colors.border, true: theme.colors.primary}}
+                trackColor={{ false: theme.colors.border, true: theme.colors.primary }}
                 thumbColor={theme.colors.background}
               />
             }
@@ -314,7 +326,7 @@ const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
               <Switch
                 value={!hideProfilePicOnHomeScreen}
                 onValueChange={() => setHideProfilePicOnHomeScreen(!hideProfilePicOnHomeScreen)}
-                trackColor={{false: theme.colors.border, true: theme.colors.primary}}
+                trackColor={{ false: theme.colors.border, true: theme.colors.primary }}
                 thumbColor={theme.colors.background}
               />
             }
