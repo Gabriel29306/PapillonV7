@@ -15,8 +15,7 @@ import { error } from "@/utils/logger/logger";
 
 const LastGradeWidget = forwardRef(({
   setLoading,
-  setHidden,
-  loading,
+  setHidden
 }: WidgetProps, ref) => {
   const theme = useTheme();
   const { colors } = theme;

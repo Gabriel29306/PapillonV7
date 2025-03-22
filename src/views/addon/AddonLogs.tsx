@@ -4,7 +4,7 @@ import { CircleAlert, CircleX, Code, TriangleAlert } from "lucide-react-native";
 import { Screen } from "@/router/helpers/types";
 import { AddonLogs as Logs } from "@/addons/types";
 
-const AddonLogs: Screen<"AddonLogs"> = ({ navigation, route }) => {
+const AddonLogs: Screen<"AddonLogs"> = ({ route }) => {
   const logs: Logs[] = route.params.logs.map((l) => {
     return {
       date: new Date(l.date),

@@ -12,7 +12,7 @@ import * as Clipboard from "expo-clipboard";
 import { getDefaultProfilePicture } from "@/utils/GetRessources/GetDefaultProfilePicture";
 import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
 
-const SettingsProfile: Screen<"SettingsProfile"> = ({ navigation }) => {
+const SettingsProfile: Screen<"SettingsProfile"> = () => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const account = useCurrentAccount((store) => store.account!);

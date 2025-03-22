@@ -21,8 +21,7 @@ type NavigationProps = StackNavigationProp<RouteParameters, "RestaurantQrCode">;
 
 const RestaurantQRCodeWidget = forwardRef(({
   setLoading,
-  setHidden,
-  loading,
+  setHidden
 }: WidgetProps, ref) => {
   const theme = useTheme();
   const { colors } = theme;

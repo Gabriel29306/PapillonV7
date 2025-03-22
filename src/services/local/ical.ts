@@ -14,7 +14,6 @@ interface CoursesByEpochWeekNumber {
 
 export const fetchIcalData = async (
   account: Account,
-  force = false
 ): Promise<CoursesByEpochWeekNumber[]> => {
   if (account.isExternal) {
     error(

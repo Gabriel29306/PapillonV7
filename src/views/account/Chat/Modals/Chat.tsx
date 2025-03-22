@@ -122,7 +122,7 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                 onPress={() => navigation.navigate("ChatDetails", {
                   handle: route.params.handle,
                   recipients: recipients,
-                  onThemeChange: async (updatedTheme) => {
+                  onThemeChange: async () => {
                     const theme = await GetThemeForChatId(route.params.handle.subject);
                     setActualTheme(theme);
                   }

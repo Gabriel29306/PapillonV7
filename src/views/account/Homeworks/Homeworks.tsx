@@ -138,7 +138,7 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
   const renderWeek: ListRenderItem<number> = ({ item }) => {
     const homeworksInWeek = homeworks[item] ?? [];
 
-    const sortedHomework = homeworksInWeek.sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
+    const sortedHomework = homeworksInWeek.toSorted((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
 
     const groupedHomework = sortedHomework.reduce((acc, curr) => {
       const dayName = getDayName(curr.due);
@@ -167,7 +167,7 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
       }
 
       // homework completed downstairs
-      acc[day] = acc[day].sort((a, b) => {
+      acc[day] = acc[day].toSorted((a, b) => {
         if (a.done === b.done) {
           return 0; // if both have the same status, keep the original order
         }
@@ -232,7 +232,7 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
       >
         {!isOnline && <OfflineWarning cache={true} />}
 
-        {groupedHomework && Object.keys(groupedHomework).map((day, index) => (
+        {groupedHomework && Object.keys(groupedHomework).map((day) => (
           <Reanimated.View
             key={day}
             entering={animPapillon(FadeInUp)}

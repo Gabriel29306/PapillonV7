@@ -109,13 +109,13 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
     hst = hst.filter((p) => isNaN(p.value) === false);
 
     graphRef.current?.updateData({
-      xAxis: hst.length > 0 ? hst.map((p, i) => new Date(p.date).getTime()) : [Date.now()],
+      xAxis: hst.length > 0 ? hst.map((p) => new Date(p.date).getTime()) : [Date.now()],
       yAxis: hst.length > 0 ? hst.map((p) => p.value) : [10],
     });
   }, [grades, account.instance]);
 
   const updateTo = useCallback(
-    (index: number, x: number, y: number) => {
+    (index: number) => {
       try {
         if (index < 0 || index > gradesHistoryRef.current.length - 1) return;
         if (!gradesHistoryRef.current[index]?.value) return;
@@ -237,7 +237,7 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
                 }}
               >
                 <ReanimatedGraph
-                  xAxis={gradesHistory.map((p, i) =>
+                  xAxis={gradesHistory.map((p) =>
                     new Date(p.date).getTime()
                   )}
                   yAxis={gradesHistory.map((p) => !isNaN(p.value) ? p.value : (currentAvg ?? 10))}
@@ -252,7 +252,7 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
                   ref={graphRef}
                   animationDuration={400}
                   onGestureUpdate={(x, y, index) => {
-                    updateTo(index, x, y);
+                    updateTo(index);
                   }}
                   onGestureEnd={() => {
                     resetToOriginal();

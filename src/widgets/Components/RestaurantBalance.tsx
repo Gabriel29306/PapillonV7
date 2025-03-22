@@ -12,8 +12,7 @@ import { balanceFromExternal } from "@/services/balance";
 
 const RestaurantBalanceWidget = forwardRef(({
   setLoading,
-  setHidden,
-  loading,
+  setHidden
 }: WidgetProps, ref) => {
   const theme = useTheme();
   const { colors } = theme;

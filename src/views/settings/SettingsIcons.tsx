@@ -37,7 +37,7 @@ export const removeColor = (icon: string) => {
   return newName;
 };
 
-const SettingsIcons: Screen<"SettingsIcons"> = ({ navigation }) => {
+const SettingsIcons: Screen<"SettingsIcons"> = () => {
   const theme = useTheme();
   const { colors } = theme;
   const { showAlert } = useAlert();

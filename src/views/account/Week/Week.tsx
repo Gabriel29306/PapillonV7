@@ -214,7 +214,7 @@ const HeaderItem = memo<HeaderItemProps>(({ header }) => {
 
 const displayModes = ["Semaine", "3 jours", "Journée"];
 
-const Week: Screen<"Week"> = ({ route, navigation }) => {
+const Week: Screen<"Week"> = () => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const { isOnline } = useOnlineStatus();
@@ -267,7 +267,7 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
     requestAnimationFrame(async () => {
       try {
         await updateTimetableForWeekInCache(account as Account, weekNumber, force);
-        await fetchIcalData(account as Account, force);
+        await fetchIcalData(account as Account);
       } finally {
         setIsLoading(false);
       }
@@ -279,16 +279,12 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
     await loadTimetableWeek(weekNumber);
   }, [loadTimetableWeek]);
 
-  // eslint-disable-next-line no-unused-vars
-  const [openedIcalModal, setOpenedIcalModal] = React.useState(false);
-
   React.useEffect(() => {
     if (events.length === 0 && (account?.personalization?.icalURLs?.length || 0) > 0) {
       setIsLoading(true);
       requestAnimationFrame(async () => {
         const weekNumber = dateToEpochWeekNumber(new Date());
         await loadTimetableWeek(weekNumber, true);
-        setOpenedIcalModal(false);
       });
     }
   }, [account?.personalization?.icalURLs]);
@@ -349,7 +345,6 @@ const Week: Screen<"Week"> = ({ route, navigation }) => {
                 value="Importer mes cours"
                 primary
                 onPress={() => {
-                  setOpenedIcalModal(true);
                   setTimeout(() => {
                     PapillonNavigation.current?.navigate("LessonsImportIcal", {});
                   }, 100);

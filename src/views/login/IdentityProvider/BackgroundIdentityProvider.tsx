@@ -2,7 +2,7 @@ import { useCurrentAccount } from "@/stores/account";
 import { Screen } from "@/router/helpers/types";
 import { useEffect } from "react";
 
-const BackgroundIdentityProvider: Screen<"BackgroundIdentityProvider"> = ({ route, navigation }) => {
+const BackgroundIdentityProvider: Screen<"BackgroundIdentityProvider"> = ({ navigation }) => {
   const account = useCurrentAccount((store) => store.account);
 
   useEffect(() => {

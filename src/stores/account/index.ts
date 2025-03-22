@@ -192,7 +192,7 @@ export const useAccounts = create<AccountsStore>()(
       accounts: <Array<Account>>[],
 
       // When creating, we don't want the "instance" to be stored.
-      create: ({ instance, ...account }) => {
+      create: ({ ...account }) => {
         log(`Storing ${account.localID} (${"name" in account ? account.name : "no name"})`, "accounts:create");
 
         set((state) => ({

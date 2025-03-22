@@ -68,7 +68,7 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
             acknowledgeUpdate();
           }
         })
-        .catch((err) => {
+        .catch(() => {
           setLoading(false);
           setNotFound(true);
         });

@@ -73,7 +73,7 @@ const SettingsExternalServices: Screen<"SettingsExternalServices"> = ({
     });
   };
 
-  const filteredAccounts = accounts.filter((acc, index) => {
+  const filteredAccounts = accounts.filter((acc) => {
     if (acc.isExternal) {
       return true;
     }

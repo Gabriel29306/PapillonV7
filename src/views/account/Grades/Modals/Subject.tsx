@@ -13,7 +13,7 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { Screen } from "@/router/helpers/types";
 
-const GradeSubjectScreen: Screen<"GradeSubject"> = ({ route, navigation }) => {
+const GradeSubjectScreen: Screen<"GradeSubject"> = ({ route }) => {
   const { subject, allGrades } = route.params;
   const theme = useTheme();
 

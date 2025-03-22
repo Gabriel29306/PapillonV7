@@ -5,7 +5,7 @@ import { useTheme } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
-const SettingsTrophies: Screen<"SettingsTrophies"> = ({ navigation }) => {
+const SettingsTrophies: Screen<"SettingsTrophies"> = () => {
   const theme = useTheme();
   const { colors } = theme;
   const insets = useSafeAreaInsets();

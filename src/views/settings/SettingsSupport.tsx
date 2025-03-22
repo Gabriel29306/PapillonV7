@@ -15,7 +15,7 @@ import { useCurrentAccount, useAccounts } from "@/stores/account";
 import { AccountService } from "@/stores/account/types";
 import PackageJSON from "../../../package.json";
 
-const SettingsSupport: Screen<"SettingsSupport"> = ({ navigation }) => {
+const SettingsSupport: Screen<"SettingsSupport"> = () => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 

@@ -171,10 +171,8 @@ const PronoteQRCode: Screen<"PronoteQRCode"> = ({ navigation }) => {
   }, []);
 
   const handleBarCodeScanned = ({
-    type,
     data,
   }: {
-    type: string;
     data: string;
   }) => {
     setScanned(true);

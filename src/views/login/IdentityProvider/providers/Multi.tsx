@@ -53,7 +53,7 @@ const Muli_Login: Screen<"Multi_Login"> = ({ route, navigation }) => {
           instanceURL: route.params.instanceURL,
           refreshAuthToken: account.userData.refreshAuthToken || "",
         },
-        personalization: await defaultPersonalization(account),
+        personalization: await defaultPersonalization(),
         serviceData: {},
         providers: []
       };

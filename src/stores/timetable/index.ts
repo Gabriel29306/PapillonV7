@@ -26,7 +26,7 @@ export const useTimetableStore = create<TimetableStore>()(
       injectClasses: (data: any) => {
         log("Replacing classes", "timetable:replaceClasses");
 
-        set((state) => {
+        set(() => {
           return {
             timetables: data,
           };

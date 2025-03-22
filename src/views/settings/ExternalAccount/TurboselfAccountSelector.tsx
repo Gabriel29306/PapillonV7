@@ -99,7 +99,7 @@ const TurboselfAccountSelector: Screen<"TurboselfAccountSelector"> = ({ navigati
             padding: 10,
             gap: 10
           }}>
-            {account.map((item, index) => (
+            {account.map((item) => (
               <Reanimated.View
                 style={{ width: "100%" }}
                 layout={LinearTransition}
