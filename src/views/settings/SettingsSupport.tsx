@@ -27,7 +27,7 @@ const SettingsSupport: Screen<"SettingsSupport"> = () => {
   const [description, setDescription] = useState<string>();
 
   const currentAccount = useCurrentAccount((store) => store.account!);
-  const AccountType = AccountService[currentAccount.service] !== "Local" && currentAccount.service !== AccountService.PapillonMultiService ? AccountService[currentAccount.service] : currentAccount.identityProvider ? currentAccount.identityProvider.name : "Compte local";
+  const AccountType = AccountService[currentAccount.service] !== "Local" && currentAccount.service !== AccountService.PapillonMultiService ? AccountService[currentAccount.service] : currentAccount.identityProvider?.name ?? "Compte local";
 
   const cantineAccounts = useAccounts((state) =>
     state.accounts.filter((acc) =>
