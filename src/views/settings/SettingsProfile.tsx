@@ -5,11 +5,10 @@ import { useTheme } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { BadgeX, Camera, CameraOff, ChevronDown, ChevronUp, ClipboardCopy, TextCursorInput, Trash, Undo2, User2, UserCircle2, WholeWord } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Image, KeyboardAvoidingView, ScrollView, Switch, TextInput } from "react-native";
+import { ActivityIndicator, Image, KeyboardAvoidingView, ScrollView, Switch, TextInput, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAlert } from "@/providers/AlertProvider";
 import * as Clipboard from "expo-clipboard";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { getDefaultProfilePicture } from "@/utils/GetRessources/GetDefaultProfilePicture";
 import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
 

@@ -7,6 +7,7 @@ import {
   Platform,
   Text,
   RefreshControl,
+  TouchableOpacity
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import type { Screen } from "@/router/helpers/types";
@@ -32,7 +33,6 @@ import Reanimated, {
 } from "react-native-reanimated";
 import PapillonHeader, { PapillonHeaderInsetHeight } from "@/components/Global/PapillonHeader";
 import { SquarePen } from "lucide-react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import { TabLocation } from "pawnote";
 import { hasFeatureAccountSetup } from "@/utils/multiservice";

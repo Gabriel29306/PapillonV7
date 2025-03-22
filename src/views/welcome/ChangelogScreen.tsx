@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import { Image, Linking, Platform, ScrollView, View } from "react-native";
+import { Image, Linking, Platform, ScrollView, View, TouchableOpacity } from "react-native";
 
 import PackageJSON from "../../../package.json";
 import datasets from "@/consts/datasets.json";
@@ -12,7 +12,6 @@ import Reanimated, { FadeInUp, FadeOutUp, LinearTransition } from "react-native-
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
 import { animPapillon } from "@/utils/ui/animations";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { PressableScale } from "react-native-pressable-scale";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";

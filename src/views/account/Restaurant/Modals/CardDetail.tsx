@@ -1,4 +1,4 @@
-import { Alert, Image, Linking, Platform, ScrollView, Text, View } from "react-native";
+import { Alert, Image, Linking, Platform, ScrollView, Text, View, TouchableOpacity } from "react-native";
 import MenuCard from "../Cards/Card";
 import Reanimated from "react-native-reanimated";
 import React, { useState } from "react";
@@ -17,7 +17,6 @@ import { balanceFromExternal } from "@/services/balance";
 import { reservationHistoryFromExternal } from "@/services/reservation-history";
 import { Screen } from "@/router/helpers/types";
 import { LinearGradient } from "expo-linear-gradient";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import PapillonPicker from "@/components/Global/PapillonPicker";
 import { formatCardIdentifier } from "@/utils/external/restaurant";
 import { error, warn } from "@/utils/logger/logger";
