@@ -44,12 +44,12 @@ const SettingsIcons: Screen<"SettingsIcons"> = () => {
   const insets = useSafeAreaInsets();
   const data = icones as { [key: string]: Icon[] };
 
-  const [currentIcon, setIcon] = React.useState("default");
+  const [currentIcon, setCurrentIcon] = React.useState("default");
 
   useEffect(() => {
     if (!isExpoGo()) {
       getIconName().then((icon) => {
-        setIcon(icon);
+        setCurrentIcon(icon);
       });
     }
   }, []);
@@ -63,7 +63,7 @@ const SettingsIcons: Screen<"SettingsIcons"> = () => {
 
       if (!isExpoGo()) {
         setIconName(iconConstructName);
-        setIcon(iconConstructName);
+        setCurrentIcon(iconConstructName);
       } else {
         alertExpoGo(showAlert);
       }
@@ -71,7 +71,7 @@ const SettingsIcons: Screen<"SettingsIcons"> = () => {
     else {
       if (!isExpoGo()) {
         setIconName(icon.id);
-        setIcon(icon.id);
+        setCurrentIcon(icon.id);
       } else {
         alertExpoGo(showAlert);
       }
