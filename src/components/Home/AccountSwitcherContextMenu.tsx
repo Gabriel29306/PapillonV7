@@ -11,13 +11,12 @@ import {
   View,
 } from "react-native";
 import Reanimated, { FadeIn, FadeOut } from "react-native-reanimated";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";
 import { useAccounts, useCurrentAccount } from "@/stores/account";
 import { AccountService } from "@/stores/account/types";
 import { PapillonContextEnter, PapillonContextExit } from "@/utils/ui/animations";
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
-import { useTheme } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 import { Check, Cog, Plus } from "lucide-react-native";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
@@ -82,6 +81,10 @@ const ContextMenu: React.FC<{
             impact: Haptics.ImpactFeedbackStyle.Soft,
           });
           setOpened(false);
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "AccountStack" as never }],
+          });
           requestAnimationFrame(() => {
             switchTo(account);
           });
@@ -195,6 +198,7 @@ const ContextMenu: React.FC<{
             onPressIn={handlePress}
             onLongPress={handleLongPress}
             onPressOut={handlePressOut}
+            // @ts-ignore
             pointerEvents="auto"
             style={{
               elevation: opened ? 3 : 0,
@@ -249,6 +253,7 @@ const ContextMenu: React.FC<{
               <Pressable
                 onPress={() => {
                   setOpened(false);
+                  // @ts-ignore
                   navigation.navigate("ServiceSelector");
                 }}
                 style={({ pressed }) => [
@@ -293,6 +298,7 @@ const ContextMenu: React.FC<{
               <Pressable
                 onPress={() => {
                   setOpened(false);
+                  // @ts-ignore
                   navigation.navigate("SettingStack");
                 }}
                 style={({ pressed }) => [

@@ -244,7 +244,7 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
                           `❌ Failed to unregister background task: ${ERRfatal}`,
                           "BACKGROUND"
                         )
-                      );;
+                      );
                   }
 
                   await registerBackgroundTasks()
@@ -303,7 +303,7 @@ const DevMenu: Screen<"DevMenu"> = ({ navigation }) => {
             onPress={() => {
               showAlert({
                 title: "Réinitialisation de Papillon",
-                message: "Es-tu sûr de vouloir réinitialiser toutes les données de l'application ?",
+                message: "Veux-tu vraiment réinitialiser toutes les données de l'application ?",
                 icon: <BadgeHelp />,
                 actions: [
                   {

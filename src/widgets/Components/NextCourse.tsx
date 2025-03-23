@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState, useCallback, useMemo } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Calendar, Clock, MapPin } from "lucide-react-native";
+import { Calendar, Clock } from "lucide-react-native";
 
 import { WidgetProps } from "@/components/Home/Widget";
 import WidgetHeader from "@/components/Home/WidgetHeader";
@@ -16,8 +16,8 @@ import { updateTimetableForWeekInCache } from "@/services/timetable";
 const lz = (num: number) => (num < 10 ? `0${num}` : num);
 
 const NextCourseWidget = forwardRef(({ hidden, setHidden, loading, setLoading }: WidgetProps, ref) => {
-  const account = useCurrentAccount(store => store.account!);
-  const timetables = useTimetableStore(store => store.timetables);
+  const account = useCurrentAccount((store) => store.account!);
+  const timetables = useTimetableStore((store) => store.timetables);
 
   const [nextCourse, setNextCourse] = useState<TimetableClass | null>(null);
   const [widgetTitle, setWidgetTitle] = useState("Prochain cours");
@@ -52,7 +52,7 @@ const NextCourseWidget = forwardRef(({ hidden, setHidden, loading, setLoading }:
     const weekCourses = timetables[currentWeekNumber];
 
     let updatedNextCourse = weekCourses
-      .filter(c => c.endTimestamp > today && c.status !== TimetableClassStatus.CANCELED)
+      .filter((c) => c.endTimestamp > today && c.status !== TimetableClassStatus.CANCELED)
       .sort((a, b) => a.startTimestamp - b.startTimestamp)[0];
 
     setNextCourse(updatedNextCourse);
@@ -66,7 +66,6 @@ const NextCourseWidget = forwardRef(({ hidden, setHidden, loading, setLoading }:
 
   useEffect(() => {
     if (nextCourse) {
-      setNextCourse(nextCourse);
       setHidden(false);
     }
     setLoading(false);
@@ -171,19 +170,17 @@ const NextCourseLesson: React.FC<{
           alignSelf: "flex-start",
         }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <MapPin size={18} strokeWidth={2.5} color={subjectData.color} />
             <Text
               numberOfLines={1}
               style={{
                 color: subjectData.color,
                 fontSize: 15,
                 fontFamily: "semibold",
-                marginLeft: 5,
               }}
             >
               {nextCourse.room
                 ? nextCourse.room.includes(",")
-                  ? "Plusieurs salles dispo."
+                  ? "Plusieurs salles"
                   : nextCourse.room
                 : "Salle inconnue"}
             </Text>

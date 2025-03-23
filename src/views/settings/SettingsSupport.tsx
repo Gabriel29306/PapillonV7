@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, TextInput, View } from "react-native";
 import type { Screen } from "@/router/helpers/types";
 import { useTheme } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -10,8 +10,12 @@ import { Check, Mail, Tag, Text } from "lucide-react-native";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import { get_logs, Log } from "@/utils/logger/logger";
 import { useAlert } from "@/providers/AlertProvider";
+import { modelName, osName, osVersion } from "expo-device";
+import { useCurrentAccount, useAccounts } from "@/stores/account";
+import { AccountService } from "@/stores/account/types";
+import PackageJSON from "../../../package.json";
 
-const SettingsSupport: Screen<"SettingsSupport"> = ({ navigation }) => {
+const SettingsSupport: Screen<"SettingsSupport"> = () => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
 
@@ -21,6 +25,27 @@ const SettingsSupport: Screen<"SettingsSupport"> = ({ navigation }) => {
   const [email, setEmail] = useState<string>();
   const [subject, setSubject] = useState<string>();
   const [description, setDescription] = useState<string>();
+
+  const currentAccount = useCurrentAccount((store) => store.account!);
+  const AccountType = AccountService[currentAccount.service] !== "Local" && currentAccount.service !== AccountService.PapillonMultiService ? AccountService[currentAccount.service] : currentAccount.identityProvider?.name ?? "Compte local";
+
+  const cantineAccounts = useAccounts((state) =>
+    state.accounts.filter((acc) =>
+      [AccountService.Turboself, AccountService.ARD, AccountService.Izly, AccountService.Alise].includes(acc.service)
+    )
+  );
+
+  const serviceNames: Partial<Record<AccountService, string>> = {
+    [AccountService.Turboself]: "Turboself",
+    [AccountService.ARD]: "ARD",
+    [AccountService.Izly]: "Izly",
+    [AccountService.Alise]: "Alise",
+  };
+
+  const cantineServices = cantineAccounts
+    .map((acc) => serviceNames[acc.service] ?? "Inconnu")
+    .join(", ") || "Aucun";
+
 
   const handlePress = async () => {
     const logs: Log[] = await get_logs();
@@ -37,10 +62,12 @@ const SettingsSupport: Screen<"SettingsSupport"> = ({ navigation }) => {
       })
       .join("<br>");
 
+
+
     const data = {
       email: email,
       title: subject,
-      detail: `Description de mon problème:<br>${(description ?? "").replace(/\n/g, "<br>")} <br><br>Journaux: <br>${formattedLogs}`,
+      detail: `<br>💬 𝗗𝗲𝘀𝗰𝗿𝗶𝗽𝘁𝗶𝗼𝗻 𝗱𝘂 𝗽𝗿𝗼𝗯𝗹𝗲̀𝗺𝗲:<br>${(description ?? "").replace(/\n/g, "<br>")} <br><br>🔒 𝗜𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻𝘀 𝘀𝘂𝗿 𝗹'𝗮𝗽𝗽𝗮𝗿𝗲𝗶𝗹:<br>📱 Modèle de l'appareil: ${modelName}<br>🌐 OS: ${osName} ${osVersion}<br>🦋 Version de Papillon: ${PackageJSON.version} ${Platform.OS}<br><br>⌛ 𝗦𝗲𝗿𝘃𝗶𝗰𝗲𝘀 𝘂𝘁𝗶𝗹𝗶𝘀𝗲́𝘀:<br>⚡ Service scolaire: ${AccountType}<br>🍴 Service de cantine: ${cantineServices}<br><br>❌ 𝗝𝗼𝘂𝗿𝗻𝗮𝘂𝘅 𝗱'𝗲𝗿𝗿𝗲𝘂𝗿𝘀: <br>${formattedLogs}<br>`,
     };
 
     const response = await fetch("https://api-menthe-et-cristaux.papillon.bzh/api/v1/ticket/public/create", {
@@ -52,13 +79,14 @@ const SettingsSupport: Screen<"SettingsSupport"> = ({ navigation }) => {
     });
 
     const result = await response.json();
+    if (__DEV__) console.log(result);
     setSubject("");
     setEmail("");
     setDescription("");
     setSendLogs(false);
     showAlert({
-      title: "Merci de vos retours !",
-      message: "Nous avons reçu votre demande et allons la regarder avec la plus grande attention.",
+      title: "Merci de ton retour !",
+      message: "Nous avons reçu ta demande et allons la regarder avec la plus grande attention.",
       icon: <Check />,
     });
   };
@@ -88,7 +116,7 @@ const SettingsSupport: Screen<"SettingsSupport"> = ({ navigation }) => {
         />
         <NativeList>
           <NativeItem icon={<Mail />}>
-            <NativeText variant="subtitle">Adresse E-Mail</NativeText>
+            <NativeText variant="subtitle">Adresse e-mail</NativeText>
             <TextInput
               style={[{
                 fontSize: 16,
@@ -109,7 +137,7 @@ const SettingsSupport: Screen<"SettingsSupport"> = ({ navigation }) => {
                 fontSize: 16,
                 fontFamily: "semibold",
               }, { color: theme.colors.text }]}
-              placeholder="Faites court, mais faites bien"
+              placeholder="Fais court, mais fais bien"
               placeholderTextColor={theme.colors.text + "80"}
               value={subject}
               multiline={false}
@@ -146,59 +174,15 @@ const SettingsSupport: Screen<"SettingsSupport"> = ({ navigation }) => {
                 }}
               />
             }>
-            <NativeText>J’accepte de transmettre les journaux d'erreurs et les données du formulaire pour le traitement de ma demande</NativeText>
+            <NativeText>J’accepte de transmettre le modèle et la version de mon appareil, les services connectés ainsi que les données du formulaire pour le traitement de ma demande</NativeText>
           </NativeItem>
         </NativeList>
-        <View style={{paddingVertical: 20}}>
+        <View style={{ paddingVertical: 20 }}>
           <ButtonCta primary value={"Envoyer mon message"} disabled={!(email && subject && description && sendLogs)} onPress={() => handlePress()} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
-
-// Styles
-const styles = StyleSheet.create({
-  title: {
-    color: "#222222",
-    fontSize: 15,
-  },
-  time: {
-    color: "#3F3F3F",
-    opacity: 0.5,
-    textAlign: "right",
-    fontFamily: "sfmedium",
-    fontSize: 13,
-    marginRight: 10,
-  },
-  message: {
-    color: "#3F3F3F",
-    fontFamily: "sfmedium",
-    fontSize: 14,
-    maxWidth: "85%",
-    minWidth: "85%",
-    lineHeight: 15,
-    letterSpacing: -0.4,
-  },
-
-  overlay: {
-    backgroundColor: "#EEF5F5",
-    borderWidth: 1,
-    borderColor: "#00000030",
-    borderRadius: 20,
-    height: 25,
-    padding: 9,
-    marginHorizontal: 20,
-  },
-
-  fixedButtonContainer: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#ddd",
-  }
-});
 
 export default SettingsSupport;

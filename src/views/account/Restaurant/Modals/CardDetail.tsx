@@ -1,10 +1,10 @@
-import { Alert, Image, Linking, Platform, ScrollView, Text, View } from "react-native";
+import { Alert, Image, Linking, Platform, ScrollView, Text, View, TouchableOpacity } from "react-native";
 import MenuCard from "../Cards/Card";
 import Reanimated from "react-native-reanimated";
 import React, { useState } from "react";
 import { NativeItem, NativeList, NativeText } from "@/components/Global/NativeComponents";
 
-import { formatDistance } from "date-fns";
+import { differenceInDays, formatDistance } from "date-fns";
 import { fr } from "date-fns/locale";
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
 import { useTheme } from "@react-navigation/native";
@@ -17,44 +17,43 @@ import { balanceFromExternal } from "@/services/balance";
 import { reservationHistoryFromExternal } from "@/services/reservation-history";
 import { Screen } from "@/router/helpers/types";
 import { LinearGradient } from "expo-linear-gradient";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import PapillonPicker from "@/components/Global/PapillonPicker";
 import { formatCardIdentifier } from "@/utils/external/restaurant";
+import { error, warn } from "@/utils/logger/logger";
 
 const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigation }) => {
   try {
     const { card } = route.params;
-    const [cardData, setCardData] = useState(null);
+    const [cardData, setCardData] = useState(card);
 
     const theme = useTheme();
 
     const account = useCurrentAccount((store) => store.account);
     const removeAccount = useAccounts((state) => state.remove);
 
-    const cardName = `Carte ${AccountService[route.params.card.service as AccountService]} ${account?.identity?.firstName ? "de " + account.identity.firstName : ""}`;
+    const cardName = `Carte ${AccountService[cardData.service as AccountService]} ${account?.identity?.firstName ? "de " + account.identity.firstName : ""}`;
 
     const updateCardData = async () => {
       try {
         const [balance, history] = await Promise.all([
-          balanceFromExternal(route.params.card.account as ExternalAccount).catch(err => {
-            console.warn(`Error fetching balance for account ${account}:`, err);
+          balanceFromExternal(cardData.account as ExternalAccount).catch((err) => {
+            warn(`Error fetching balance for account ${account?.name}:` + err, "CardDetail/balanceFromExternal");
             return [];
           }),
-          reservationHistoryFromExternal(route.params.card.account as ExternalAccount).catch(err => {
-            console.warn(`Error fetching history for account ${account}:`, err);
+          reservationHistoryFromExternal(cardData.account as ExternalAccount).catch((err) => {
+            warn(`Error fetching history for account ${account?.name}:` + err, "CardDetail/reservationHistoryFromExternal");
             return [];
           })
         ]);
 
         setCardData({
           ...card,
-          // @ts-expect-error
-          balance: balance,
-          history: history,
+          balance,
+          history,
         });
       }
       catch (e) {
-        console.log(e);
+        error("" + (e as Error)?.stack, "CardDetail/updateCardData");
       }
     };
 
@@ -77,13 +76,13 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
           backgroundColor: "transparent",
         },
         headerStyle: {
-          backgroundColor: theme.colors.card + "55",
+          backgroundColor: Platform.OS === "android" ? theme.colors.card : theme.colors.card + "55",
         },
         headerBlurEffect: "regular",
         headerRight: () => (
           <PapillonPicker
             data={[
-              ...card.theme.links?.map((link) => ({
+              ...cardData.theme.links?.map((link) => ({
                 label: link.label,
                 subtitle: link.subtitle,
                 sfSymbol: link.sfSymbol,
@@ -98,7 +97,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
                 onPress: () => {
                   Alert.alert(
                     "Supprimer la carte",
-                    "Es-tu sûr de vouloir supprimer la " + (cardName ?? "carte") + " ?",
+                    "Veux-tu vraiment supprimer la " + (cardName ?? "carte") + " ?",
                     [
                       { text: "Annuler", style: "cancel" },
                       {
@@ -106,11 +105,11 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
                         style: "destructive",
                         onPress: () => {
                           try {
-                            removeAccount(card.account?.localID as string);
+                            removeAccount(cardData.account?.localID as string);
                             navigation.goBack();
                           }
                           catch (e) {
-                            console.log(e);
+                            error("" + (e as Error)?.stack, "CardDetail/removeAccount");
                           }
                         }
                       }
@@ -159,7 +158,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
               }}
               pointerEvents={"none"}
             >
-              <MenuCard card={route.params.card} />
+              <MenuCard card={cardData} />
             </Reanimated.View>
           </PressableScale>
 
@@ -197,7 +196,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
                 letterSpacing: 3.5,
               }}
             >
-              {formatCardIdentifier(card.account?.localID as string, 12, "")}
+              {formatCardIdentifier(cardData.account?.localID as string, 12, "")}
             </Text>
           </View>
 
@@ -207,7 +206,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
               gap: 10,
             }}
           >
-            {card?.balance[0] && (
+            {cardData?.balance[0] && (
               <NativeList inline style={{ flex: 1, height: 76 }}>
                 <View
                   style={{
@@ -230,18 +229,18 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
                       fontFamily: "semibold",
                       fontSize: 28,
                       textAlign: "center",
-                      color: card.balance[0].amount > 0 ? "#00C853" : "#FF1744",
+                      color: cardData.balance[0].amount > 0 ? "#00C853" : "#FF1744",
                     }}
                   >
-                    {card.balance[0].amount > 0 && "+"}{card.balance[0].amount.toFixed(2)} €
+                    {cardData.balance[0].amount > 0 && "+"}{cardData.balance[0].amount.toFixed(2)} €
                   </Text>
                 </View>
               </NativeList>
             )}
 
-            {card?.cardnumber && (
+            {cardData?.cardnumber && (
               <PressableScale
-                onPress={() => navigation.navigate("RestaurantQrCode", { card: card })}
+                onPress={() => navigation.navigate("RestaurantQrCode", { card: cardData })}
                 weight="light"
                 activeScale={0.95}
               >
@@ -276,9 +275,37 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
             )}
           </View>
 
-          {card?.history.length > 0 && (
+          {cardData?.balance[0].remaining !== null && (
             <NativeList inline>
-              {card.history
+              <NativeItem
+                trailing={
+                  <NativeText
+                    variant="titleLarge"
+                    style={{
+                      marginRight: 10,
+                      fontFamily: "semibold",
+                      fontSize: 26,
+                      lineHeight: 28,
+                      color: cardData.balance[0].remaining > 1 ? "#00C853" : "#FF1744",
+                    }}
+                  >
+                    {cardData.balance[0].remaining.toFixed(0)}
+                  </NativeText>
+                }
+              >
+                <NativeText variant="title">
+                  Repas restants
+                </NativeText>
+                <NativeText variant="subtitle">
+                  Tarif estimé à {cardData.balance[0].price?.toFixed(2)} €
+                </NativeText>
+              </NativeItem>
+            </NativeList>
+          )}
+
+          {cardData?.history.length > 0 && (
+            <NativeList inline>
+              {cardData.history
                 .filter((event) => !isNaN(new Date(event.timestamp).getTime()))
                 .sort((a: any, b: any) => b.timestamp - a.timestamp)
                 .map((history, i) => (
@@ -286,7 +313,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
                     key={"cardhistory-"+i}
                     leading={
                       <Image
-                        source={defaultProfilePicture(card.service as AccountService)}
+                        source={defaultProfilePicture(cardData.service as AccountService)}
                         style={{
                           width: 36,
                           height: 36,
@@ -330,9 +357,25 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
                     <NativeText variant="title">
                       {history.label}
                     </NativeText>
-                    <NativeText variant="subtitle">
-                      il y a {formatDistance(new Date(history.timestamp), new Date(), { locale: fr })}
-                    </NativeText>
+
+                    {new Date(history.timestamp) && differenceInDays(new Date(), new Date(history.timestamp)) < 30 ? (
+                      <NativeText variant="subtitle">
+                        il y a {formatDistance(new Date(history.timestamp), new Date(), { locale: fr })} • {new Date(history.timestamp).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          weekday: "short",
+                          month: "short",
+                        })}
+                      </NativeText>
+                    ) : (
+                      <NativeText variant="subtitle">
+                        {new Date(history.timestamp).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          weekday: "long",
+                          month: "long",
+                          year: new Date(history.timestamp).getFullYear() !== new Date().getFullYear() ? "numeric" : undefined,
+                        })}
+                      </NativeText>
+                    )}
                   </NativeItem>
                 ))}
             </NativeList>
@@ -343,7 +386,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
 
         <LinearGradient
           pointerEvents="none"
-          colors={[route.params.card.theme.colors.background + "00", route.params.card.theme.colors.background, route.params.card.theme.colors.background + "00"]}
+          colors={[cardData.theme.colors.background + "00", cardData.theme.colors.background, cardData.theme.colors.background + "00"]}
           style={{
             position: "absolute",
             top: 0,
@@ -357,7 +400,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
     );
   }
   catch (e) {
-    console.log(e);
+    error("" + (e as Error)?.stack, "CardDetail");
     return <View />;
   }
 };
