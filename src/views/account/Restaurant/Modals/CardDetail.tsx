@@ -76,7 +76,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
           backgroundColor: "transparent",
         },
         headerStyle: {
-          backgroundColor: theme.colors.card + "55",
+          backgroundColor: Platform.OS === "android" ? theme.colors.card : theme.colors.card + "55",
         },
         headerBlurEffect: "regular",
         headerRight: () => (
@@ -97,7 +97,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
                 onPress: () => {
                   Alert.alert(
                     "Supprimer la carte",
-                    "Es-tu sûr de vouloir supprimer la " + (cardName ?? "carte") + " ?",
+                    "Veux-tu vraiment supprimer la " + (cardName ?? "carte") + " ?",
                     [
                       { text: "Annuler", style: "cancel" },
                       {
