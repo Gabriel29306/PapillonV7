@@ -98,7 +98,7 @@ const ChatDetails: Screen<"ChatDetails"> = ({ navigation, route }) => {
             </View>
           </NativeItem>
         </NativeList>
-        <NativeListHeader label={"Destinataires (" + recipients.length + ")"}/>
+        <NativeListHeader label={"Destinataires (" + recipients.length + ")"} />
         <NativeList>
           {recipients.slice(0, maxRecipientsShow).map((recipient, index) => (
             <NativeItem
@@ -136,7 +136,7 @@ const ChatDetails: Screen<"ChatDetails"> = ({ navigation, route }) => {
               <TouchableOpacity onPress={increaseMaxRecipientsShow}>
                 <View style={{ flex: 1, flexDirection: "row", justifyContent:"space-between" }}>
                   <NativeText variant="title">En afficher plus</NativeText>
-                  <ChevronDown color={colors.text}/>
+                  <ChevronDown color={colors.text} />
                 </View>
               </TouchableOpacity>
             </NativeItem>

@@ -187,14 +187,14 @@ const AddonsWebview: React.FC<AddonsWebviewProps> = ({
         </View>
         <View style={{ paddingHorizontal: 16, display: "flex", flexDirection: "row", gap: 10, height: 48 }}>
           <ButtonCta value={"Refuser"} onPress={() => setShowAuthorizations(false)} style={{ minWidth: null, maxWidth: null, width: (Dimensions.get("window").width - 42) / 2 }} />
-          <ButtonCta value={"Autoriser"} primary onPress={() => setShowAuthorizations(false)}  style={{ minWidth: null, maxWidth: null, width: (Dimensions.get("window").width - 42) / 2 }}/>
+          <ButtonCta value={"Autoriser"} primary onPress={() => setShowAuthorizations(false)}  style={{ minWidth: null, maxWidth: null, width: (Dimensions.get("window").width - 42) / 2 }} />
         </View>
       </BottomSheet>
       {
         error ?
           (
             <View style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", gap: 10 }}>
-              <Frown size={32} color={"#000"}/>
+              <Frown size={32} color={"#000"} />
               <NativeText variant="title" style={{ textAlign: "center" }}>L'extension à planté...</NativeText>
             </View>
           )

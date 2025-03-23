@@ -188,14 +188,14 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
           value={"Accès à ta caméra"}
           backgroundColor={"#000"}
           primary={true}
-          icon={isCameraPermissionGranted == PermissionStatus.GRANTED ? <Check/> : undefined}
+          icon={isCameraPermissionGranted == PermissionStatus.GRANTED ? <Check /> : undefined}
           onPress={() => {isCameraPermissionGranted != PermissionStatus.GRANTED && Linking.openSettings();}}
         />
         <ButtonCta
           value={"Accès à ta librairie photo"}
           backgroundColor={"#000"}
           primary={true}
-          icon={isMediaLibraryPermissionGranted == PermissionStatus.GRANTED ? <Check/> : undefined}
+          icon={isMediaLibraryPermissionGranted == PermissionStatus.GRANTED ? <Check /> : undefined}
           onPress={() => {isMediaLibraryPermissionGranted != PermissionStatus.GRANTED && Linking.openSettings();}}
         />
       </View>
@@ -250,7 +250,7 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
 
         {isLoading && (
           <View style={styles.loadingContainer}>
-            <PapillonSpinner size={30} color="#FFF"/>
+            <PapillonSpinner size={30} color="#FFF" />
             <Text style={styles.loadingText}>Enregistrement en cours...</Text>
           </View>
         )}

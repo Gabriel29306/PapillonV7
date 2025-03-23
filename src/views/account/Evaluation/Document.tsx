@@ -213,7 +213,7 @@ const EvaluationDocument: Screen<"EvaluationDocument"> = ({ route, navigation })
           <NativeListHeader label={"Détails"} />
           <NativeList>
             <NativeItem
-              icon={<User2/>}
+              icon={<User2 />}
             >
               <NativeText variant="overtitle">Déposé par </NativeText>
               <NativeText
@@ -224,7 +224,7 @@ const EvaluationDocument: Screen<"EvaluationDocument"> = ({ route, navigation })
             </NativeItem>
             {evaluation.description !== "" && (
               <NativeItem
-                icon={<MessageSquareMore/>}
+                icon={<MessageSquareMore />}
               >
                 <NativeText variant="overtitle">Détails</NativeText>
                 <NativeText

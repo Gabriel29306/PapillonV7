@@ -17,7 +17,7 @@ const SettingsMagic: Screen<"SettingsMagic"> = () => {
         paddingHorizontal: 15,
       }}
     >
-      <MagicContainerCard/>
+      <MagicContainerCard />
 
       <NativeListHeader label="Actualités" />
       <NativeList>

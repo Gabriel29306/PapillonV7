@@ -375,7 +375,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
         />
         {addons.length > 0 &&
             <>
-              <NativeListHeader label={"Extensions"}/>
+              <NativeListHeader label={"Extensions"} />
               <NativeList>
                 {addons.map((addon, index) => (
                   <NativeItem
@@ -471,13 +471,13 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
 
         {devModeEnabled && (
           <View>
-            <NativeListHeader label={"Développeur"}/>
+            <NativeListHeader label={"Développeur"} />
             <NativeList>
               <NativeItem
                 onPress={() => navigation.navigate("SettingsDevLogs")}
                 leading={
                   <NativeIcon
-                    icon={<Paperclip/>}
+                    icon={<Paperclip />}
                     color={"#000"}
                     style={{
                       marginLeft: -6,

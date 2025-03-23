@@ -86,7 +86,7 @@ const SettingsExternalServices: Screen<"SettingsExternalServices"> = ({
         paddingHorizontal: 16,
       }}
     >
-      <ExternalServicesContainerCard/>
+      <ExternalServicesContainerCard />
 
       <View>
         <NativeList>

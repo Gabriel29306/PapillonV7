@@ -22,16 +22,16 @@ const AddonLogs: Screen<"AddonLogs"> = ({ route }) => {
               leading={
                 <View>
                   {log.type === "log" && (
-                    <Code size={24} color={"#000"}/>
+                    <Code size={24} color={"#000"} />
                   )}
                   {log.type === "error" && (
-                    <CircleX size={24} color={"#BE0B00"}/>
+                    <CircleX size={24} color={"#BE0B00"} />
                   )}
                   {log.type === "warn" && (
-                    <TriangleAlert size={24} color={"#CF6B0F"}/>
+                    <TriangleAlert size={24} color={"#CF6B0F"} />
                   )}
                   {log.type === "info" && (
-                    <CircleAlert size={24} color={"#0E7CCB"}/>
+                    <CircleAlert size={24} color={"#0E7CCB"} />
                   )}
                 </View>
               }

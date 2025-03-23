@@ -135,7 +135,7 @@ const ColorSelector: Screen<"ColorSelector"> = ({ route, navigation }) => {
         width={280}
         offsetTop={"10%"}
       />
-      <MaskStarsColored color={account?.personalization?.color?.hex.primary || colors.text}/>
+      <MaskStarsColored color={account?.personalization?.color?.hex.primary || colors.text} />
       <View style={styles.colors}>
         <View style={styles.row}>
           {colorsList.slice(0, 3).map((color) => <ColorButton key={color.id} color={color} />)}

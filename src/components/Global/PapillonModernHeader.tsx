@@ -27,7 +27,7 @@ export const PapillonModernHeader: React.FC<ModernHeaderProps> = (props) => {
   }
 
   return (
-    <LinearGradientModernHeader {...props} tint={props.tint}/>
+    <LinearGradientModernHeader {...props} tint={props.tint} />
   );
 };
 

@@ -145,7 +145,7 @@ const SettingsMultiService: Screen<"SettingsMultiService"> = ({ navigation }) =>
         paddingBottom: 25
       }}
     >
-      <MultiServiceContainerCard/>
+      <MultiServiceContainerCard />
 
       <NativeListHeader label="Options" />
       <NativeList>
@@ -201,7 +201,7 @@ const SettingsMultiService: Screen<"SettingsMultiService"> = ({ navigation }) =>
 
       {multiServiceEnabled && (
         <>
-          <NativeListHeader label="Mes Espaces"/>
+          <NativeListHeader label="Mes Espaces" />
           <NativeList>
             {multiServiceSpaces.map((space, index) => (
               <NativeItem
@@ -229,7 +229,7 @@ const SettingsMultiService: Screen<"SettingsMultiService"> = ({ navigation }) =>
             ))}
             <NativeItem
               onPress={() => setSpaceCreationSheetOpened(true)}
-              icon={<Plus/>}
+              icon={<Plus />}
             >
               <NativeText>
                 Nouvel espace
@@ -259,7 +259,7 @@ const SettingsMultiService: Screen<"SettingsMultiService"> = ({ navigation }) =>
             opened={spaceCreationSheetOpened}
             contentContainerStyle={{ paddingHorizontal: 16 }}
           >
-            <NativeListHeader label="Créer un espace"/>
+            <NativeListHeader label="Créer un espace" />
             <NativeList>
               <View
                 style={{
@@ -275,7 +275,7 @@ const SettingsMultiService: Screen<"SettingsMultiService"> = ({ navigation }) =>
                   <NativeItem
                     onPress={() => spaceNameRef.current?.focus()}
                     chevron={false}
-                    icon={<Type/>}
+                    icon={<Type />}
                   >
                     <NativeText>
                       Titre de l'espace
@@ -301,7 +301,7 @@ const SettingsMultiService: Screen<"SettingsMultiService"> = ({ navigation }) =>
                       strokeWidth={2.8}
                       entering={animPapillon(ZoomIn)}
                       exiting={animPapillon(ZoomOut)}
-                    />: <ImageIcon/>}
+                    />: <ImageIcon />}
                     trailing={selectedImage && <Image
                       source={{ uri: selectedImage }}
                       style={{

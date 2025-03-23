@@ -276,7 +276,7 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                               <View style={{ flexDirection: "row", alignItems: "center", gap: 10, maxWidth: "90%" }}>
                                 <View>
                                   {attachment.type === AttachmentType.File ? (
-                                    <AutoFileIcon filename={attachment.name} size={28} color={colors.text} opacity={0.7}/>
+                                    <AutoFileIcon filename={attachment.name} size={28} color={colors.text} opacity={0.7} />
                                   ) : (
                                     <LinkFavicon size={28} url={attachment.url} />
                                   )}
@@ -385,7 +385,7 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                     sendMessageInChat(account, route.params.handle, text);
                   }}
                 >
-                  <Send color={"#FFF"} size={24} style={{ marginTop: 1, marginLeft: -3 }}/>
+                  <Send color={"#FFF"} size={24} style={{ marginTop: 1, marginLeft: -3 }} />
                 </TouchableOpacity>
               </View>
             </View>

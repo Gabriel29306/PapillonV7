@@ -99,7 +99,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
         }}>
           <View style={{ display: "flex", gap: 20, paddingTop: 23 }}>
             <View style={{ backgroundColor: "#BE0B0010", padding: 10, margin: 16, borderRadius: 10, display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
-              <TriangleAlert size={32} color={"#BE0B00"}/>
+              <TriangleAlert size={32} color={"#BE0B00"} />
               <View style={{ flex: 1 }}>
                 <NativeText variant={"title"} style={{ flex: 1 }}>Cette extension n'est pas signé</NativeText>
                 <NativeText variant={"subtitle"} style={{ flex: 1 }}>Les extensions non signées ne sont pas vérifiées par nos équipes. Tu es responsable de l'installation de celle-ci.</NativeText>
@@ -186,20 +186,20 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
                   <NativeItem
                     key={"perm_" + index}
                     leading={
-                      permission.name == "PERM_APP_CAMERA" ? <Camera color={"#000"} size={24}/>:
-                        permission.name == "PERM_APP_PHOTOS" ? <Images color={"#000"} size={24}/>:
-                          permission.name == "PERM_APP_LOCATION" ? <MapPin color={"#000"} size={24}/>:
-                            permission.name == "PERM_EDIT_PREFERENCES" ? <Cog color={"#000"} size={24}/>:
-                              permission.name == "PERM_EDIT_STUDENT_INFO" ? <UserCog color={"#000"} size={24}/>:
-                                permission.name == "PERM_SCHOOLDATA_CALENDAR" ? <Calendar color={"#000"} size={24}/>:
-                                  permission.name == "PERM_SCHOOLDATA_AUTH" ? <LockKeyhole color={"#BE0B00"} size={24}/>:
-                                    permission.name == "PERM_SCHOOLDATA_GRADES" ? <PieChart color={"#000"} size={24}/>:
-                                      permission.name == "PERM_SCHOOLDATA_NEWS" ? <Newspaper color={"#000"} size={24}/>:
-                                        permission.name == "PERM_SCHOOLDATA_TIMETABLE" ? <Clock color={"#000"} size={24}/>:
-                                          permission.name == "PERM_STUDENT_INFO" ? <User color={"#000"} size={24}/>:
-                                            permission.name == "PERM_APP_LOGS" ? <Terminal color={"#000"} size={24}/>:
-                                              permission.name == "PERM_SCHOOLDATA_SELF" ? <Carrot color={"#000"} size={24}/>:
-                                                <Code color={"#000"} size={24}/>
+                      permission.name == "PERM_APP_CAMERA" ? <Camera color={"#000"} size={24} />:
+                        permission.name == "PERM_APP_PHOTOS" ? <Images color={"#000"} size={24} />:
+                          permission.name == "PERM_APP_LOCATION" ? <MapPin color={"#000"} size={24} />:
+                            permission.name == "PERM_EDIT_PREFERENCES" ? <Cog color={"#000"} size={24} />:
+                              permission.name == "PERM_EDIT_STUDENT_INFO" ? <UserCog color={"#000"} size={24} />:
+                                permission.name == "PERM_SCHOOLDATA_CALENDAR" ? <Calendar color={"#000"} size={24} />:
+                                  permission.name == "PERM_SCHOOLDATA_AUTH" ? <LockKeyhole color={"#BE0B00"} size={24} />:
+                                    permission.name == "PERM_SCHOOLDATA_GRADES" ? <PieChart color={"#000"} size={24} />:
+                                      permission.name == "PERM_SCHOOLDATA_NEWS" ? <Newspaper color={"#000"} size={24} />:
+                                        permission.name == "PERM_SCHOOLDATA_TIMETABLE" ? <Clock color={"#000"} size={24} />:
+                                          permission.name == "PERM_STUDENT_INFO" ? <User color={"#000"} size={24} />:
+                                            permission.name == "PERM_APP_LOGS" ? <Terminal color={"#000"} size={24} />:
+                                              permission.name == "PERM_SCHOOLDATA_SELF" ? <Carrot color={"#000"} size={24} />:
+                                                <Code color={"#000"} size={24} />
                     }
                   >
                     <NativeText variant="title" style={permission.name == "PERM_SCHOOLDATA_AUTH" && { color: "#BE0B00" }}>
@@ -229,7 +229,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
                   <NativeItem
                     key={"domain_" + index}
                     leading={
-                      <Globe size={24} color={"#000"}/>
+                      <Globe size={24} color={"#000"} />
                     }
                   >
                     <NativeText variant="title">
@@ -270,7 +270,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
             </NativeText>
           </NativeItem>
         </NativeList>
-        <NativeListHeader label={"Installée"}/>
+        <NativeListHeader label={"Installée"} />
         <NativeList>
           {storageAddons.map((addon, index) => (
             <NativeItem
@@ -322,7 +322,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
             Platform.OS == "ios" && (
               <NativeItem
                 leading={
-                  <Folder size={24} color={"#000"}/>
+                  <Folder size={24} color={"#000"} />
                 }
                 onPress={() => {
                   Linking.openURL(FileSystem.documentDirectory?.replace("file", "shareddocuments") + "addons");
@@ -335,7 +335,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
             )
           }
         </NativeList>
-        <NativeListHeader label={"Soutenu par l’équipe Papillon"}/>
+        <NativeListHeader label={"Soutenu par l’équipe Papillon"} />
         <NativeList>
           <NativeItem leading={
             <Image
@@ -357,7 +357,7 @@ const SettingsAddons: Screen<"SettingsAddons"> = () => {
             </NativeText>
           </NativeItem>
         </NativeList>
-        <NativeListHeader label={"Avancé"}/>
+        <NativeListHeader label={"Avancé"} />
         <NativeList>
           <NativeItem
             trailing={

@@ -67,7 +67,7 @@ const ProfilePic: Screen<"ProfilePic"> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <MaskStars />
 
-      <View style={{ height: 48 }}/>
+      <View style={{ height: 48 }} />
 
       <PapillonShineBubble
         message={name ? `Très bon choix, ${name} ! Maintenant, une petite photo ?` : "Ajouter une photo de profil ?"}

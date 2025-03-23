@@ -85,7 +85,7 @@ const SettingsIcons: Screen<"SettingsIcons"> = () => {
         paddingTop: 0,
       }}
     >
-      <IconsContainerCard/>
+      <IconsContainerCard />
 
       {Object.keys(data).map((key, index) => (
         <View key={index}>

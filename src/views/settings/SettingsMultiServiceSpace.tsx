@@ -387,7 +387,7 @@ const SettingsMultiServiceSpace: Screen<"SettingsMultiServiceSpace"> = ({ naviga
                     />
                   </Reanimated.View>}
                 onPress={() => openAccountSelector(feature.feature, feature.name)}
-                trailing={<ChevronDown color={theme.colors.primary}/>}
+                trailing={<ChevronDown color={theme.colors.primary} />}
                 chevron={false}
               >
                 <NativeText variant="title">{feature.name}</NativeText>
@@ -426,7 +426,7 @@ const SettingsMultiServiceSpace: Screen<"SettingsMultiServiceSpace"> = ({ naviga
               paddingHorizontal: 10
             }}
           >
-            <NativeListHeader label={`Sélectionner un service pour "${featureSelectionName}"`}/>
+            <NativeListHeader label={`Sélectionner un service pour "${featureSelectionName}"`} />
             <NativeList>
               {availableAccounts.map((account, index) => (
                 <Pressable
