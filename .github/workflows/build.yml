@@ -27,14 +27,6 @@ jobs:
         distribution: 'temurin' # Distribution Temurin (privilégiée)
         java-version: '17'
 
-    # 2. Configurer Node.js
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 'lts/*' # Version de Node.js à utiliser
-        cache: 'npm' # Activer le cache pour npm
-        cache-dependency-path: package-lock.json # Chemin vers le fichier de verrouillage des dépendances
-
     # 2. Récupérer le fichier JSON des sources et patchs
     - name: 📥 Fetch Patch List
       id: fetch_patch_list
@@ -75,13 +67,21 @@ jobs:
         cd target-repo
         git checkout main
 
-    # 6. Ajout de la configuration Git
+    # 6. Configurer Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 'lts/*' # Version de Node.js à utiliser
+        cache: 'npm' # Activer le cache pour npm
+        cache-dependency-path: target-repo/package-lock.json # Chemin vers le fichier de verrouillage des dépendances
+
+    # 7. Ajout de la configuration Git
     - name: 🔧 Configure Git User
       run: |
         git config --global user.email "github-actions@github.com"
         git config --global user.name "GitHub Actions"
 
-    # 7. Ajouter les upstreams et appliquer les patchs
+    # 8. Ajouter les upstreams et appliquer les patchs
     - name: 🔧 Add Upstreams and Merge Patches
       run: |
         cd target-repo
@@ -107,7 +107,7 @@ jobs:
           }
         done
 
-    # 8. Installer les dépendances
+    # 9. Installer les dépendances
     - name: 📥 Install Dependencies
       run: |
         cd target-repo
@@ -117,19 +117,19 @@ jobs:
           npm ci || npm install
         fi
 
-    # 9. Prebuild l'app avec Expo
+    # 10. Prebuild l'app avec Expo
     - name: ⚙️ Prepare Android Build
       run: |
         cd target-repo
         npx expo prebuild -p android
 
-    # 10. Configurer gradle.properties pour générer des APKs par architecture
+    # 11. Configurer gradle.properties pour générer des APKs par architecture
     - name: 🔧 Configure Build Gradle for Split APKs
       run: |
         sed -i "s/universalApk false/universalApk true/g" target-repo/android/app/build.gradle
         sed -i '/buildToolsVersion/d' target-repo/android/app/build.gradle
 
-    # Nouveau: Configuration du cache Gradle
+    # 12. Configuration du cache Gradle
     - name: 📦 Cache Gradle dependencies
       uses: actions/cache@v3
       with:
@@ -141,7 +141,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    # 11. Récupérer la dernière version distante, y compris les pré-releases
+    # 13. Récupérer la dernière version distante, y compris les pré-releases
     - name: 🔍 Get Latest Release Version
       id: get_latest_release
       uses: actions/github-script@v6
@@ -176,7 +176,7 @@ jobs:
             core.setOutput("versionCode", 100);
           }
     
-    # 12. Incrémentation de la version
+    # 14. Incrémentation de la version
     - name: 📈 Increment Version Code
       run: |
         cd target-repo
@@ -189,13 +189,13 @@ jobs:
         sed -i "s/versionCode [0-9]*/versionCode ${NEW_VERSION_CODE}/" android/app/build.gradle
         echo "VERSION_CODE=${NEW_VERSION_CODE}" >> $GITHUB_ENV
   
-    # 13. Build des apks
+    # 15. Build des apks
     - name: 🏗️ Build Release APK
       run: |
         cd target-repo/android
         ./gradlew :app:assembleRelease
 
-    # 14. Renommer les apks
+    # 16. Renommer les apks
     - name: ⚙️ Rename apks
       run: |
         cd target-repo/android/app/build/outputs/apk/release/
@@ -206,7 +206,7 @@ jobs:
         mv app-x86-release.apk Papillon-x86-release.apk
         mv app-x86_64-release.apk Papillon-x86_64-release.apk
 
-    # 15. Publier les APKs dans une préversion
+    # 17. Publier les APKs dans une préversion
     - name: 📤 Create Pre-Release with APKs
       uses: ncipollo/release-action@v1
       with:
