@@ -330,7 +330,7 @@ const ChangelogFeature: React.FC<{ feature: Feature, navigation: any, theme: any
                   navigation.goBack();
                   navigation.navigate(feature.navigation);
                 }
-                catch {}
+                catch { /* empty */ }
               }
             } : undefined}
           >
