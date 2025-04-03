@@ -85,7 +85,7 @@ const LinearGradientModernHeaderComponent: React.FC<ModernHeaderProps & { tint?:
   const windowWidth = useMemo(() => Dimensions.get("window").width, []);
 
   return (
-    <>
+    <View style={{marginTop: (Platform.OS === "android" && outsideNav) ? insets.top : undefined}}>
       {enableBlur && (
         <CustomFilterView
           style={[
@@ -140,7 +140,7 @@ const LinearGradientModernHeaderComponent: React.FC<ModernHeaderProps & { tint?:
       {outsideNav && Platform.OS === "ios" && (
         <View style={[styles.handleIndicator, { backgroundColor: theme.colors.text + "22" }]} />
       )}
-    </>
+    </View>
   );
 };
 
