@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { NativeList, NativeText } from "@/components/Global/NativeComponents";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { ArrowUpRight } from "lucide-react-native";
 import { useCurrentAccount } from "@/stores/account";
 import { PapillonNavigation } from "@/router/refs";

@@ -6,7 +6,7 @@ import datasets from "@/consts/datasets.json";
 import uuid from "@/utils/uuid-v4";
 import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
 import { AlertTriangle, Bug, Sparkles, X } from "lucide-react-native";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 
 import Reanimated, { FadeInUp, FadeOutUp, LinearTransition } from "react-native-reanimated";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
@@ -18,7 +18,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Screen } from "@/router/helpers/types";
 import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 import useScreenDimensions from "@/hooks/useScreenDimensions";
-import { error } from "@/utils/logger/logger";
 
 interface Feature {
   title: string;
@@ -205,11 +204,13 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
             </PressableScale>
 
             <Reanimated.View>
-              <NativeListHeader
-                animated
-                label="Nouveautés"
-                icon={<Sparkles />}
-              />
+              {changelog.features.length > 0 && (
+                <NativeListHeader
+                  animated
+                  label="Nouveautés"
+                  icon={<Sparkles />}
+                />
+              )}
 
               <Reanimated.ScrollView
                 horizontal
@@ -237,7 +238,9 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
             </Reanimated.View>
 
             <Reanimated.View>
-              <NativeListHeader animated label="Correctifs" icon={<Bug />} />
+              {changelog.bugfixes.length > 0 && (
+                <NativeListHeader animated label="Correctifs" icon={<Bug />} />
+              )}
 
               <Reanimated.ScrollView
                 horizontal
@@ -278,16 +281,18 @@ const ChangelogFeature: React.FC<{ feature: Feature, navigation: any, theme: any
       <NativeList
         inline
         style={{
-          width: 200,
+          width: 240,
         }}
       >
-        <Image
-          source={{ uri: feature.image }}
-          style={{
-            width: "100%",
-            aspectRatio: 3 / 2
-          }}
-        />
+        {feature.image && (
+          <Image
+            source={{ uri: feature.image }}
+            style={{
+              width: "100%",
+              aspectRatio: 3 / 2
+            }}
+          />
+        )}
         <View pointerEvents="none"
           style={{
             height: 142,
@@ -314,32 +319,32 @@ const ChangelogFeature: React.FC<{ feature: Feature, navigation: any, theme: any
             {feature.subtitle}
           </NativeText>
         </View>
-        <NativeItem
-          onPress={(feature.href || feature.navigation) ? () => {
-            if (feature.href) {
-              Linking.openURL(feature.href);
-            }
-            else if (feature.navigation) {
-              try {
-                navigation.goBack();
-                navigation.navigate(feature.navigation);
+        {feature.navigation && (
+          <NativeItem
+            onPress={(feature.href || feature.navigation) ? () => {
+              if (feature.href) {
+                Linking.openURL(feature.href);
               }
-              catch (err){
-                error("Fail with `feature.navigation`", "ChangelogScreen");
+              else if (feature.navigation) {
+                try {
+                  navigation.goBack();
+                  navigation.navigate(feature.navigation);
+                }
+                catch {}
               }
-            }
-          } : undefined}
-        >
-          <NativeText
-            variant="default"
-            style={{
-              color: (feature.href || feature.navigation) ? theme.colors.primary : theme.colors.text + "50"
-            }}
+            } : undefined}
           >
-            {feature.button || "En savoir plus"}
-          </NativeText>
-        </NativeItem>
 
+            <NativeText
+              variant="default"
+              style={{
+                color: (feature.href || feature.navigation) ? theme.colors.primary : theme.colors.text + "50"
+              }}
+            >
+              {feature.button || "En savoir plus"}
+            </NativeText>
+          </NativeItem>
+        )}
       </NativeList>
     </PressableScale>
   );

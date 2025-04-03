@@ -1,6 +1,6 @@
 import { NativeText } from "@/components/Global/NativeComponents";
 import { getCourseSpeciality } from "@/utils/format/format_cours_name";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import React, { useEffect } from "react";
 import { View, TouchableOpacity } from "react-native";
 import { type RouteParameters } from "@/router/helpers/types";

@@ -52,7 +52,7 @@ import defaultPersonalization from "@/services/local/default-personalization";
 import uuid from "@/utils/uuid-v4";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
 import { NativeText } from "@/components/Global/NativeComponents";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { error } from "@/utils/logger/logger";
 
 const UnivRennes2_Login: Screen<"UnivRennes2_Login"> = ({ navigation }) => {

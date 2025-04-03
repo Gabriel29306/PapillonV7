@@ -16,6 +16,8 @@ import { SoundHapticsProvider } from "@/hooks/Theme_Sound_Haptics";
 import { PapillonNavigation } from "@/router/refs";
 import * as Device from "expo-device";
 import * as ScreenOrientation from "expo-screen-orientation";
+import { getToLoadFonts } from "@/consts/Fonts";
+import { useFlagsStore } from "@/stores/flags";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,13 +35,8 @@ export default function App () {
   const switchTo = useCurrentAccount((store) => store.switchTo);
   const accounts = useAccounts((store) => store.accounts).filter((account) => !account.isExternal);
 
-  const [fontsLoaded] = useFonts({
-    light: require("./assets/fonts/FixelText-Light.ttf"),
-    regular: require("./assets/fonts/FixelText-Regular.ttf"),
-    medium: require("./assets/fonts/FixelText-Medium.ttf"),
-    semibold: require("./assets/fonts/FixelText-SemiBold.ttf"),
-    bold: require("./assets/fonts/FixelText-Bold.ttf"),
-  });
+  const defined = useFlagsStore((state) => state.defined);
+  const [fontsLoaded] = useFonts(getToLoadFonts(defined));
 
   useEffect(() => {
     const configureOrientation = async () => {
@@ -93,9 +90,9 @@ export default function App () {
 
     const timeInBackground = Date.now() - parseInt(savedTimestamp, 10);
     const timeLimit =
-      currentAccount.service in BACKGROUND_LIMITS
-        ? getBackgroundTimeLimit(currentAccount.service as keyof typeof BACKGROUND_LIMITS)
-        : DEFAULT_BACKGROUND_TIME;
+        currentAccount.service in BACKGROUND_LIMITS
+          ? getBackgroundTimeLimit(currentAccount.service as keyof typeof BACKGROUND_LIMITS)
+          : DEFAULT_BACKGROUND_TIME;
 
     const timeInBackgroundSeconds = Math.floor(timeInBackground / 1000);
     if (timeInBackground >= timeLimit) {

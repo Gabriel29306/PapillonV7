@@ -1,6 +1,6 @@
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { Check } from "lucide-react-native";
-import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
+import React, { createContext, useState, useContext, useEffect, useCallback, ReactNode, memo } from "react";
 import { Modal, View, Text, StyleSheet, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Reanimated, { FadeIn, FadeOut, LinearTransition } from "react-native-reanimated";
@@ -53,7 +53,7 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
   const { isTablet } = useScreenDimensions();
   const insets = useSafeAreaInsets();
 
-  const showAlert = ({
+  const showAlert = useCallback(({
     title,
     message,
     icon,
@@ -75,12 +75,12 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
     }, {} as { [key: string]: number });
 
     setDelays(initialDelays);
-  };
+  }, []);
 
-  const hideAlert = () => {
+  const hideAlert = useCallback(() => {
     setVisible(false);
     setTimeout(() => setAlert(null), 150);
-  };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -347,4 +347,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AlertProvider;
+export default memo(AlertProvider);

@@ -1,8 +1,8 @@
 import { NativeList, NativeListHeader } from "@/components/Global/NativeComponents";
 import { useCurrentAccount } from "@/stores/account";
 import { useHomeworkStore } from "@/stores/homework";
-import { useTheme } from "@react-navigation/native";
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
+import React, { useRef, useState, useCallback, useEffect, memo } from "react";
 import { toggleHomeworkState, updateHomeworkForWeekInCache } from "@/services/homework";
 import {
   View,
@@ -13,15 +13,15 @@ import {
   StyleSheet,
   TextInput,
   ListRenderItem,
-  TouchableOpacity
+  Pressable
 } from "react-native";
-import { dateToEpochWeekNumber, epochWNToDate } from "@/utils/epochWeekNumber";
+import { calculateWeekNumber, dateToEpochWeekNumber, epochWNToDate } from "@/utils/epochWeekNumber";
 
 import * as StoreReview from "expo-store-review";
 
-import HomeworkItem from "./Atoms/Item";
 import { PressableScale } from "react-native-pressable-scale";
-import { Book, CheckSquare, ChevronLeft, ChevronRight, CircleDashed, Search, X } from "lucide-react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { Book, CheckSquare, ChevronLeft, ChevronRight, CircleDashed, Plus, Search, X } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 
@@ -42,6 +42,10 @@ import { hasFeatureAccountSetup } from "@/utils/multiservice";
 import { MultiServiceFeature } from "@/stores/multiService/types";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
+import HomeworkItem from "./Atoms/Item";
+
+const MemoizedHomeworkItem = memo(HomeworkItem);
+const MemoizedNativeList = memo(NativeList);
 
 const formatDate = (date: string | number | Date): string => {
   return new Date(date).toLocaleDateString("fr-FR", {
@@ -68,11 +72,8 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
   // @ts-expect-error
   let firstDate = account?.instance?.instance?.firstDate || null;
   if (!firstDate) {
-    firstDate = new Date();
-    firstDate.setMonth(8);
-    firstDate.setDate(1);
+    firstDate = new Date(Date.UTC(new Date().getFullYear(), 8, 1));
   }
-  const firstDateEpoch = dateToEpochWeekNumber(firstDate);
 
   const currentWeek = dateToEpochWeekNumber(new Date());
   const [data, setData] = useState(Array.from({ length: 100 }, (_, i) => currentWeek - 50 + i));
@@ -135,13 +136,18 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
 
   const [searchTerms, setSearchTerms] = useState("");
 
-  const renderWeek: ListRenderItem<number> = ({ item }) => {
-    const homeworksInWeek = homeworks[item] ?? [];
+  const renderWeek: ListRenderItem<number> = useCallback(({ item }) => {
+    const homeworksInWeek = [...(homeworks[item] ?? [])];
 
-    const sortedHomework = homeworksInWeek.toSorted((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
+    const sortedHomework = homeworksInWeek.sort(
+      (a, b) => new Date(a.due).getTime() - new Date(b.due).getTime()
+    );
 
     const groupedHomework = sortedHomework.reduce((acc, curr) => {
-      const dayName = getDayName(curr.due);
+      const dayName = getDayName(curr.personalizate
+        ? curr.due - 86400
+        : curr.due
+      );
       const formattedDate = formatDate(curr.due);
       const day = `${dayName} ${formattedDate}`;
 
@@ -216,7 +222,7 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
 
     return (
       <ScrollView
-        style={{ width: finalWidth, height: "100%" }}
+        style={{ width, height: "100%" }}
         contentContainerStyle={{
           padding: 16,
           paddingTop: outsideNav ? 72 : insets.top + 56,
@@ -241,24 +247,32 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
           >
             <NativeListHeader animated label={day} />
 
-            <NativeList animated>
+            <MemoizedNativeList animated>
               {groupedHomework[day].map((homework, idx) => (
-                <HomeworkItem
+                <MemoizedHomeworkItem
                   key={homework.id}
                   index={idx}
                   navigation={navigation}
                   total={groupedHomework[day].length}
                   homework={homework}
                   onDonePressHandler={async () => {
-                    if (account.service !== AccountService.Skolengo) {
-                      await toggleHomeworkState(account, homework);
+                    if (homework.personalizate) {
+                      useHomeworkStore
+                        .getState()
+                        .updateHomework(item, homework.id,
+                          { ... homework, done: !homework.done }
+                        );
+                    } else {
+                      if (account.service !== AccountService.Skolengo) {
+                        await toggleHomeworkState(account, homework);
+                      }
+                      await updateHomeworks(true, false, false);
+                      await countCheckForReview();
                     }
-                    await updateHomeworks(true, false, false);
-                    await countCheckForReview();
                   }}
                 />
               ))}
-            </NativeList>
+            </MemoizedNativeList>
           </Reanimated.View>
         ))}
 
@@ -271,35 +285,50 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
             layout={animPapillon(LinearTransition)}
             key={searchTerms + hideDone}
           >
-            {searchTerms.length > 0 ?
+            {searchTerms.length > 0 ? (
               <MissingItem
                 emoji="🔍"
                 title="Aucun résultat"
                 description="Aucun devoir ne correspond à ta recherche."
               />
-              :
-              hideDone ?
-                <MissingItem
-                  emoji="🌴"
-                  title="Il ne reste rien à faire"
-                  description="Il n'y a aucun devoir non terminé pour cette semaine."
-                />
-                : hasServiceSetup ?
-                  <MissingItem
-                    emoji="📚"
-                    title="Aucun devoir"
-                    description="Il n'y a aucun devoir pour cette semaine."
-                  />
-                  : <MissingItem
-                    title="Aucun service connecté"
-                    description="Tu n'as pas encore paramétré de service pour cette fonctionnalité."
-                    emoji="🤷"
-                  />}
+            ) : hideDone ? (
+              <MissingItem
+                emoji="🌴"
+                title="Il ne reste rien à faire"
+                description="Il n'y a aucun devoir non terminé pour cette semaine."
+              />
+            ) : hasServiceSetup ? (
+              <MissingItem
+                emoji="📚"
+                title="Aucun devoir"
+                description="Il n'y a aucun devoir pour cette semaine."
+              />
+            ) : (
+              <MissingItem
+                title="Aucun service connecté"
+                description="Tu n'as pas encore paramétré de service pour cette fonctionnalité."
+                emoji="🤷"
+              />
+            )}
           </Reanimated.View>
         }
+
+        <View style={{ height: 82 }} />
       </ScrollView>
+
     );
-  };
+  }, [
+    homeworks,
+    searchTerms,
+    hideDone,
+    updateHomeworks,
+    navigation,
+    getDayName,
+    formatDate,
+    insets,
+    outsideNav,
+    isOnline,
+  ]);
 
   const onEndReached = () => {
     const lastWeek = data[data.length - 1];
@@ -466,7 +495,7 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
                   layout={animPapillon(LinearTransition)}
                 >
                   <AnimatedNumber
-                    value={((selectedWeek - firstDateEpoch % 52) % 52 + 1).toString()}
+                    value={calculateWeekNumber(epochWNToDate(selectedWeek))}
                     style={[styles.weekPickerText, styles.weekPickerTextNbr,
                       {
                         color: showPickerButtons ? theme.colors.primary : theme.colors.text,
@@ -667,6 +696,11 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
         </Reanimated.View>
       </PapillonModernHeader>
 
+      <AddHomeworkButton
+        onPress={() => navigation.navigate("AddHomework", {})}
+        outsideNav={route.params?.outsideNav ?? false}
+      />
+
       <FlatList
         ref={flatListRef}
         data={data}
@@ -690,6 +724,49 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
         }}
       />
     </View>
+  );
+};
+
+const AddHomeworkButton: React.FC<{ onPress: () => void, outsideNav: boolean }> = ({ onPress, outsideNav }) => {
+  const theme = useTheme();
+  const insets = useSafeAreaInsets();
+
+  return (
+    <Pressable
+      onPress={() => onPress()}
+      style={({ pressed }) => [
+        {
+          position: "absolute",
+          zIndex: 999999,
+          bottom: 16 + (outsideNav ? insets.bottom : 0),
+          right: 16,
+          transform: [{ scale: pressed ? 0.95 : 1 }],
+          opacity: pressed ? 0.8 : 1,
+          shadowColor: "#000000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 3,
+          overflow: "visible",
+        }
+      ]}
+    >
+      <View
+        style={{
+          width: 60,
+          height: 60,
+          borderRadius: 30,
+          backgroundColor: theme.colors.primary,
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+        <Plus
+          color={"#fff"}
+          size={28}
+          strokeWidth={2.5}
+        />
+      </View>
+    </Pressable>
   );
 };
 

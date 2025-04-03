@@ -10,7 +10,8 @@ import { PapillonModernHeader } from "./PapillonModernHeader";
 interface PapillonHeaderProps {
   children?: React.ReactNode
   route: RouteProp<RouteParameters, keyof RouteParameters>
-  navigation: NativeStackNavigationProp<RouteParameters, keyof RouteParameters>
+  navigation: NativeStackNavigationProp<RouteParameters, keyof RouteParameters>,
+  title?: string
 }
 
 interface PapillonHeaderInsetHeightProps {
@@ -20,7 +21,8 @@ interface PapillonHeaderInsetHeightProps {
 const PapillonHeader: React.FC<PapillonHeaderProps> = ({
   children,
   route,
-  navigation
+  navigation,
+  title
 }) => {
   const theme = useTheme();
 
@@ -56,19 +58,37 @@ const PapillonHeader: React.FC<PapillonHeaderProps> = ({
             flex: 1,
             display: "flex",
             flexDirection: "row",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            marginRight: Platform.OS !== "ios" ? -16 : 0,
+            justifyContent: "space-between",
+            alignItems: "center"
           }}
         >
           {children}
 
-          {Platform.OS === "ios" && (
-            <TabAnimatedTitleRight
-              route={route}
-              navigation={navigation}
-            />
-          )}
+          <TabAnimatedTitleLeft
+            route={route}
+            navigation={navigation}
+            style={{ paddingHorizontal: 0 }}
+            title={title}
+          />
+
+          <View
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            {children}
+
+            {Platform.OS === "ios" && (
+              <TabAnimatedTitleRight
+                route={route}
+                navigation={navigation}
+              />
+            )}
+          </View>
         </View>
       </View>
     </PapillonModernHeader>

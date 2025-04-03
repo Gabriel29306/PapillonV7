@@ -84,9 +84,11 @@ export type RouteParameters = {
   SkolengoGeolocation: undefined;
   SkolengoInstanceSelector: { pos: CurrentPosition | null };
   SkolengoWebview: { school: SkolengoSchool };
+
   // account.index
   Home: undefined;
   HomeScreen?: { onboard: boolean };
+  CustomizeHeader: undefined;
 
   Lessons?: { outsideNav?: boolean };
   LessonsImportIcal: {
@@ -99,6 +101,11 @@ export type RouteParameters = {
 
   Homeworks?: { outsideNav?: boolean };
   HomeworksDocument: { homework: Homework };
+  AddHomework: {
+    hwid?: string;
+    modal?: boolean;
+    defaults?: { subject: string; content: string; date: number };
+  };
 
   News?: { outsideNav?: boolean; isED: boolean };
   NewsItem: { message: string; important: boolean; isED: boolean };
@@ -146,6 +153,10 @@ export type RouteParameters = {
   SettingsDonorsList: undefined;
   SettingsReactions: undefined;
   SettingsAccessibility: undefined;
+  SettingsGeneral: undefined;
+  SettingsPersonalization: undefined;
+  SettingsExperimental: undefined;
+  SettingsProject: undefined;
 
   Menu?: undefined;
   RestaurantQrCode: {
@@ -156,6 +167,7 @@ export type RouteParameters = {
   };
   RestaurantCardDetail: {
     card: ServiceCard;
+    outsideNav?: boolean;
   };
   RestaurantPaymentSuccess: {
     card: ServiceCard;

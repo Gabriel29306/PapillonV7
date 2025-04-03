@@ -1,41 +1,54 @@
-// React
-import { useTheme } from "@react-navigation/native";
-import Reanimated, { FadeIn, FadeInDown, FadeOut, LinearTransition, ZoomIn, ZoomOut } from "react-native-reanimated";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, RefreshControl, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import { ScrollView, RefreshControl, ActivityIndicator, Dimensions, Switch, StyleSheet, View } from "react-native";
+import Reanimated, { FadeIn, FadeInDown, FadeOut, LinearTransition, ZoomIn, ZoomOut } from "react-native-reanimated";
 import { PressableScale } from "react-native-pressable-scale";
 
 // External modules
 import { AlertTriangle, BadgeX, ChefHat, ChevronLeft, ChevronRight, CookingPot, MapPin, Plus, Sprout, Utensils } from "lucide-react-native";
 import type { FoodAllergen, FoodLabel, Menu as PawnoteMenu } from "pawnote";
 
+// Utils
+import { animPapillon } from "@/utils/ui/animations";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
+import { warn } from "@/utils/logger/logger";
+
+// Providers
+import { useAlert } from "@/providers/AlertProvider";
+
+// Hooks
+import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
+
+// Stores
+import { useCurrentAccount } from "@/stores/account";
+import { AccountService } from "@/stores/account/types";
+
 // Components
-import DrawableImportRestaurant from "@/components/Drawables/DrawableImportRestaurant";
-import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import AnimatedNumber from "@/components/Global/AnimatedNumber";
+import ButtonCta from "@/components/FirstInstallation/ButtonCta";
+import DrawableImportRestaurant from "@/components/Drawables/DrawableImportRestaurant";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import MissingItem from "@/components/Global/MissingItem";
 import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
 import PapillonHeader, { PapillonHeaderInsetHeight } from "@/components/Global/PapillonHeader";
-import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
-import { AccountService } from "@/stores/account/types";
-import { STORE_THEMES, StoreTheme } from "./Cards/StoreThemes";
-import MenuCard from "./Cards/Card";
-import { useAlert } from "@/providers/AlertProvider";
-import { warn } from "@/utils/logger/logger";
-import { ServiceCard } from "@/utils/external/restaurant";
+import { PapillonHeaderSelector } from "@/components/Global/PapillonModernHeader";
+import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
+
+// Views
+import MenuCard from "@/views/account/Restaurant/Cards/Card";
 import { LessonsDateModal } from "@/views/account/Lessons/LessonsHeader";
-import type { Screen } from "@/router/helpers/types";
-import { useCurrentAccount } from "@/stores/account";
-import { BookingDay, BookingTerminal } from "@/services/shared/Booking";
+
+// Services
 import { bookDayFromExternal, getBookingsAvailableFromExternal } from "@/services/booking";
 import { getMenu } from "@/services/menu";
-import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
 import { balanceFromExternal } from "@/services/balance";
 import { qrcodeFromExternal } from "@/services/qrcode";
 import { reservationHistoryFromExternal } from "@/services/reservation-history";
-import { animPapillon } from "@/utils/ui/animations";
-import { PapillonHeaderSelector } from "@/components/Global/PapillonModernHeader";
+
+// Types
+import type { Screen } from "@/router/helpers/types";
+import { BookingDay, BookingTerminal } from "@/services/shared/Booking";
+import { ServiceCard } from "@/utils/external/restaurant";
+import { STORE_THEMES, StoreTheme } from "./Cards/StoreThemes";
 
 const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   const theme = useTheme();
@@ -54,7 +67,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   const [currentMenu, setCurrentMenu] = useState<PawnoteMenu | null>(null);
   const [currentWeek, setCurrentWeek] = useState<number>(0);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [pickerDate, setPickerDate] = React.useState(new Date(new Date().setHours(0, 0, 0, 0)));
+  const [pickerDate, setPickerDate] = useState(new Date(new Date().setHours(0, 0, 0, 0)));
   const [menuLoading, setMenuLoading] = useState(false);
   const [isInitialised, setIsInitialised] = useState(false);
   const [allCards, setAllCards] = useState<Array<ServiceCard> | null>(null);
@@ -199,12 +212,12 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
             newBookings.push(...booking);
 
             const newCard: ServiceCard = {
-              service: account.service,
-              identifier: account.username,
-              account: account,
-              balance: balance,
-              history: history,
-              cardnumber: cardnumber,
+              service: account.service ?? 0,
+              identifier: account.username ?? "",
+              account: account ?? null,
+              balance: balance ?? [],
+              history: history ?? [],
+              cardnumber: cardnumber ?? "",
               // @ts-ignore
               theme: STORE_THEMES.find((theme) => theme.id === AccountService[account.service]) ?? STORE_THEMES[0] as StoreTheme,
             };
@@ -291,9 +304,9 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
         {labels.map((label, k) => (
           <View key={"label-" + k} style={[styles.label, { backgroundColor: label.color ?? "#888888" }]}>
             {getLabelIcon(label.name)}
-            <Text style={{ color: "#FFFFFF", fontSize: 12, fontWeight: "bold" }}>
+            <Reanimated.Text style={{ color: "#FFFFFF", fontSize: 12, fontWeight: "bold" }}>
               {getLabelName(label.name)}
-            </Text>
+            </Reanimated.Text>
           </View>
         ))}
       </View>
@@ -387,7 +400,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
                       key={index}
                       card={card}
                       onPress={() => {
-                        navigation.navigate("RestaurantCardDetail", { card });
+                        navigation.navigate("RestaurantCardDetail", { card, outsideNav: true });
                       }}
                     />
                   </Reanimated.View>
