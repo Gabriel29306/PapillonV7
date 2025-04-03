@@ -27,14 +27,22 @@ jobs:
         distribution: 'temurin' # Distribution Temurin (privilégiée)
         java-version: '17'
 
-    # 1. Récupérer le fichier JSON des sources et patchs
+    # 2. Configurer Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 'lts/*' # Version de Node.js à utiliser
+        cache: 'npm' # Activer le cache pour npm
+        cache-dependency-path: package-lock.json # Chemin vers le fichier de verrouillage des dépendances
+
+    # 2. Récupérer le fichier JSON des sources et patchs
     - name: 📥 Fetch Patch List
       id: fetch_patch_list
       run: |
         curl -sL -H "Cache-Control: no-cache, no-store" https://raw.githubusercontent.com/Gabriel29306/datasets/main/papillon_7_patchs.json -o patch_list.json
         echo $(cat patch_list.json)
 
-    # 2. Extraire les informations des sources et patchs
+    # 3. Extraire les informations des sources et patchs
     - name: 🗂 Parse Sources and Patch List
       id: parse_patch_list
       run: |
@@ -47,7 +55,7 @@ jobs:
         # Extraire les sources sous forme de paires "nom=url"
         jq -r '.source | to_entries[] | "\(.key)=\(.value)"' patch_list.json > sources.txt
 
-    # 3. Vérifier et choisir les patchs à appliquer
+    # 4. Vérifier et choisir les patchs à appliquer
     - name: 🔍 Select Patches
       id: select_patches
       run: |
@@ -60,20 +68,20 @@ jobs:
         echo "Selected patches: $SELECTED_PATCHES"
         echo "SELECTED_PATCHES=$SELECTED_PATCHES" >> $GITHUB_ENV
 
-    # 4. Cloner le main repo
+    # 5. Cloner le main repo
     - name: 🔧 Clone Main Repository
       run: |
         git clone $MAIN_REPO target-repo
         cd target-repo
         git checkout main
 
-    # 5. Ajout de la configuration Git
+    # 6. Ajout de la configuration Git
     - name: 🔧 Configure Git User
       run: |
         git config --global user.email "github-actions@github.com"
         git config --global user.name "GitHub Actions"
 
-    # 6. Ajouter les upstreams et appliquer les patchs
+    # 7. Ajouter les upstreams et appliquer les patchs
     - name: 🔧 Add Upstreams and Merge Patches
       run: |
         cd target-repo
@@ -99,7 +107,7 @@ jobs:
           }
         done
 
-    # 7. Installer les dépendances
+    # 8. Installer les dépendances
     - name: 📥 Install Dependencies
       run: |
         cd target-repo
@@ -109,19 +117,31 @@ jobs:
           npm ci || npm install
         fi
 
-    # 8. Prebuild l'app avec Expo
+    # 9. Prebuild l'app avec Expo
     - name: ⚙️ Prepare Android Build
       run: |
         cd target-repo
         npx expo prebuild -p android
 
-    # 9. Configurer gradle.properties pour générer des APKs par architecture
+    # 10. Configurer gradle.properties pour générer des APKs par architecture
     - name: 🔧 Configure Build Gradle for Split APKs
       run: |
         sed -i "s/universalApk false/universalApk true/g" target-repo/android/app/build.gradle
         sed -i '/buildToolsVersion/d' target-repo/android/app/build.gradle
 
-    # 10. Récupérer la dernière version distante, y compris les pré-releases
+    # Nouveau: Configuration du cache Gradle
+    - name: 📦 Cache Gradle dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          target-repo/android/.gradle
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('target-repo/android/gradle/wrapper/gradle-wrapper.properties', 'target-repo/android/build.gradle', 'target-repo/android/app/build.gradle') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    # 11. Récupérer la dernière version distante, y compris les pré-releases
     - name: 🔍 Get Latest Release Version
       id: get_latest_release
       uses: actions/github-script@v6
@@ -156,7 +176,7 @@ jobs:
             core.setOutput("versionCode", 100);
           }
     
-    # 11. Incrémentation de la version
+    # 12. Incrémentation de la version
     - name: 📈 Increment Version Code
       run: |
         cd target-repo
@@ -169,13 +189,13 @@ jobs:
         sed -i "s/versionCode [0-9]*/versionCode ${NEW_VERSION_CODE}/" android/app/build.gradle
         echo "VERSION_CODE=${NEW_VERSION_CODE}" >> $GITHUB_ENV
   
-    # 12. Build des apks
+    # 13. Build des apks
     - name: 🏗️ Build Release APK
       run: |
         cd target-repo/android
         ./gradlew :app:assembleRelease
 
-    # 13. Renommer les apks
+    # 14. Renommer les apks
     - name: ⚙️ Rename apks
       run: |
         cd target-repo/android/app/build/outputs/apk/release/
@@ -186,7 +206,7 @@ jobs:
         mv app-x86-release.apk Papillon-x86-release.apk
         mv app-x86_64-release.apk Papillon-x86_64-release.apk
 
-    # 14. Publier les APKs dans une préversion
+    # 15. Publier les APKs dans une préversion
     - name: 📤 Create Pre-Release with APKs
       uses: ncipollo/release-action@v1
       with:
