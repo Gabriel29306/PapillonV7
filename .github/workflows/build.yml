@@ -128,8 +128,15 @@ jobs:
       run: |
         sed -i "s/universalApk false/universalApk true/g" target-repo/android/app/build.gradle
         sed -i '/buildToolsVersion/d' target-repo/android/app/build.gradle
+    
+    # 12. 🏗️ Configuration de Gradle pour la compilation
+    - name: ⚙️ Configure Gradle Build Properties
+      run: |
+        echo "org.gradle.parallel=true" >> target-repo/android/gradle.properties
+        echo "org.gradle.configureondemand=true" >> target-repo/android/gradle.properties
+        echo "org.gradle.daemon=false" >> target-repo/android/gradle.properties
 
-    # 12. 🗄️ Configuration du cache Gradle
+    # 13. 🗄️ Configuration du cache Gradle
     - name: 🗄️ Cache Gradle dependencies
       uses: actions/cache@v3
       with:
@@ -141,7 +148,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    # 13. 🕵️‍♂️ Récupérer la dernière version distante, y compris les pré-releases
+    # 14. 🕵️‍♂️ Récupérer la dernière version distante, y compris les pré-releases
     - name: 🕵️‍♂️ Get Latest Release Version
       id: get_latest_release
       uses: actions/github-script@v6
@@ -176,7 +183,7 @@ jobs:
             core.setOutput("versionCode", 100);
           }
     
-    # 14. 🔢 Incrémentation de la version
+    # 15. 🔢 Incrémentation de la version
     - name: 🔢 Increment Version Code
       run: |
         cd target-repo
@@ -189,13 +196,13 @@ jobs:
         sed -i "s/versionCode [0-9]*/versionCode ${NEW_VERSION_CODE}/" android/app/build.gradle
         echo "VERSION_CODE=${NEW_VERSION_CODE}" >> $GITHUB_ENV
   
-    # 15. 🏗️ Build des apks
+    # 16. 🏗️ Build des apks
     - name: 🏗️ Build Release APK
       run: |
         cd target-repo/android
         ./gradlew :app:assembleRelease
 
-    # 16. 🏷️ Renommer les apks
+    # 17. 🏷️ Renommer les apks
     - name: 🏷️ Rename apks
       run: |
         cd target-repo/android/app/build/outputs/apk/release/
@@ -206,7 +213,7 @@ jobs:
         mv app-x86-release.apk Papillon-x86-release.apk
         mv app-x86_64-release.apk Papillon-x86_64-release.apk
 
-    # 17. 🚀 Publier les APKs dans une préversion
+    # 18. 🚀 Publier les APKs dans une préversion
     - name: 🚀 Create Pre-Release with APKs
       uses: ncipollo/release-action@v1
       with:
