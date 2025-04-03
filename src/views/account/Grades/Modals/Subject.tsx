@@ -7,13 +7,13 @@ import {
 import { getSubjectData } from "@/services/shared/Subject";
 import { getCourseSpeciality } from "@/utils/format/format_cours_name";
 import { AverageDiffGrade, getAverageDiffGrade } from "@/utils/grades/getAverages";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { Trophy, User, UserMinus, UserPlus, Users } from "lucide-react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { Screen } from "@/router/helpers/types";
 
-const GradeSubjectScreen: Screen<"GradeSubject"> = ({ route, navigation }) => {
+const GradeSubjectScreen: Screen<"GradeSubject"> = ({ route }) => {
   const { subject, allGrades } = route.params;
   const theme = useTheme();
 
@@ -239,11 +239,11 @@ const GradeSubjectScreen: Screen<"GradeSubject"> = ({ route, navigation }) => {
                     lineHeight: 18,
                     fontFamily: "semibold",
                     color:
-									(averageDiff.difference || 0) < 0
-									  ? "#4CAF50"
-									  : (averageDiff.difference || 0) === 0
-									    ? theme.colors.text
-									    : "#F44336",
+                  (averageDiff.difference || 0) < 0
+                    ? "#4CAF50"
+                    : (averageDiff.difference || 0) === 0
+                      ? theme.colors.text
+                      : "#F44336",
                     marginLeft: 12,
                     marginRight: 6,
                   }}

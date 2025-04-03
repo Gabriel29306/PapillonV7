@@ -7,8 +7,9 @@ import {
   Platform,
   Text,
   RefreshControl,
+  TouchableOpacity
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import type { Screen } from "@/router/helpers/types";
 import {
   NativeItem,
@@ -32,13 +33,13 @@ import Reanimated, {
 } from "react-native-reanimated";
 import PapillonHeader, { PapillonHeaderInsetHeight } from "@/components/Global/PapillonHeader";
 import { SquarePen } from "lucide-react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import { TabLocation } from "pawnote";
-import {hasFeatureAccountSetup} from "@/utils/multiservice";
-import {MultiServiceFeature} from "@/stores/multiService/types";
+import { hasFeatureAccountSetup } from "@/utils/multiservice";
+import { MultiServiceFeature } from "@/stores/multiService/types";
 import { timestampToString } from "@/utils/format/DateHelper";
 import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { error } from "@/utils/logger/logger";
 
 // Voir la documentation de `react-navigation`.
 //
@@ -61,8 +62,9 @@ const Discussions: Screen<"Discussions"> = ({ navigation, route }) => {
   const [chats, setChats] = useState<Chat[] | null>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  const supported = account.service === AccountService.Pronote;
+  const supported = account.service === AccountService.Pronote || account.service === AccountService.EcoleDirecte;
 
+  // @ts-expect-error
   const enabled = supported && account.instance?.user.authorizations.tabs.includes(TabLocation.Discussions);
 
   useLayoutEffect(() => {
@@ -92,7 +94,7 @@ const Discussions: Screen<"Discussions"> = ({ navigation, route }) => {
       const chats = await getChats(account);
       setChats(chats);
     } catch (e) {
-      console.error("Erreur lors du chargement des discussions :", e);
+      error("Erreur lors du chargement des discussions :" + e, "Discussions/fetchChats");
     }
   }, [enabled, supported]);
 

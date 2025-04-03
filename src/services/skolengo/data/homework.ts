@@ -1,6 +1,6 @@
 import type { SkolengoAccount } from "@/stores/account/types";
 import { type Homework, HomeworkReturnType } from "@/services/shared/Homework";
-import {info, log} from "@/utils/logger/logger";
+import { info, log } from "@/utils/logger/logger";
 import { weekNumberToDateRange } from "@/utils/epochWeekNumber";
 import { HomeworkAssignment } from "scolengo-api/types/models/Calendar";
 import { htmlToText } from "html-to-text";
@@ -17,7 +17,8 @@ const decodeHomework = (h: HomeworkAssignment): Homework => {
     content: (h.html && htmlToText(h.html || "") !== "") ? htmlToText(h.html) : h.title ?? "",
     due: h.dueDateTime ? new Date(h.dueDateTime).getTime() : -1,
     done: h.done,
-    returnType: h.deliverWorkOnline ? HomeworkReturnType.FileUpload : HomeworkReturnType.Paper
+    returnType: h.deliverWorkOnline ? HomeworkReturnType.FileUpload : HomeworkReturnType.Paper,
+    personalizate: false,
   };
 };
 
@@ -25,7 +26,7 @@ export const getHomeworkForWeek = async (account: SkolengoAccount, epochWeekNumb
   if (!account.instance)
     throw new ErrorServiceUnauthenticated("skolengo");
 
-  const {start, end} = weekNumberToDateRange(epochWeekNumber);
+  const { start, end } = weekNumberToDateRange(epochWeekNumber);
 
   const homeworks = await account.instance.getHomeworkAssignments(undefined, toSkolengoDate(start), toSkolengoDate(end));
 
@@ -38,7 +39,7 @@ export const toggleHomeworkState = async (account: SkolengoAccount, h: Homework)
   if (!account.instance)
     throw new ErrorServiceUnauthenticated("skolengo");
 
-  await account.instance?.patchHomeworkAssignment(void 0, h.id, {done: !h.done});
+  await account.instance?.patchHomeworkAssignment(void 0, h.id, { done: !h.done });
 
   //await pronote.assignmentStatus(account.instance, h.id, !h.done);
   log(`SKOLENGO->toggleHomeworkState(): Homework ${h.id} marked as ${h.done ? "not done" : "done"}.`, "skolengo");

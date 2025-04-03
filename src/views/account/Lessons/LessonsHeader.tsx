@@ -1,4 +1,4 @@
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import React from "react";
 import { Modal, Platform, Pressable, Text, TouchableOpacity, View } from "react-native";
 
@@ -12,7 +12,7 @@ import Reanimated, {
 
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {animPapillon, PapillonContextEnter, PapillonContextExit} from "@/utils/ui/animations";
+import { animPapillon, PapillonContextEnter, PapillonContextExit } from "@/utils/ui/animations";
 import useScreenDimensions from "@/hooks/useScreenDimensions";
 
 interface HeaderCalendarProps {
@@ -62,7 +62,7 @@ const LessonsDateModal: React.FC<LessonsDateModalProps> = ({
   const insets = useSafeAreaInsets();
 
   const [showModalPicker, setShowModalPicker] = React.useState(false);
-  const {isTablet} = useScreenDimensions();
+  const { isTablet } = useScreenDimensions();
 
   React.useEffect(() => {
     if (showDatePicker) {
@@ -74,27 +74,25 @@ const LessonsDateModal: React.FC<LessonsDateModalProps> = ({
     }
   }, [showDatePicker]);
 
-  if (Platform.OS === "android") {
+  if (Platform.OS === "android" && showDatePicker) {
     return (
-      showDatePicker && (
-        <RNDateTimePicker
-          style={{
-            marginHorizontal: 8,
-            marginTop: -5,
-            marginBottom: 10,
-          }}
-          value={new Date(currentDate)}
-          display="calendar"
-          mode="date"
-          onChange={(_event, selectedDate) => {
-            onDateSelect(selectedDate);
-            setShowDatePicker(false);
-          }}
-          onError={() => {
-            setShowDatePicker(false);
-          }}
-        />
-      )
+      <RNDateTimePicker
+        style={{
+          marginHorizontal: 8,
+          marginTop: -5,
+          marginBottom: 10,
+        }}
+        value={new Date(currentDate)}
+        display="calendar"
+        mode="date"
+        onChange={(_event, selectedDate) => {
+          setShowDatePicker(false);
+          onDateSelect(selectedDate);
+        }}
+        onError={() => {
+          setShowDatePicker(false);
+        }}
+      />
     );
   }
 

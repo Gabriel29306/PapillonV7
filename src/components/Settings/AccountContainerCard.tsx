@@ -2,7 +2,7 @@ import { Image, Text, View } from "react-native";
 
 import { Account } from "@/stores/account/types";
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { LinearGradient } from "expo-linear-gradient";
 import { Pen } from "lucide-react-native";
 import { PressableScale } from "react-native-pressable-scale";
@@ -100,7 +100,7 @@ const AccountContainerCard = ({ account, onPress }: {
           }}
         >
           <Image
-            source={!(account.isExternal) && account.personalization.profilePictureB64 ? { uri: account.personalization.profilePictureB64} : defaultProfilePicture(account.service, !(account.isExternal) && account.identityProvider?.name || "")}
+            source={!(account.isExternal) && account.personalization.profilePictureB64 ? { uri: account.personalization.profilePictureB64 } : defaultProfilePicture(account.service, !(account.isExternal) && account.identityProvider?.name || "")}
             style={{
               width: 42,
               height: 42,

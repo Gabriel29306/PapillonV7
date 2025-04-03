@@ -3,19 +3,29 @@ import { Image, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Reanimated, { LinearTransition, FlipInXDown } from "react-native-reanimated";
 
-import {RouteParameters, Screen} from "@/router/helpers/types";
+import { RouteParameters, Screen } from "@/router/helpers/types";
 
 import PapillonShineBubble from "@/components/FirstInstallation/PapillonShineBubble";
 import DuoListPressable from "@/components/FirstInstallation/DuoListPressable";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import MaskStars from "@/components/FirstInstallation/MaskStars";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import GetV6Data from "@/utils/login/GetV6Data";
 import { Check, School, WifiOff } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useAlert } from "@/providers/AlertProvider";
+
+type V6Data = { restore: boolean;
+  imported: boolean;
+  data: {
+    nextTimeToken: string | null;
+    instanceUrl: string | null;
+    username: string | null;
+    deviceUUID: string | null;
+  }
+};
 
 const ServiceSelector: Screen<"ServiceSelector"> = ({ navigation }) => {
   const theme = useTheme();
@@ -27,7 +37,7 @@ const ServiceSelector: Screen<"ServiceSelector"> = ({ navigation }) => {
   type Services = "pronote" | "ed" | "skolengo";
   const [service, setService] = useState<Services | null>(null);
 
-  const [v6Data, setV6Data] = useState<any | null>(null);
+  const [v6Data, setV6Data] = useState<V6Data | null>(null);
 
   const { playSound } = useSoundHapticsWrapper();
   const LEson = require("@/../assets/sound/1.wav");
@@ -206,6 +216,7 @@ const ServiceSelector: Screen<"ServiceSelector"> = ({ navigation }) => {
         {v6Data && v6Data.restore && (
           <ButtonCta
             value="Importer mon compte"
+            // @ts-expect-error v6Data is not null
             onPress={() => navigation.navigate("PronoteV6Import", { data: v6Data.data })}
           />
         )}

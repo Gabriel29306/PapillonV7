@@ -5,15 +5,17 @@ import { useHomeworkStore } from "@/stores/homework";
 import { toggleHomeworkState, updateHomeworkForWeekInCache } from "@/services/homework";
 import HomeworkItem from "../../Homeworks/Atoms/Item";
 import type { Homework } from "@/services/shared/Homework";
-import {debounce} from "lodash";
+import { debounce } from "lodash";
 import { PapillonNavigation } from "@/router/refs";
 import RedirectButton from "@/components/Home/RedirectButton";
 import { dateToEpochWeekNumber } from "@/utils/epochWeekNumber";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {RouteParameters} from "@/router/helpers/types";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteParameters } from "@/router/helpers/types";
 import { FadeInDown, FadeOut } from "react-native-reanimated";
 import MissingItem from "@/components/Global/MissingItem";
 import PapillonLoading from "@/components/Global/PapillonLoading";
+import { AccountService } from "@/stores/account/types";
+import { error } from "@/utils/logger/logger";
 
 interface HomeworksElementProps {
   onImportance: (value: number) => unknown
@@ -21,8 +23,8 @@ interface HomeworksElementProps {
 }
 
 const HomeworksElement: React.FC<HomeworksElementProps> = ({ navigation, onImportance }) => {
-  const account = useCurrentAccount(store => store.account!);
-  const homeworks = useHomeworkStore(store => store.homeworks);
+  const account = useCurrentAccount((store) => store.account!);
+  const homeworks = useHomeworkStore((store) => store.homeworks);
 
   const [loading, setLoading] = useState(false);
 
@@ -34,8 +36,8 @@ const HomeworksElement: React.FC<HomeworksElementProps> = ({ navigation, onImpor
 
     let score = 0;
     const hw = homeworks[dateToEpochWeekNumber(actualDay)]
-      .filter(hw => hw.due / 1000 >= Date.now() / 1000 && hw.due / 1000 <= Date.now() / 1000 + 7 * 24 * 60 * 60)
-      .filter(hw => !hw.done);
+      .filter((hw) => hw.due / 1000 >= Date.now() / 1000 && hw.due / 1000 <= Date.now() / 1000 + 7 * 24 * 60 * 60)
+      .filter((hw) => !hw.done);
 
     const date = new Date();
     if (date.getHours() >= 17 && date.getHours() < 22)
@@ -63,13 +65,28 @@ const HomeworksElement: React.FC<HomeworksElementProps> = ({ navigation, onImpor
 
   const handleDonePress = useCallback(
     async (homework: Homework) => {
-      await toggleHomeworkState(account, homework);
+      if (homework.personalizate) {
+        useHomeworkStore
+          .getState()
+          .updateHomework(
+            dateToEpochWeekNumber(new Date(homework.due)),
+            homework.id,
+            { ... homework, done: !homework.done }
+          );
+      } else {
+        if (account.service !== AccountService.Skolengo) {
+          await toggleHomeworkState(account, homework);
+        }
+      }
       await updateHomeworks();
     },
     [account, updateHomeworks]
   );
 
-  const startTime = Date.now() / 1000;
+  const mtn = new Date();
+  mtn.setHours(0, 0, 0, 0);
+
+  const startTime = mtn.getTime() / 1000;
   const endTime = startTime + 7 * 24 * 60 * 60 * 1000;
 
   const hwSemaineActuelle = homeworks[dateToEpochWeekNumber(actualDay)]?.filter(
@@ -151,6 +168,7 @@ const HomeworksElement: React.FC<HomeworksElementProps> = ({ navigation, onImpor
       <NativeList>
         {hw2Semaines
           .slice(0, 7)
+          .sort((a, b) => a.due - b.due)
           .map((hw, index) => (
             <HomeworkItem
               homework={hw}
@@ -162,7 +180,7 @@ const HomeworksElement: React.FC<HomeworksElementProps> = ({ navigation, onImpor
                 try {
                   handleDonePress(hw);
                 } catch (e) {
-                  console.error(e);
+                  error("" + (e as Error)?.stack, "HomeworksElement/onDonePressHandler");
                 }
               }}
             />

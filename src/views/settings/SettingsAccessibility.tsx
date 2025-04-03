@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView } from "react-native";
 import type { Screen } from "@/router/helpers/types";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { Moon, Sun, SunMoon, Vibrate, Volume2 } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
@@ -9,8 +9,8 @@ import {
   NativeItem,
   NativeListHeader,
   NativeIconGradient,
+  NativeText
 } from "@/components/Global/NativeComponents";
-import { NativeText } from "@/components/Global/NativeComponents";
 import PapillonCheckbox from "@/components/Global/PapillonCheckbox";
 import { useThemeSoundHaptics } from "@/hooks/Theme_Sound_Haptics";
 import { Switch } from "react-native-gesture-handler";

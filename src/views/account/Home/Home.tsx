@@ -36,10 +36,9 @@ import type { Screen } from "@/router/helpers/types";
 import { useAccounts, useCurrentAccount } from "@/stores/account";
 import getCorners from "@/utils/ui/corner-radius";
 import { useIsFocused, useTheme } from "@react-navigation/native";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Dimensions, Linking, Platform, RefreshControl, StatusBar, View } from "react-native";
-import Reanimated from "react-native-reanimated";
-import Animated, { Extrapolation, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from "react-native-reanimated";
+import React, { useEffect, useMemo, useState } from "react";
+import { Dimensions, Image, Linking, Platform, Pressable, RefreshControl, StatusBar, View } from "react-native";
+import Animated, { FadeIn, FadeOut, Extrapolation, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AccountSwitcher from "@/components/Home/AccountSwitcher";
 import ContextMenu from "@/components/Home/AccountSwitcherContextMenu";
@@ -52,6 +51,9 @@ import useScreenDimensions from "@/hooks/useScreenDimensions";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 import { useAlert } from "@/providers/AlertProvider";
 import { ArrowLeft, Menu, Plus } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { HEADERS_IMAGE } from "./Modal/CustomizeHeader";
+import MaskedView from "@react-native-masked-view/masked-view";
 
 const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   const { colors } = useTheme();
@@ -66,7 +68,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   const scrollRef = useAnimatedRef<AnimatedScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
 
-  const account = useCurrentAccount(store => store.account!);
+  const account = useCurrentAccount((store) => store.account!);
   const accounts = useAccounts((store) => store.accounts);
 
   useEffect(() => {
@@ -86,7 +88,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
 
     checkAccounts();
 
-    const handleUrl = (event) => {
+    const handleUrl = (event: any) => {
       manageIzlyLogin(event.url);
     };
 
@@ -117,18 +119,10 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
     }
   };
 
-  const [shouldOpenContextMenu, setShouldOpenContextMenu] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalFull, setModalFull] = useState(false);
   const [canHaptics, setCanHaptics] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
-  const openAccSwitcher = useCallback(() => {
-    setShouldOpenContextMenu(false);
-    setTimeout(() => {
-      setShouldOpenContextMenu(true);
-    }, 150);
-  }, []);
 
   const windowHeight = Dimensions.get("window").height;
   const tabbarHeight = useBottomTabBarHeight();
@@ -138,7 +132,12 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
     opacity: interpolate(scrollOffset.value, [0, 265 + insets.top], [1, 0], Extrapolation.CLAMP),
     transform: [
       { translateY: scrollOffset.value },
-      { scale: interpolate(scrollOffset.value, [0, 265], [1, 0.9], Extrapolation.CLAMP) },
+      { scale: interpolate(
+        scrollOffset.value,
+        [0, 265],
+        [1, 0.9],
+        Extrapolation.CLAMP
+      ) },
     ]
   }));
 
@@ -154,19 +153,14 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
     minHeight: windowHeight - tabbarHeight - 8,
     backgroundColor: colors.card,
     overflow: "hidden",
-    transform: [{ translateY: interpolate(scrollOffset.value, [-1000, 0, 125, 265], [-1000, 0, 105, 0], Extrapolation.CLAMP) }],
-  }));
-
-  const navigationBarAnimatedStyle = useAnimatedStyle(() => ({
-    position: "absolute",
-    top: scrollOffset.value - 270 - insets.top,
-    left: 0,
-    right: 0,
-    height: interpolate(scrollOffset.value, [125, 265], [0, insets.top + 60], Extrapolation.CLAMP),
-    zIndex: 100,
-    backgroundColor: colors.background,
-    borderColor: colors.border,
-    borderBottomWidth: 0.5,
+    transform: [
+      { translateY: interpolate(
+        scrollOffset.value,
+        [-1000, 0, 125, 265 ],
+        [-1000, 0, 105, 0],
+        Extrapolation.CLAMP
+      ) }
+    ],
   }));
 
   const modalContentAnimatedStyle = useAnimatedStyle(() => ({
@@ -179,8 +173,20 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
     position: "absolute",
     top: 10,
     left: "50%",
-    transform: [{ translateX: interpolate(scrollOffset.value, [125, 200], [-25, -2], Extrapolation.CLAMP) }],
-    width: interpolate(scrollOffset.value, [125, 200], [50, 4], Extrapolation.CLAMP),
+    transform: [
+      { translateX: interpolate(
+        scrollOffset.value,
+        [125, 200],
+        [-25, -2],
+        Extrapolation.CLAMP
+      ) }
+    ],
+    width: interpolate(
+      scrollOffset.value,
+      [125, 200],
+      [50, 4],
+      Extrapolation.CLAMP
+    ),
     height: 4,
     backgroundColor: colors.text + "20",
     zIndex: 100,
@@ -190,7 +196,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
 
   const scrollViewAnimatedStyle = useAnimatedStyle(() => ({
     flex: 1,
-    backgroundColor: scrollOffset.value > 265 + insets.top ? colors.card : colors.primary,
+    backgroundColor: scrollOffset.value > 265 + insets.top ? colors.card : "transparent",
   }));
 
   return (
@@ -200,8 +206,12 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
       )}
       {!isTablet && (
         <ContextMenu
-          style={[{ position: "absolute", top: insets.top + 8, left: 16, zIndex: 1000 }]}
-          shouldOpenContextMenu={shouldOpenContextMenu}
+          style={[{
+            position: "absolute",
+            top: insets.top + 8,
+            left: 16,
+            zIndex: 1000,
+          }]}
         >
           <AccountSwitcher
             translationY={scrollOffset}
@@ -210,7 +220,123 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
           />
         </ContextMenu>
       )}
-      <Reanimated.ScrollView
+
+      <Pressable
+        style={[{
+          position: "absolute",
+          top: insets.top,
+          left: 16,
+          right: 16,
+          height: 60,
+          zIndex: 1,
+        }]}
+        onLongPress={() => {
+          if (modalOpen) return;
+          navigation.navigate("CustomizeHeader");
+        }}
+        pointerEvents={modalOpen ? "none" : "auto"}
+      />
+
+      <View
+        style={{
+          backgroundColor: colors.primary,
+          width: "100%",
+          height: 280 + insets.top,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: -10,
+        }}
+      >
+        {account?.personalization?.header?.gradient && (
+          <Animated.View
+            style={{
+              width: "100%",
+              height: "100%",
+              zIndex: -100,
+            }}
+            key={account?.personalization?.header?.gradient.startColor + ":" + account?.personalization?.header?.gradient.endColor}
+            entering={(focused || Platform.OS !== "ios") ? undefined : FadeIn.duration(500)}
+            exiting={(focused || Platform.OS !== "ios") ? undefined :  FadeOut.duration(500)}
+          >
+            <LinearGradient
+              colors={[
+                account?.personalization?.header?.gradient.startColor,
+                account?.personalization?.header?.gradient.endColor,
+              ]}
+              style={{
+                width: "100%",
+                height: "100%"
+              }}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+            />
+          </Animated.View>
+        )}
+
+        {account?.personalization?.header?.image && !isTablet && (
+          <Animated.View
+            style={{
+              width: "100%",
+              height: "100%",
+              maxHeight: 200,
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: -1,
+            }}
+            key={account?.personalization?.header?.image}
+            entering={(focused || Platform.OS !== "ios") ? undefined : FadeIn.duration(300)}
+            exiting={(focused || Platform.OS !== "ios") ? undefined :  FadeOut.duration(300)}
+          >
+            <MaskedView
+              style={{
+                width: "100%",
+                height: "100%",
+                opacity: 0.16,
+              }}
+              maskElement={
+                <LinearGradient
+                  colors={["black", "transparent"]}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              }
+            >
+              <Image
+                source={HEADERS_IMAGE.find((item) => item.label === account?.personalization?.header?.image)?.source}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                }}
+                resizeMode="cover"
+              />
+            </MaskedView>
+          </Animated.View>
+        )}
+
+        {account?.personalization?.header?.darken && (
+          <Animated.View
+            style={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: "#00000053",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              zIndex: 8,
+            }}
+            entering={(focused || Platform.OS !== "ios") ? undefined : FadeIn.duration(500)}
+            exiting={(focused || Platform.OS !== "ios") ? undefined :  FadeOut.duration(500)}
+          />
+        )}
+      </View>
+
+      <Animated.ScrollView
         ref={scrollRef}
         snapToEnd={false}
         snapToStart={false}
@@ -231,10 +357,15 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
             setCanHaptics(true);
           }
 
-          setModalOpen(scrollY >= 195 + insets.top);
+          setModalOpen(scrollY >= 170 + insets.top);
           setModalFull(scrollY >= 265 + insets.top);
         }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => setRefreshing(true)} style={{ zIndex: 100 }} progressViewOffset={285 + insets.top} />}
+        refreshControl={<RefreshControl
+          refreshing={refreshing}
+          onRefresh={() => setRefreshing(true)}
+          style={{ zIndex: 100 }}
+          progressViewOffset={285 + insets.top}
+        />}
         showsVerticalScrollIndicator={false}
       >
         <Animated.View style={[widgetAnimatedStyle, isTablet && { marginTop: 2 * (0 - insets.top) }]}>
@@ -247,7 +378,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
             <ModalContent navigation={navigation} refresh={refreshing} endRefresh={() => setRefreshing(false)} />
           </Animated.View>
         </Animated.View>
-      </Reanimated.ScrollView>
+      </Animated.ScrollView>
     </View>
   );
 };

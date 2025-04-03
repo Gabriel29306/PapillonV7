@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import Svg, { G, Rect, Polygon } from "react-native-svg";
 import { StyleSheet, Dimensions, View, Text, type DimensionValue, type StyleProp, type ViewStyle } from "react-native";
 import Reanimated, { useSharedValue, withRepeat, withSpring, withSequence, withTiming, Easing } from "react-native-reanimated";
@@ -74,12 +74,10 @@ const PapillonShineBubble: React.FC<{
     bubbleScale.value = withSpring(1, { damping: 15, stiffness: 150 });
   }, []);
 
-  const [sHeight, setSHeight] = React.useState(Dimensions.get("window").height / Dimensions.get("window").scale);
   const [sWidth, setSWidth] = React.useState(Dimensions.get("window").width / Dimensions.get("window").scale);
 
   useEffect(() => {
     Dimensions.addEventListener("change", ({ window }) => {
-      setSHeight(window.height / window.scale);
       setSWidth(window.width / window.scale);
     });
   }, []);

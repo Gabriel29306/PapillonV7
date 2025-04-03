@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Platform, StyleSheet, type StyleProp, type ViewStyle } from "react-native";
 
 import { animPapillon, PapillonContextEnter, PapillonContextExit } from "@/utils/ui/animations";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { Pressable } from "react-native-gesture-handler";
 import Reanimated, { LinearTransition, type AnimatedStyle } from "react-native-reanimated";
 import { NativeText } from "./NativeComponents";
@@ -21,6 +21,9 @@ export type PickerDataItem = string | {
   onPress?: () => {} | void,
   checked?: boolean,
   destructive?: boolean,
+  ios?: {
+    icon?: any
+  },
 } | null;
 
 type PickerData = PickerDataItem[];
@@ -90,10 +93,11 @@ const PapillonPicker: React.FC<PapillonPickerProps> = ({
               menuState: (item.checked || item === selected) ? "on" : "off",
               // @ts-ignore
               menuAttributes: [item.destructive ? "destructive" : "normal"],
-              icon: {
+              // @ts-ignore
+              icon: item.ios?.icon ? item.ios.icon : {
                 type: typeof item !== "string" ? "IMAGE_SYSTEM" : "IMAGE_SYSTEM",
                 imageValue: {
-                  systemName: typeof item !== "string" ? (item.sfSymbol ? item.sfSymbol : "") : "",
+                  systemName: typeof item !== "string" ? (item.sfSymbol ?? "") : "",
                 },
               }
             };
@@ -116,7 +120,7 @@ const PapillonPicker: React.FC<PapillonPickerProps> = ({
         <Reanimated.View
           layout={animated && animPapillon(LinearTransition)}
           style={styles.children}
-          onLayout={(event)=> {
+          onLayout={(event) => {
             const height = event.nativeEvent.layout.height;
             setContentHeight(height);
           }}
@@ -159,7 +163,7 @@ const PapillonPicker: React.FC<PapillonPickerProps> = ({
               const isNotString = typeof item !== "string";
 
               const label = isNotString ? item.label : item;
-              const icon: null | React.ReactNode = isNotString ? (item.icon ? item.icon: null) : null;
+              const icon: null | React.ReactNode = isNotString ? (item.icon ?? null) : null;
 
               const onPressItem = isNotString ? item.onPress : null;
 
@@ -203,7 +207,7 @@ const PapillonPicker: React.FC<PapillonPickerProps> = ({
                         size={20}
                         strokeWidth={2.5}
                         color={theme.colors.primary}
-                        style={{ marginRight: 10}}
+                        style={{ marginRight: 10 }}
                       />
                     )}
                   </Pressable>

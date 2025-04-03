@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, memo } from "react";
 import {
   Dimensions,
   Image,
@@ -17,18 +17,28 @@ import { useAccounts, useCurrentAccount } from "@/stores/account";
 import { AccountService } from "@/stores/account/types";
 import { PapillonContextEnter, PapillonContextExit } from "@/utils/ui/animations";
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { BlurView } from "expo-blur";
-import { Check, Cog, Plus } from "lucide-react-native";
+import { Check, Cog, Palette, Plus } from "lucide-react-native";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 
-const ContextMenu: React.FC<{
-  style?: any;
+interface ContextMenu {
+  // @ts-expect-error
+  style?: StyleProp<ViewStyle>;
   children: React.ReactNode;
   transparent?: boolean;
   shouldOpenContextMenu?: boolean;
-  menuStyles?: any;
-}> = ({ children, style, shouldOpenContextMenu, transparent, menuStyles }) => {
+  // @ts-expect-error
+  menuStyles?: StyleProp<ViewStyle>;
+}
+
+const ContextMenu: React.FC<ContextMenu> = ({
+  style,
+  children,
+  transparent,
+  shouldOpenContextMenu,
+  menuStyles,
+}) => {
   const theme = useTheme();
   const { colors } = theme;
   const navigation = useNavigation();
@@ -58,9 +68,9 @@ const ContextMenu: React.FC<{
   }, [playHaptics]);
 
   const handlePress = useCallback(() => {
-    setOpened(!opened);
+    setOpened((prevOpened) => !prevOpened);
     openEffects();
-  }, [opened, openEffects]);
+  }, [openEffects]);
 
   const handleLongPress = useCallback(() => {
     setTouchLongPress(true);
@@ -195,6 +205,7 @@ const ContextMenu: React.FC<{
             onPressIn={handlePress}
             onLongPress={handleLongPress}
             onPressOut={handlePressOut}
+            // @ts-ignore
             pointerEvents="auto"
             style={{
               elevation: opened ? 3 : 0,
@@ -249,6 +260,7 @@ const ContextMenu: React.FC<{
               <Pressable
                 onPress={() => {
                   setOpened(false);
+                  // @ts-ignore
                   navigation.navigate("ServiceSelector");
                 }}
                 style={({ pressed }) => [
@@ -293,6 +305,55 @@ const ContextMenu: React.FC<{
               <Pressable
                 onPress={() => {
                   setOpened(false);
+                  setTimeout(() => {
+                    // @ts-ignore
+                    navigation.navigate("CustomizeHeader");
+                  }, 1);
+                }}
+                style={({ pressed }) => [
+                  {
+                    backgroundColor: pressed ? "rgba(0, 0, 0, 0.1)" : colors.card,
+                  },
+                ]}
+              >
+                <View
+                  style={{
+                    backgroundColor: theme.dark ? theme.colors.primary + "09" : theme.colors.primary + "11",
+                    flexDirection: "row",
+                    padding: 9,
+                    borderStyle: "solid",
+                    borderTopWidth: 6,
+                    borderBottomColor: colors.border,
+                    borderColor: theme.dark ? "#ffffff20" : "#00000020",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <Palette
+                    size={22}
+                    color={colors.text}
+                    style={{
+                      opacity: 0.8,
+                      marginHorizontal: 3+1,
+                      marginVertical: 1,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 600,
+                      color: colors.text + "80",
+                      fontFamily: "medium",
+                    }}
+                  >
+                    Personnaliser
+                  </Text>
+                </View>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setOpened(false);
+                  // @ts-ignore
                   navigation.navigate("SettingStack");
                 }}
                 style={({ pressed }) => [
@@ -412,4 +473,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ContextMenu;
+export default memo(ContextMenu);

@@ -2,9 +2,9 @@ import defaultPersonalization from "@/services/local/default-personalization";
 import { useAccounts, useCurrentAccount } from "@/stores/account";
 import { AccountService, Identity, LocalAccount } from "@/stores/account/types";
 import uuid from "@/utils/uuid-v4";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import React from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { WebView } from "react-native-webview";
 import type { Screen } from "@/router/helpers/types";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
@@ -13,6 +13,8 @@ import { animPapillon } from "@/utils/ui/animations";
 import { FadeInDown, FadeOutUp } from "react-native-reanimated";
 import { useAlert } from "@/providers/AlertProvider";
 import { BadgeX, Undo2 } from "lucide-react-native";
+import { BlurView } from "expo-blur";
+import { error } from "@/utils/logger/logger";
 
 const providers = ["scodoc", "moodle", "ical"];
 
@@ -52,7 +54,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
   let username = params?.username || null;
   let password = params?.password || null;
 
-  const account = useCurrentAccount(store => store.account);
+  const account = useCurrentAccount((store) => store.account);
 
   const url = "https://notes9.iutlan.univ-rennes1.fr/";
   const firstLogin = params?.firstLogin || false;
@@ -60,8 +62,8 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
 
   const [step, setStep] = React.useState("Chargement du portail");
 
-  if(!firstLogin) {
-    if(account?.service == AccountService.Local && account.credentials) {
+  if (!firstLogin) {
+    if (account?.service == AccountService.Local && account.credentials) {
       username = account.credentials.username;
       password = account.credentials.password;
     }
@@ -70,14 +72,14 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
     }
   }
 
-  const createStoredAccount = useAccounts(store => store.create);
-  const switchTo = useCurrentAccount(store => store.switchTo);
-  const mutateProperty = useCurrentAccount(store => store.mutateProperty);
+  const createStoredAccount = useAccounts((store) => store.create);
+  const switchTo = useCurrentAccount((store) => store.switchTo);
+  const mutateProperty = useCurrentAccount((store) => store.mutateProperty);
 
   const { showAlert } = useAlert();
 
   const useData = async (data: any) => {
-    if(firstLogin) {
+    if (firstLogin) {
       await actionFirstLogin(data);
     }
     else {
@@ -103,13 +105,13 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
 
     try {
       const scodocData = data;
-      const semestres = (scodocData["semestres"] as any);
+      const semestres = scodocData["semestres"];
 
       setSemestresToRetrieve(semestres);
       await retreiveNextSemestre(currentSemestre, semestres);
     }
     catch (e) {
-      console.error(e);
+      error("" + (e as Error)?.stack, "BackgroundIUTLannion/retreiveGrades");
       showAlert({
         title: "Erreur",
         message: "Impossible de récupérer les notes de l'IUT de Lannion. Vérifie ta connexion Internet et réessaie.",
@@ -155,7 +157,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
       await retreiveNextSemestre(newCurrentSemestre, semestresToRetrieve);
     }
     else {
-      if(firstLogin) {
+      if (firstLogin) {
         queueMicrotask(() => {
           // Reset the navigation stack to the "Home" screen.
           // Prevents the user from going back to the login screen.
@@ -209,7 +211,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
       personalization: await defaultPersonalization({
         tabs: [
           { name: "Home", enabled: true },
-          { name: "Week", enabled: true },
+          { name: "Lessons", enabled: true },
           { name: "Grades", enabled: true },
           { name: "Attendance", enabled: true },
           { name: "Menu", enabled: true }
@@ -232,7 +234,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
   const [redirectCount, setRedirectCount] = React.useState(0);
 
   const injectPassword = () => {
-    if(redirectCount >= 2) {
+    if (redirectCount >= 2) {
       showAlert({
         title: "Erreur",
         message: "Impossible de se connecter au portail du l'IUT de Lannion. Vérifie tes identifiants et réessaye.",
@@ -275,9 +277,11 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
 
   return (
     <>
+      <BlurView tint="dark" intensity={100} style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }} />
+
       <View
         style={{
-          backgroundColor: theme.colors.background,
+          backgroundColor: "#00000020",
           padding: 10,
           position: "absolute",
           top: 0,
@@ -291,44 +295,67 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
           gap: 6,
         }}
       >
+        <View style={{ height: 40 }} />
         <PapillonSpinner size={56} strokeWidth={5} color={theme.colors.primary} />
         <View style={{ height: 10 }} />
         <NativeText variant="title" key={step}
           animated
           entering={animPapillon(FadeInDown)}
           exiting={animPapillon(FadeOutUp)}
+          style={{ color: "#fff" }}
         >
           {step}
         </NativeText>
-        <NativeText variant="subtitle">
+        <NativeText variant="subtitle" style={{ color: "#fff" }}>
           Cela peut prendre quelques secondes...
         </NativeText>
-        <View style={{ height: 50 }} />
+        <View style={{ height: 40 }} />
+        <Pressable
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={({ pressed }) => ({
+            backgroundColor: "#ffffff33",
+            paddingHorizontal: 24,
+            paddingVertical: 12,
+            borderRadius: 60,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            opacity: pressed ? 0.5 : 1,
+          })}
+        >
+          <NativeText variant="body" style={{ color: "#fff" }}>
+            Annuler
+          </NativeText>
+        </Pressable>
       </View>
 
       <WebView
         source={{ uri: url }}
         incognito={true}
         ref={wbref}
+        style={{ opacity: 0 }}
 
         onLoad={(data) => {
           const url = data.nativeEvent.url;
 
-          if(url.startsWith("https://sso-cas.univ-rennes.fr//login?")) {
+          if (url.startsWith("https://sso-cas.univ-rennes.fr//login?")) {
             injectPassword();
           }
 
-          if(url.startsWith("https://notes9.iutlan.univ-rennes1.fr/") && canExtractJSON) {
+          if (url.startsWith("https://notes9.iutlan.univ-rennes1.fr/") && canExtractJSON) {
             redirectToData();
             setCanExtractJSON(false);
           }
 
-          if(url.startsWith("https://notes9.iutlan.univ-rennes1.fr/services/data.php?q=relev%C3%A9Etudiant&semestre=")) {
+          if (url.startsWith("https://notes9.iutlan.univ-rennes1.fr/services/data.php?q=relev%C3%A9Etudiant&semestre=")) {
             wbref.current?.injectJavaScript(`
               window.ReactNativeWebView.postMessage("semestre:"+document.body.innerText);
             `);
           }
-          else if(url.startsWith("https://notes9.iutlan.univ-rennes1.fr/services/data.php")) {
+          else if (url.startsWith("https://notes9.iutlan.univ-rennes1.fr/services/data.php")) {
             wbref.current?.injectJavaScript(`
               window.ReactNativeWebView.postMessage("firstLogin:"+document.body.innerText);
             `);
@@ -336,7 +363,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
         }}
 
         onError={(data) => {
-          console.error(data);
+          error("" + data, "BackgroundIUTLannion/onError");
           showAlert({
             title: "Erreur",
             message: "Impossible de se connecter au portail de l'IUT de Lannion. Vérifie ta connexion Internet et réessaie.",
@@ -354,19 +381,19 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
 
         onMessage={(event) => {
           try {
-            if(event.nativeEvent.data.startsWith("firstLogin:")) {
+            if (event.nativeEvent.data.startsWith("firstLogin:")) {
               const data = event.nativeEvent.data.replace("firstLogin:", "");
               const parsedData = JSON.parse(data);
               useData(parsedData);
             }
-            else if(event.nativeEvent.data.startsWith("semestre:")) {
+            else if (event.nativeEvent.data.startsWith("semestre:")) {
               const data = event.nativeEvent.data.replace("semestre:", "");
               const parsedData = JSON.parse(data);
               processSemestre(parsedData);
             }
           }
           catch (e) {
-            console.error(e);
+            error("" + (e as Error)?.stack, "BackgroundIUTLannion/onMessage");
           }
         }}
       />

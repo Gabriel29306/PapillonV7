@@ -19,33 +19,37 @@ const notifeeEvent = async () => {
 
   // Gestion des badges quand app en arrière-plan
   notifee.onBackgroundEvent(async ({ type, detail }) => {
-    const { notification, pressAction } = detail;
+    const { pressAction } = detail;
 
     switch (type) {
-      case EventType.ACTION_PRESS:
-        console.log(`[Notifee] Action press: ${pressAction?.id}`);
-
-      case EventType.DISMISSED:
+      case EventType.ACTION_PRESS: {
+        log(`[Notifee] Action press: ${pressAction?.id}`, "NOTIFEE/BK");
+        break;
+      }
+      case EventType.DISMISSED: {
         let badgeCount = await notifee.getBadgeCount();
         badgeCount--;
         await notifee.setBadgeCount(badgeCount);
         break;
+      }
     }
   });
 
   // Gestion des badges quand app en premier plan
   notifee.onForegroundEvent(async ({ type, detail }) => {
-    const { notification, pressAction } = detail;
+    const { pressAction } = detail;
 
     switch (type) {
-      case EventType.ACTION_PRESS:
-        console.log(`[Notifee] Action press: ${pressAction?.id}`);
-
-      case EventType.DISMISSED:
+      case EventType.ACTION_PRESS: {
+        log(`[Notifee] Action press: ${pressAction?.id}`, "NOTIFEE/FW");
+        break;
+      }
+      case EventType.DISMISSED: {
         let badgeCount = await notifee.getBadgeCount();
         badgeCount--;
         await notifee.setBadgeCount(badgeCount);
         break;
+      }
     }
   });
 };
@@ -83,7 +87,9 @@ const backgroundFetch = async () => {
     const accounts = getAccounts();
     const switchTo = getSwitchToFunction();
 
-    for (const account of accounts) {
+    const primaryAccounts = accounts.filter((account) => !account.isExternal);
+
+    for (const account of primaryAccounts) {
       await switchTo(account);
       const notificationsTypesPermissions =
         account.personalization.notifications;

@@ -14,21 +14,15 @@ import { NativeText } from "@/components/Global/NativeComponents";
 import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 import { isExpoGo } from "@/utils/native/expoGoAlert";
 import { useAlert } from "@/providers/AlertProvider";
+import { Grade } from "@/services/shared/Grade";
+import useScreenDimensions from "@/hooks/useScreenDimensions";
+import { error } from "@/utils/logger/logger";
 
 // Types
 interface SubjectData {
   color: string;
   pretty: string;
   emoji: string;
-}
-
-interface Grade {
-  id: string;
-  student: { value: number | null };
-  outOf: { value: number | null };
-  coefficient: number | null;
-  subjectName: string;
-  timestamp: number;
 }
 
 // Helper Functions
@@ -60,7 +54,10 @@ const createReel = async (
     imagewithouteffect: imageWithoutEffect,
     subjectdata: getSubjectData(grade.subjectName),
     grade: {
-      value: grade.student.value?.toString() ?? "",
+      value:
+        (grade.student.disabled
+          ? grade.student.status
+          : grade.student.value?.toFixed(2)) ?? "",
       outOf: grade.outOf.value?.toString() ?? "",
       coef: grade.coefficient?.toString() ?? "",
     }
@@ -95,6 +92,7 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
     }
   };
 
+  const { isTablet } = useScreenDimensions();
   const { showAlert } = useAlert();
 
   // Setup permissions
@@ -137,7 +135,7 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
 
     try {
       const photo = await cameraRef.current?.takePictureAsync({
-        quality: 0.5,
+        quality: 0.75,
         skipProcessing: true,
       });
       if (!photo?.uri) return;
@@ -147,7 +145,7 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
         try {
           const compositeUri = await captureRef(composerRef, {
             format: "png",
-            quality: 0.5,
+            quality: 0.75,
           });
           const reel = await createReel(grade, compositeUri, photo.uri);
           useGradesStore.setState((state) => ({
@@ -158,8 +156,8 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
             }
           }));
           navigation.goBack();
-        } catch (error) {
-          console.error("Failed to save image:", error);
+        } catch (err) {
+          error("Failed to save image:" + err, "GradeReaction/handleCapture");
           showAlert({
             title: "Erreur",
             message: "Erreur lors de l'enregistrement de l'image",
@@ -169,8 +167,8 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
           setIsLoading(false);
         }
       }, 1000);
-    } catch (error) {
-      console.error("Failed to take picture:", error);
+    } catch (err) {
+      error("Failed to take picture:" + err, "GradeReaction/handleCapture");
       showAlert({
         title: "Erreur",
         message: "Impossible de capturer l'image.",
@@ -180,24 +178,24 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
   };
 
   return (isCameraPermissionGranted == PermissionStatus.DENIED || isMediaLibraryPermissionGranted == PermissionStatus.DENIED) ? (
-    <View style={[styles.container, {alignItems: "center", justifyContent: "center", padding: 16}]}>
-      <NativeText style={{fontSize: 100, lineHeight: 115, marginTop: -20}}>🫣</NativeText>
-      <NativeText variant={"titleLarge2"} color={"#FFF"} style={{textAlign: "center"}}>On ne te voit pas…</NativeText>
-      <NativeText color={"#FFF"} style={{textAlign: "center"}}>Pour réagir à tes notes, Papillon a besoin d'un accès à ta caméra et à ta librairie photo.</NativeText>
+    <View style={[styles.container, { alignItems: "center", justifyContent: "center", padding: 16 }]}>
+      <NativeText style={{ fontSize: 100, lineHeight: 115, marginTop: -20 }}>🫣</NativeText>
+      <NativeText variant={"titleLarge2"} color={"#FFF"} style={{ textAlign: "center" }}>On ne te voit pas…</NativeText>
+      <NativeText color={"#FFF"} style={{ textAlign: "center" }}>Pour réagir à tes notes, Papillon a besoin d'un accès à ta caméra et à ta librairie photo.</NativeText>
 
-      <View style={{position: "absolute", bottom: 16 + inset.bottom, left: 16, right: 16, gap: 10}}>
+      <View style={{ position: "absolute", bottom: 16 + inset.bottom, left: 16, right: 16, gap: 10 }}>
         <ButtonCta
           value={"Accès à ta caméra"}
           backgroundColor={"#000"}
           primary={true}
-          icon={isCameraPermissionGranted == PermissionStatus.GRANTED ? <Check/> : undefined}
+          icon={isCameraPermissionGranted == PermissionStatus.GRANTED ? <Check /> : undefined}
           onPress={() => {isCameraPermissionGranted != PermissionStatus.GRANTED && Linking.openSettings();}}
         />
         <ButtonCta
           value={"Accès à ta librairie photo"}
           backgroundColor={"#000"}
           primary={true}
-          icon={isMediaLibraryPermissionGranted == PermissionStatus.GRANTED ? <Check/> : undefined}
+          icon={isMediaLibraryPermissionGranted == PermissionStatus.GRANTED ? <Check /> : undefined}
           onPress={() => {isMediaLibraryPermissionGranted != PermissionStatus.GRANTED && Linking.openSettings();}}
         />
       </View>
@@ -206,7 +204,14 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
     :
     (
       <View style={styles.container}>
-        <View ref={composerRef} style={[styles.cameraContainer, { marginTop: inset.top + 10 }]}>
+        <View ref={composerRef} style={[
+          styles.cameraContainer,
+          {
+            marginTop: inset.top + 75,
+            maxHeight: isTablet ? "65%" : "75%",
+          }
+        ]}
+        >
           <Image
             source={require("../../../../../assets/images/mask_logotype.png")}
             tintColor={"#FFFFFF50"}
@@ -232,7 +237,11 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
                 </Text>
               </View>
               <View style={styles.scoreContainer}>
-                <Text style={styles.scoreText}>{grade.student.value}</Text>
+                <Text style={styles.scoreText}>
+                  {grade.student.disabled
+                    ? grade.student.status
+                    : grade.student.value?.toFixed(2)}
+                </Text>
                 <Text style={styles.maxScoreText}>/{grade.outOf.value}</Text>
               </View>
             </View>
@@ -241,7 +250,7 @@ const GradeReaction: Screen<"GradeReaction"> = ({ navigation, route }) => {
 
         {isLoading && (
           <View style={styles.loadingContainer}>
-            <PapillonSpinner size={30} color="#FFF"/>
+            <PapillonSpinner size={30} color="#FFF" />
             <Text style={styles.loadingText}>Enregistrement en cours...</Text>
           </View>
         )}
@@ -263,7 +272,6 @@ const styles = StyleSheet.create({
   cameraContainer: {
     alignSelf: "center",
     width: "90%",
-    height: 550,
     borderRadius: 16,
     overflow: "hidden",
   },

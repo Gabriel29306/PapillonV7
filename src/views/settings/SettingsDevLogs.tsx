@@ -37,10 +37,11 @@ import { animPapillon } from "@/utils/ui/animations";
 import { useTheme } from "@react-navigation/native";
 import { useAlert } from "@/providers/AlertProvider";
 import MissingItem from "@/components/Global/MissingItem";
-import formatDate from "@/utils/format/format_date_complets";
 import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
+import { formatDistanceToNow } from "date-fns";
+import { fr } from "date-fns/locale";
 
-const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
+const SettingsDevLogs: Screen<"SettingsDevLogs"> = () => {
   const { colors } = useTheme();
   const [logs, setLogs] = useState<Log[]>([]);
   const [searchTerms, setSearchTerms] = useState<string>("");
@@ -58,7 +59,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
       );
       setLoading(false);
     });
-  }, [navigation]);
+  }, []);
 
   return (
     <ScrollView
@@ -93,7 +94,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
               onPress={() => {
                 showAlert({
                   title: "Supprimer les logs ?",
-                  message: "Es-tu sûr de vouloir supprimer toutes les logs ?",
+                  message: "Veux-tu vraiment supprimer toutes les logs ?",
                   icon: <BadgeHelp />,
                   actions: [
                     {
@@ -150,6 +151,8 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
           exiting={animPapillon(FadeOutUp)}
         >
           {logs.slice().reverse().map((log, index) => {
+            if (Number.isNaN(new Date(log.date).getTime())) return;
+
             if (log.message.toLowerCase().includes(searchTerms.toLowerCase())) {
               return (
                 <NativeItem
@@ -172,7 +175,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
                           <Moon />
                         ) : log.message.toLowerCase().includes("read") ? (
                           <Newspaper />
-                        ) : log.message.startsWith("[timetable:updateClasses") ? (
+                        ) : log.message.toLowerCase().includes("timetable:updateClasses") ? (
                           <Calendar />
                         ) : log.message.toLowerCase().includes("folder") ? (
                           <Folder />
@@ -195,7 +198,7 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
                                     ? "#1F618D"
                                     : log.message.toLowerCase().includes("read")
                                       ? "#D4AC02"
-                                      : log.message.startsWith("[timetable:updateClasses")
+                                      : log.message.toLowerCase().includes("timetable:updateClasses")
                                         ? "#884EA0"
                                         : log.message.toLowerCase().includes("folder")
                                           ? "#CA6F1E"
@@ -209,9 +212,11 @@ const SettingsDevLogs: Screen<"SettingsDevLogs"> = ({ navigation }) => {
                 >
                   <NativeText variant="title">{log.message}</NativeText>
                   <NativeText variant="subtitle">
-                    {formatDate(log.date)} à {new Date(log.date).getHours()}:
-                    {new Date(log.date).getMinutes()}:
-                    {new Date(log.date).getSeconds()}
+                    {formatDistanceToNow(log.date, {
+                      addSuffix: true,
+                      includeSeconds: true,
+                      locale: fr,
+                    })}
                   </NativeText>
                   <NativeText variant="subtitle">{log.from}</NativeText>
                 </NativeItem>

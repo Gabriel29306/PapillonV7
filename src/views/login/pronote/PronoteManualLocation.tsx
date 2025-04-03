@@ -9,7 +9,7 @@ import Reanimated, { LinearTransition, FlipInXDown, ZoomIn, ZoomOut, FadeInDown,
 import MaskStars from "@/components/FirstInstallation/MaskStars";
 import PapillonShineBubble from "@/components/FirstInstallation/PapillonShineBubble";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { Search, X } from "lucide-react-native";
 import DuoListPressable from "@/components/FirstInstallation/DuoListPressable";
 import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
@@ -36,7 +36,7 @@ const PronoteManualLocation: Screen<"PronoteManualLocation"> = ({ navigation }) 
   });
 
   const insets = useSafeAreaInsets();
-  const {colors} = useTheme();
+  const { colors } = useTheme();
 
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -74,7 +74,7 @@ const PronoteManualLocation: Screen<"PronoteManualLocation"> = ({ navigation }) 
       }
 
       // We set the loading state to true.
-      setMunicipalities(prev => ({
+      setMunicipalities((prev) => ({
         loading: true,
         results: prev.results // Keep the previous results while it's loading.
       }));
@@ -203,7 +203,7 @@ const PronoteManualLocation: Screen<"PronoteManualLocation"> = ({ navigation }) 
               >
                 <DuoListPressable
                   text={`${municipality.properties.name} (${municipality.properties.postcode})`}
-                  onPress={() => void navigation.navigate("PronoteInstanceSelector", {
+                  onPress={() => navigation.navigate("PronoteInstanceSelector", {
                     longitude: municipality.geometry.coordinates[0],
                     latitude: municipality.geometry.coordinates[1],
                     hideDistance: true

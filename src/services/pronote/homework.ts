@@ -3,7 +3,7 @@ import { type Homework, HomeworkReturnType } from "@/services/shared/Homework";
 import { ErrorServiceUnauthenticated } from "../shared/errors";
 import { decodeAttachment } from "./attachment";
 import pronote from "pawnote";
-import {info, log} from "@/utils/logger/logger";
+import { info, log } from "@/utils/logger/logger";
 
 const decodeHomework = (h: pronote.Assignment): Homework => {
   return {
@@ -16,7 +16,8 @@ const decodeHomework = (h: pronote.Assignment): Homework => {
     done: h.done,
     returnType: (h.return && h.return.kind !== pronote.AssignmentReturnKind.None)
       ? h.return.kind === pronote.AssignmentReturnKind.Paper ? HomeworkReturnType.Paper : HomeworkReturnType.FileUpload
-      : void 0
+      : void 0,
+    personalizate: false,
   };
 };
 

@@ -4,13 +4,13 @@ import { Screen } from "@/router/helpers/types";
 import { reservationHistoryFromExternal } from "@/services/reservation-history";
 import { ExternalAccount } from "@/stores/account/types";
 import { anim2Papillon } from "@/utils/ui/animations";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { AlertCircle, Check } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { FadeInDown, FadeOutUp } from "react-native-reanimated";
 
-const RestaurantPaymentSuccess: Screen<"RestaurantPaymentSuccess"> = ({ route, navigation }) => {
+const RestaurantPaymentSuccess: Screen<"RestaurantPaymentSuccess"> = ({ route }) => {
   const { card, diff } = route.params;
   const theme = useTheme();
 

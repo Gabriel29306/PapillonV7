@@ -1,6 +1,6 @@
-import {AddonLogs as AddonLog, AddonPlacementManifest} from "@/addons/types";
+import { AddonLogs as AddonLog, AddonPlacementManifest } from "@/addons/types";
 import type { Chat, ChatRecipient } from "@/services/shared/Chat";
-import type {Grade, GradesPerSubject} from "@/services/shared/Grade";
+import type { Grade, GradesPerSubject } from "@/services/shared/Grade";
 import { Homework } from "@/services/shared/Homework";
 import { ReservationHistory } from "@/services/shared/ReservationHistory";
 import type { AccountService } from "@/stores/account/types";
@@ -8,13 +8,13 @@ import type { CurrentPosition } from "@/utils/native/location";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type pronote from "pawnote";
 import type React from "react";
-import type { School as SkolengoSchool} from "scolengo-api/types/models/School";
+import type { School as SkolengoSchool } from "scolengo-api/types/models/School";
 import { ImageSourcePropType } from "react-native";
-import {Client} from "pawrd";
+import { Client } from "pawrd";
 import { Host } from "turboself-api";
-import {Evaluation} from "@/services/shared/Evaluation";
+import { Evaluation } from "@/services/shared/Evaluation";
 import { ThemesMeta } from "@/utils/chat/themes/Themes.types";
-import {MultiServiceSpace} from "@/stores/multiService/types";
+import { MultiServiceSpace } from "@/stores/multiService/types";
 import { TimetableClass } from "@/services/shared/Timetable";
 import { ServiceCard } from "@/utils/external/restaurant";
 
@@ -26,6 +26,7 @@ export type RouteParameters = {
   DevMenu: undefined;
   AccountCreated: undefined;
   ChangelogScreen: undefined;
+  ProfilePic: undefined;
 
   // login.index
   ServiceSelector: undefined;
@@ -83,9 +84,11 @@ export type RouteParameters = {
   SkolengoGeolocation: undefined;
   SkolengoInstanceSelector: { pos: CurrentPosition | null };
   SkolengoWebview: { school: SkolengoSchool };
+
   // account.index
   Home: undefined;
   HomeScreen?: { onboard: boolean };
+  CustomizeHeader: undefined;
 
   Lessons?: { outsideNav?: boolean };
   LessonsImportIcal: {
@@ -98,6 +101,11 @@ export type RouteParameters = {
 
   Homeworks?: { outsideNav?: boolean };
   HomeworksDocument: { homework: Homework };
+  AddHomework: {
+    hwid?: string;
+    modal?: boolean;
+    defaults?: { subject: string; content: string; date: number };
+  };
 
   News?: { outsideNav?: boolean; isED: boolean };
   NewsItem: { message: string; important: boolean; isED: boolean };
@@ -145,6 +153,10 @@ export type RouteParameters = {
   SettingsDonorsList: undefined;
   SettingsReactions: undefined;
   SettingsAccessibility: undefined;
+  SettingsGeneral: undefined;
+  SettingsPersonalization: undefined;
+  SettingsExperimental: undefined;
+  SettingsProject: undefined;
 
   Menu?: undefined;
   RestaurantQrCode: {
@@ -155,6 +167,7 @@ export type RouteParameters = {
   };
   RestaurantCardDetail: {
     card: ServiceCard;
+    outsideNav?: boolean;
   };
   RestaurantPaymentSuccess: {
     card: ServiceCard;

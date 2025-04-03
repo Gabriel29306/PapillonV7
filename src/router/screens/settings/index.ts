@@ -31,12 +31,16 @@ import ExternalAliseLogin from "@/views/settings/ExternalAccount/Alise";
 import SettingsMultiService from "@/views/settings/SettingsMultiService";
 import SettingsMultiServiceSpace from "@/views/settings/SettingsMultiServiceSpace";
 import SettingsAccessibility from "@/views/settings/SettingsAccessibility";
+import SettingsGeneral from "@/views/settings/SettingsGeneral";
+import SettingsPersonalization from "@/views/settings/SettingsPersonalization";
+import SettingsExperimental from "@/views/settings/SettingsExperimental";
+import SettingsProject from "@/views/settings/SettingsProject";
 
 const settingsScreens = [
   createScreen("Settings", Settings, {
     presentation: "modal",
     headerTitle: "Paramètres",
-    headerShown: false,
+    headerShown: true,
   }),
   createScreen("SettingsNotifications", SettingsNotifications, {
     headerTitle: "Notifications",
@@ -147,6 +151,18 @@ const settingsScreens = [
   }),
   createScreen("SettingsAccessibility", SettingsAccessibility, {
     headerTitle: "Accessibilité",
+  }),
+  createScreen("SettingsGeneral", SettingsGeneral, {
+    headerTitle: "Général",
+  }),
+  createScreen("SettingsPersonalization", SettingsPersonalization, {
+    headerTitle: "Personnalisation",
+  }),
+  createScreen("SettingsExperimental", SettingsExperimental, {
+    headerTitle: "Expérimental",
+  }),
+  createScreen("SettingsProject", SettingsProject, {
+    headerTitle: "Projet Papillon",
   }),
 ] as const;
 

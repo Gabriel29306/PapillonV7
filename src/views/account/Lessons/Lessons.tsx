@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FlatList, View, ViewToken } from "react-native";
-import { StyleSheet } from "react-native";
+import { FlatList, View, ViewToken, StyleSheet } from "react-native";
 import type { Screen } from "@/router/helpers/types";
 import { useCurrentAccount } from "@/stores/account";
 import { useTimetableStore } from "@/stores/timetable";
@@ -20,7 +19,7 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { animPapillon } from "@/utils/ui/animations";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import AnimatedNumber from "@/components/Global/AnimatedNumber";
 import { CalendarPlus, Eye, EyeOff, MoreVertical } from "lucide-react-native";
 import {
@@ -32,9 +31,9 @@ import {
 import PapillonPicker from "@/components/Global/PapillonPicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WeekFrequency } from "@/services/shared/Timetable";
-import {AccountService} from "@/stores/account/types";
-import {hasFeatureAccountSetup} from "@/utils/multiservice";
-import {MultiServiceFeature} from "@/stores/multiService/types";
+import { AccountService } from "@/stores/account/types";
+import { hasFeatureAccountSetup } from "@/utils/multiservice";
+import { MultiServiceFeature } from "@/stores/multiService/types";
 import { fetchIcalData } from "@/services/local/ical";
 import useScreenDimensions from "@/hooks/useScreenDimensions";
 
@@ -54,6 +53,36 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
 
   const [shouldShowWeekFrequency, setShouldShowWeekFrequency] = useState(account.personalization.showWeekFrequency);
   const [weekFrequency, setWeekFrequency] = useState<WeekFrequency | null>(null);
+
+  const [maxStartTime, setMaxStartTime] = useState(0);
+  const [maxEndTime, setMaxEndTime] = useState(0);
+
+  useEffect(() => {
+    try {
+      const lessons = Object.values(timetables).flat();
+
+      if (lessons.length > 0) {
+        const startTimes = lessons.map((lesson) => {
+          const startDate = new Date(lesson.startTimestamp);
+          return startDate.getHours() * 60 + startDate.getMinutes();
+        });
+
+        const endTimes = lessons.map((lesson) => {
+          const endDate = new Date(lesson.endTimestamp);
+          return endDate.getHours() * 60 + endDate.getMinutes();
+        });
+
+        const maxStart = Math.min(...startTimes);
+        const maxEnd = Math.max(...endTimes);
+
+        setMaxStartTime(maxStart);
+        setMaxEndTime(maxEnd);
+      }
+    }
+    catch (e) {
+      console.log("Error calculating max start and end times:", e);
+    }
+  }, [timetables]);
 
   const { width, height, isTablet } = useScreenDimensions();
   const finalWidth = width - (isTablet ? (
@@ -123,7 +152,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
 
     try {
       await updateTimetableForWeekInCache(account, weekNumber, force);
-      await fetchIcalData(account, force);
+      await fetchIcalData(account);
       currentlyLoadingWeeks.current.add(weekNumber);
     } finally {
       currentlyLoadingWeeks.current.delete(weekNumber);
@@ -138,14 +167,21 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
     const week = getWeekFromDate(date);
     const timetable = timetables[week] || [];
 
-    const newDate = new Date(date);
-    newDate.setHours(0, 0, 0, 0);
+    const newDate = Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+    );
 
     const day = timetable.filter((lesson) => {
-      const lessonDate = new Date(lesson.startTimestamp);
-      lessonDate.setHours(0, 0, 0, 0);
+      const startTimetableDate = new Date(lesson.startTimestamp);
+      const lessonDate = Date.UTC(
+        startTimetableDate.getFullYear(),
+        startTimetableDate.getMonth(),
+        startTimetableDate.getDate(),
+      );
 
-      return lessonDate.getTime() === newDate.getTime();
+      return lessonDate === newDate;
     });
 
     return day;
@@ -199,6 +235,8 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
             }
             refreshAction={() => loadTimetableWeek(weekNumber, true)}
             loading={loadingWeeks.includes(weekNumber)}
+            maxStart={maxStartTime}
+            maxEnd={maxEndTime}
           />
         </View>
       );
@@ -253,7 +291,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
 
             setTimeout(() => {
               AsyncStorage.getItem("review_given").then((value) => {
-                if(!value) {
+                if (!value) {
                   askForReview();
                   AsyncStorage.setItem("review_given", "true");
                 }
@@ -281,7 +319,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
     const lastDate = data[data.length - 1];
 
     let updatedData = [...data];
-    const uniqueDates = new Set(updatedData.map(d => d.getTime()));
+    const uniqueDates = new Set(updatedData.map((d) => d.getTime()));
 
     if (newDate < firstDate) {
       const dates = [];
@@ -421,7 +459,7 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
                 navigation.navigate("LessonsImportIcal", {});
               }
             },
-            account.service !== AccountService.Pronote ? {
+            account.service === AccountService.Pronote ? {
               icon: shouldShowWeekFrequency ? <EyeOff /> : <Eye />,
               label: shouldShowWeekFrequency
                 ? "Masquer alternance semaine"

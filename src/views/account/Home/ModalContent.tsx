@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { NativeList, NativeText } from "@/components/Global/NativeComponents";
+import React, { useCallback, useEffect, useState, useMemo, memo } from "react";
+import { NativeItem, NativeList, NativeText } from "@/components/Global/NativeComponents";
 import Reanimated, { FadeInUp, FadeOutDown, LinearTransition } from "react-native-reanimated";
-import { Sparkles, X } from "lucide-react-native";
-import { useTheme } from "@react-navigation/native";
+import { Bug, Sparkles, X } from "lucide-react-native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import PackageJSON from "../../../../package.json";
-import { Dimensions, View } from "react-native";
+import { Dimensions, TouchableOpacity, View } from "react-native";
 import { Elements, type Element } from "./ElementIndex";
 import { animPapillon } from "@/utils/ui/animations";
 import { useFlagsStore } from "@/stores/flags";
@@ -13,8 +13,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { defaultTabs } from "@/consts/DefaultTabs";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteParameters } from "@/router/helpers/types";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
+
 
 interface ModalContentProps {
   navigation: NativeStackNavigationProp<RouteParameters, "HomeScreen", undefined>;
@@ -127,6 +127,34 @@ const ModalContent: React.FC<ModalContentProps> = ({ navigation, refresh, endRef
 
   return (
     <View style={{ minHeight: Dimensions.get("window").height - 131 }}>
+      {(defined("force_debugmode") || __DEV__) && (
+        <NativeList animated entering={animPapillon(FadeInUp)} exiting={animPapillon(FadeOutDown)}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "column",
+              paddingHorizontal: 0,
+              paddingVertical: 0,
+              gap: 8,
+              backgroundColor: colors.primary + "20",
+            }}
+          >
+            <NativeItem
+              onPress={() => navigation.navigate("DevMenu")}
+              chevron={true}
+              leading={<Bug size={22} strokeWidth={2} color={colors.text} />}
+              style={{
+                paddingHorizontal: 0,
+              }}
+            >
+              <NativeText variant="title" style={{ flex: 1, paddingVertical: 4 }}>
+                Mode debug
+              </NativeText>
+            </NativeItem>
+          </View>
+        </NativeList>
+      )}
+
       {(defined("force_changelog") || updatedRecently) && (
         <NativeList animated entering={animPapillon(FadeInUp)} exiting={animPapillon(FadeOutDown)}>
           <TouchableOpacity
@@ -140,8 +168,18 @@ const ModalContent: React.FC<ModalContentProps> = ({ navigation, refresh, endRef
               backgroundColor: colors.primary + "20",
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <Sparkles size={22} strokeWidth={2} color={colors.text} />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <Sparkles
+                size={22}
+                strokeWidth={2}
+                color={colors.text}
+              />
               <NativeText variant="title" style={{ flex: 1 }}>
                 Papillon vient d'être mis à jour à la version {PackageJSON.version} !
               </NativeText>
@@ -169,4 +207,4 @@ const ModalContent: React.FC<ModalContentProps> = ({ navigation, refresh, endRef
   );
 };
 
-export default ModalContent;
+export default memo(ModalContent);

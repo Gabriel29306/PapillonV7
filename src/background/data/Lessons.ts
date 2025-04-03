@@ -15,14 +15,24 @@ const getAllLessonsForDay = (lessons: Record<number, Timetable>) => {
   const week = dateToEpochWeekNumber(date);
   const timetable = lessons[week] || [];
 
-  const lessonsOfDay = timetable.filter((lesson) => {
-    const lessonDate = new Date(lesson.startTimestamp);
-    lessonDate.setHours(0, 0, 0, 0);
+  const newDate = Date.UTC(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  );
 
-    return lessonDate.getTime() === date.getTime();
+  const day = timetable.filter((lesson) => {
+    const startTimetableDate = new Date(lesson.startTimestamp);
+    const lessonDate = Date.UTC(
+      startTimetableDate.getFullYear(),
+      startTimetableDate.getMonth(),
+      startTimetableDate.getDate(),
+    );
+
+    return lessonDate === newDate;
   });
 
-  return lessonsOfDay;
+  return day;
 };
 
 const getDifferences = (
@@ -111,10 +121,13 @@ const fetchLessons = async (): Promise<Timetable> => {
               day: "numeric",
               month: "long",
             }),
-            body: `${differencesStatus[0].subject} (${dateLessonsDebut}-${dateLessonsFin}) : Horaire du cours modifié`,
+            body: `${differencesTimestamp[0].subject} (${dateLessonsDebut}-${dateLessonsFin}) : Horaire du cours modifié`,
             data: {
               accountID: account.localID,
-              page: "Lessons"
+              page: "LessonsDocument",
+              parameters: {
+                lesson: differencesTimestamp[0],
+              }
             }
           },
           "Lessons"
@@ -129,7 +142,7 @@ const fetchLessons = async (): Promise<Timetable> => {
 
         let statut: string = "";
 
-        switch (differencesTimestamp[0].status) {
+        switch (differencesStatus[0].status) {
           case TimetableClassStatus.TEST:
             statut = "Devoir surveillé";
             break;
@@ -168,7 +181,10 @@ const fetchLessons = async (): Promise<Timetable> => {
             body: `${differencesStatus[0].subject} (${dateLessonsDebut}-${dateLessonsFin}) : ${statut}`,
             data: {
               accountID: account.localID,
-              page: "Lessons"
+              page: "LessonsDocument",
+              parameters: {
+                lesson: differencesStatus[0],
+              }
             }
           },
           "Lessons"

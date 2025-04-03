@@ -10,7 +10,7 @@ import {
 import { WebView } from "react-native-webview";
 import type { Screen } from "@/router/helpers/types";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import MaskStars from "@/components/FirstInstallation/MaskStars";
 
 import Reanimated, {
@@ -33,6 +33,7 @@ import { animPapillon } from "@/utils/ui/animations";
 import { useAlert } from "@/providers/AlertProvider";
 import useSoundHapticsWrapper from "@/utils/native/playSoundHaptics";
 import { BadgeInfo, Undo2 } from "lucide-react-native";
+import { error } from "@/utils/logger/logger";
 
 const PronoteWebview: Screen<"PronoteWebview"> = ({ route, navigation }) => {
   const theme = useTheme();
@@ -242,7 +243,7 @@ const PronoteWebview: Screen<"PronoteWebview"> = ({ route, navigation }) => {
               setLoadProgress(nativeEvent.progress);
             }}
             onError={(e) => {
-              console.error("Pronote webview error", e);
+              error("Pronote webview error" + e, "PronoteWebview");
             }}
             onLoadStart={(e) => {
               const { url } = e.nativeEvent;

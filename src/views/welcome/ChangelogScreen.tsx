@@ -1,22 +1,21 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import { Image, Linking, Platform, ScrollView, View } from "react-native";
+import { Image, Linking, Platform, ScrollView, View, TouchableOpacity } from "react-native";
 
 import PackageJSON from "../../../package.json";
 import datasets from "@/consts/datasets.json";
 import uuid from "@/utils/uuid-v4";
 import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
 import { AlertTriangle, Bug, Sparkles, X } from "lucide-react-native";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 
 import Reanimated, { FadeInUp, FadeOutUp, LinearTransition } from "react-native-reanimated";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
 import { animPapillon } from "@/utils/ui/animations";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { PressableScale } from "react-native-pressable-scale";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {Screen} from "@/router/helpers/types";
+import { Screen } from "@/router/helpers/types";
 import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 import useScreenDimensions from "@/hooks/useScreenDimensions";
 
@@ -56,7 +55,7 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    if(!changelog) {
+    if (!changelog) {
       setLoading(true);
       fetch(changelogURL + "#update=" + uuid()) // #TODO : remove, it's for development
         .then((response) => response.json())
@@ -68,7 +67,7 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
             acknowledgeUpdate();
           }
         })
-        .catch((err) => {
+        .catch(() => {
           setLoading(false);
           setNotFound(true);
         });
@@ -83,7 +82,7 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
           onPress={() => navigation.goBack()}
           style={{
             width: 32,
-            aspectRatio: 1 / 1,
+            aspectRatio: 1,
             backgroundColor: theme.colors.text + "18",
             alignItems: "center",
             justifyContent: "center",
@@ -205,11 +204,13 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
             </PressableScale>
 
             <Reanimated.View>
-              <NativeListHeader
-                animated
-                label="Nouveautés"
-                icon={<Sparkles />}
-              />
+              {changelog.features.length > 0 && (
+                <NativeListHeader
+                  animated
+                  label="Nouveautés"
+                  icon={<Sparkles />}
+                />
+              )}
 
               <Reanimated.ScrollView
                 horizontal
@@ -237,7 +238,9 @@ const ChangelogScreen: Screen<"ChangelogScreen"> = ({ route, navigation }) => {
             </Reanimated.View>
 
             <Reanimated.View>
-              <NativeListHeader animated label="Correctifs" icon={<Bug />} />
+              {changelog.bugfixes.length > 0 && (
+                <NativeListHeader animated label="Correctifs" icon={<Bug />} />
+              )}
 
               <Reanimated.ScrollView
                 horizontal
@@ -278,16 +281,18 @@ const ChangelogFeature: React.FC<{ feature: Feature, navigation: any, theme: any
       <NativeList
         inline
         style={{
-          width: 200,
+          width: 240,
         }}
       >
-        <Image
-          source={{ uri: feature.image }}
-          style={{
-            width: "100%",
-            aspectRatio: 3 / 2
-          }}
-        />
+        {feature.image && (
+          <Image
+            source={{ uri: feature.image }}
+            style={{
+              width: "100%",
+              aspectRatio: 3 / 2
+            }}
+          />
+        )}
         <View pointerEvents="none"
           style={{
             height: 142,
@@ -314,30 +319,32 @@ const ChangelogFeature: React.FC<{ feature: Feature, navigation: any, theme: any
             {feature.subtitle}
           </NativeText>
         </View>
-        <NativeItem
-          onPress={(feature.href || feature.navigation) ? () => {
-            if(feature.href) {
-              Linking.openURL(feature.href);
-            }
-            else if(feature.navigation) {
-              try {
-                navigation.goBack();
-                navigation.navigate(feature.navigation);
+        {feature.navigation && (
+          <NativeItem
+            onPress={(feature.href || feature.navigation) ? () => {
+              if (feature.href) {
+                Linking.openURL(feature.href);
               }
-              catch {}
-            }
-          } : undefined}
-        >
-          <NativeText
-            variant="default"
-            style={{
-              color: (feature.href || feature.navigation) ? theme.colors.primary : theme.colors.text + "50"
-            }}
+              else if (feature.navigation) {
+                try {
+                  navigation.goBack();
+                  navigation.navigate(feature.navigation);
+                }
+                catch { /* empty */ }
+              }
+            } : undefined}
           >
-            {feature.button || "En savoir plus"}
-          </NativeText>
-        </NativeItem>
 
+            <NativeText
+              variant="default"
+              style={{
+                color: (feature.href || feature.navigation) ? theme.colors.primary : theme.colors.text + "50"
+              }}
+            >
+              {feature.button || "En savoir plus"}
+            </NativeText>
+          </NativeItem>
+        )}
       </NativeList>
     </PressableScale>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Image, ActivityIndicator, FlatList, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View, KeyboardAvoidingView, } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 
 import type { Screen } from "@/router/helpers/types";
 import { NativeText } from "@/components/Global/NativeComponents";
@@ -63,7 +63,11 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
   const [text, setText] = useState<string>("");
   const [recipients, setRecipients] = useState<ChatRecipient[]>([]);
   const [chatTheme, setActualTheme] = useState<Theme>();
+  const [disabled, setDisabled] = useState<boolean>(false);
 
+  useEffect(() => {
+    setDisabled(text.trim() === "" || account.service === AccountService.EcoleDirecte);
+  }, [text, account.service]);
   const creatorName = route.params.handle.creator === account.name ? route.params.handle.recipient : route.params.handle.creator;
   const backgroundImage = theme.dark
     ? { uri: `${chatTheme?.darkModifier.chatBackgroundImage}` }
@@ -112,7 +116,7 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
       {messages[0] ? (
         <>
           <PapillonModernHeader height={130} outsideNav={true} tint={theme.dark ? chatTheme?.darkModifier.headerBackgroundColor : chatTheme?.lightModifier.headerBackgroundColor}>
-            <View style={{flexDirection: "row", gap: 10, alignItems: "center"}}>
+            <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <ChevronLeft color={
                   (theme.dark ? chatTheme?.darkModifier.headerTextColor : chatTheme?.lightModifier.headerTextColor + "80")
@@ -122,7 +126,7 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                 onPress={() => navigation.navigate("ChatDetails", {
                   handle: route.params.handle,
                   recipients: recipients,
-                  onThemeChange: async (updatedTheme) => {
+                  onThemeChange: async () => {
                     const theme = await GetThemeForChatId(route.params.handle.subject);
                     setActualTheme(theme);
                   }
@@ -135,7 +139,7 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                   textColor={getProfileColorByName(creatorName).dark}
                   size={38}
                 />
-                <View style={{flex: 1}}>
+                <View style={{ flex: 1 }}>
                   <NativeText
                     variant="subtitle"
                     color={theme.dark ? chatTheme?.darkModifier.headerTextColor : chatTheme?.lightModifier.headerTextColor}
@@ -273,10 +277,10 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                         >
                           {item.attachments.map((attachment: Attachment) => (
                             <TouchableOpacity onPress={() => openUrl(attachment.url)}>
-                              <View style={{flexDirection: "row", alignItems: "center", gap: 10, maxWidth: "90%"}}>
+                              <View style={{ flexDirection: "row", alignItems: "center", gap: 10, maxWidth: "90%" }}>
                                 <View>
                                   {attachment.type === AttachmentType.File ? (
-                                    <AutoFileIcon filename={attachment.name} size={28} color={colors.text} opacity={0.7}/>
+                                    <AutoFileIcon filename={attachment.name} size={28} color={colors.text} opacity={0.7} />
                                   ) : (
                                     <LinkFavicon size={28} url={attachment.url} />
                                   )}
@@ -332,7 +336,7 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                   description="Envoie un message pour commencer la discussion."
                   entering={animPapillon(FadeInDown)}
                   exiting={animPapillon(FadeOut)}
-                  style={{paddingVertical: 26}}
+                  style={{ paddingVertical: 26 }}
                 />
               )}
             />
@@ -366,13 +370,14 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
               />
               <View
                 style={{
+                  flex: 1,
                   justifyContent: "flex-end",
                   alignItems: "flex-end",
                 }}
               >
                 <TouchableOpacity
                   style={{
-                    backgroundColor: theme.dark ? chatTheme?.darkModifier.sendButtonBackgroundColor : chatTheme?.lightModifier.sendButtonBackgroundColor,
+                    backgroundColor: disabled ? colors.text + "70" : theme.dark ? chatTheme?.darkModifier.sendButtonBackgroundColor : chatTheme?.lightModifier.sendButtonBackgroundColor,
                     width: 56,
                     height: 40,
                     borderRadius: 32,
@@ -383,12 +388,13 @@ const Chat: Screen<"Chat"> = ({ navigation, route }) => {
                   onPress={() => {
                     sendMessageInChat(account, route.params.handle, text);
                   }}
+                  disabled={disabled}
                 >
-                  <Send color={"#FFF"} size={24} style={{marginTop: 1, marginLeft: -3}}/>
+                  <Send color={disabled ? "#FFFFFF90" : "#FFF"} size={24} style={{ marginTop: 1, marginLeft: -3 }}/>
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={{height: insets.bottom, backgroundColor: theme.dark ? chatTheme?.darkModifier.inputBarBackgroundColor : chatTheme?.lightModifier.inputBarBackgroundColor }}></View>
+            <View style={{ height: insets.bottom, backgroundColor: theme.dark ? chatTheme?.darkModifier.inputBarBackgroundColor : chatTheme?.lightModifier.inputBarBackgroundColor }}></View>
           </ImageBackground>
         </>
       ) : (

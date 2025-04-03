@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { StyleSheet, Platform, Pressable } from "react-native";
 import LottieView from "lottie-react-native";
 import colorsList from "@/utils/data/colors.json";
@@ -51,7 +51,7 @@ const TabItem: React.FC<{
   const lottieRef = React.useRef<LottieView>(null);
 
   const autoColor = React.useMemo(() => {
-    return colorsList.find(c => c.hex.primary === theme.colors.primary) || colorsList[0];
+    return colorsList.find((c) => c.hex.primary === theme.colors.primary) || colorsList[0];
   }, [theme.colors.primary]);
 
   const tabColor = React.useMemo(() => {

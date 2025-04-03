@@ -9,15 +9,14 @@ import {
   updateGradesAndAveragesInCache,
   updateGradesPeriodsInCache,
 } from "@/services/grades";
-import type { GradesPerSubject } from "@/services/shared/Grade";
+import type { Grade, GradesPerSubject } from "@/services/shared/Grade";
 import { useCurrentAccount } from "@/stores/account";
 import { AccountService } from "@/stores/account/types";
 import { useGradesStore } from "@/stores/grades";
 import { animPapillon } from "@/utils/ui/animations";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { ChevronDown } from "lucide-react-native";
-import React from "react";
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import {
   Platform,
   RefreshControl,
@@ -32,8 +31,8 @@ import Reanimated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import GradesScodocUE from "./Atoms/GradesScodocUE";
-import {hasFeatureAccountSetup} from "@/utils/multiservice";
-import {MultiServiceFeature} from "@/stores/multiService/types";
+import { hasFeatureAccountSetup } from "@/utils/multiservice";
+import { MultiServiceFeature } from "@/stores/multiService/types";
 import PapillonSpinner from "@/components/Global/PapillonSpinner";
 import { OfflineWarning, useOnlineStatus } from "@/hooks/useOnlineStatus";
 
@@ -66,7 +65,7 @@ const Grades: Screen<"Grades"> = ({ route, navigation }) => {
   const [gradesPerSubject, setGradesPerSubject] = useState<GradesPerSubject[]>(
     []
   );
-  const latestGradesRef = useRef<any[]>([]);
+  const [latestGradesData, setLatestGradesData] = useState<Grade[]>([]);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -101,7 +100,7 @@ const Grades: Screen<"Grades"> = ({ route, navigation }) => {
       setIsLoading(true);
       await updateData();
 
-      if(isRefreshing && account.identityProvider?.identifier) {
+      if (isRefreshing && account.identityProvider?.identifier) {
         navigation.navigate("BackgroundIdentityProvider");
       }
 
@@ -145,7 +144,7 @@ const Grades: Screen<"Grades"> = ({ route, navigation }) => {
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 10);
 
-    latestGradesRef.current = latestGrades;
+    setLatestGradesData(latestGrades);
   }, [selectedPeriod, grades]);
 
   return (
@@ -279,9 +278,9 @@ const Grades: Screen<"Grades"> = ({ route, navigation }) => {
               </Reanimated.View>
             )}
 
-            {latestGradesRef.current.length > 2 && (
+            {latestGradesData.length > 2 && (
               <GradesLatestList
-                latestGrades={latestGradesRef.current}
+                latestGrades={latestGradesData}
                 navigation={navigation}
                 allGrades={grades[selectedPeriod] || []}
               />

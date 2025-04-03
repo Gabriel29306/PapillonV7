@@ -1,4 +1,4 @@
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { TrendingUp } from "lucide-react-native";
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
 import { Text, View } from "react-native";
@@ -11,11 +11,11 @@ import { updateGradesAndAveragesInCache } from "@/services/grades";
 import { getSubjectData } from "@/services/shared/Subject";
 import { useCurrentAccount } from "@/stores/account";
 import { useGradesStore } from "@/stores/grades";
+import { error } from "@/utils/logger/logger";
 
 const LastGradeWidget = forwardRef(({
   setLoading,
-  setHidden,
-  loading,
+  setHidden
 }: WidgetProps, ref) => {
   const theme = useTheme();
   const { colors } = theme;
@@ -27,10 +27,10 @@ const LastGradeWidget = forwardRef(({
   let lastPeriod = defaultPeriod;
 
   // find last period with grades
-  if(!grades[lastPeriod] || grades[lastPeriod] && grades[lastPeriod].length === 0) {
+  if (!grades[lastPeriod] || grades[lastPeriod] && grades[lastPeriod].length === 0) {
     const periods = Object.keys(grades);
-    for(let i = periods.length - 1; i >= 0; i--) {
-      if(grades[periods[i]].length > 0) {
+    for (let i = periods.length - 1; i >= 0; i--) {
+      if (grades[periods[i]].length > 0) {
         lastPeriod = periods[i];
         break;
       }
@@ -60,8 +60,8 @@ const LastGradeWidget = forwardRef(({
       setLoading(true);
       try {
         await updateGradesAndAveragesInCache(account, defaultPeriod);
-      } catch (error) {
-        console.error("Erreur lors de la mise à jour des notes :", error);
+      } catch (err) {
+        error("Erreur lors de la mise à jour des notes :" + err, "LastGradeWidget/fetchGrades");
       } finally {
         setLoading(false);
       }

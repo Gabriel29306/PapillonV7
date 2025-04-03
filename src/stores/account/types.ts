@@ -34,37 +34,48 @@ export interface PapillonIcalURL {
 }
 
 export interface Personalization {
-  color: PersonalizationColor
-  profilePictureB64?: string,
-  hideNameOnHomeScreen: boolean,
-  hideProfilePicOnHomeScreen: boolean,
-  hideTabTitles: boolean,
-  showTabBackground: boolean,
-  showWeekFrequency: boolean,
-  transparentTabBar: boolean,
-  hideTabBar: boolean,
-  popupRestauration?: boolean,
-  magicEnabled?: boolean,
-  MagicNews?: boolean,
-  MagicHomeworks?: boolean,
+  color: PersonalizationColor;
+  profilePictureB64?: string;
+  hideNameOnHomeScreen: boolean;
+  hideProfilePicOnHomeScreen: boolean;
+  hideTabTitles: boolean;
+  showTabBackground: boolean;
+  showWeekFrequency: boolean;
+  transparentTabBar: boolean;
+  hideTabBar: boolean;
+  popupRestauration?: boolean;
+  magicEnabled?: boolean;
+  MagicNews?: boolean;
+  MagicHomeworks?: boolean;
   notifications?: {
-    enabled?: boolean
-    news?: boolean
-    homeworks?: boolean
-    grades?: boolean
-    timetable?: boolean
-    attendance?: boolean
-    evaluation?: boolean
-  }
-  icalURLs: PapillonIcalURL[],
-  tabs: Tab[],
+    enabled?: boolean;
+    news?: boolean;
+    homeworks?: boolean;
+    grades?: boolean;
+    timetable?: boolean;
+    attendance?: boolean;
+    evaluation?: boolean;
+  };
+  icalURLs: PapillonIcalURL[];
+  tabs: Tab[];
   subjects: {
     [subject: string]: {
-      color: string,
-      pretty: string,
-      emoji: string,
-    }
-  }
+      color: string;
+      pretty: string;
+      emoji: string;
+    };
+  };
+  header: {
+    gradient: PersonalizationHeaderGradient;
+    image: string | undefined;
+    darken: boolean;
+  };
+}
+
+export interface PersonalizationHeaderGradient {
+  startColor: string;
+  endColor: string;
+  angle: number;
 }
 
 export interface Identity {
@@ -137,11 +148,11 @@ interface BaseAccount {
 }
 
 interface BaseExternalAccount {
-  localID: string
-  isExternal: true
-  username: string
-  linkedExternalLocalIDs?: string[]
-  data: Record<string, unknown>
+  localID: string;
+  isExternal: true;
+  username: string;
+  linkedExternalLocalIDs?: string[];
+  data: Record<string, unknown>;
 }
 
 export interface PronoteAccount extends BaseAccount {
@@ -151,10 +162,10 @@ export interface PronoteAccount extends BaseAccount {
   authentication: pronote.RefreshInformation & {
     deviceUUID: string;
   };
-  identityProvider?: undefined;
+  identityProvider?: never;
   providers: string[];
   serviceData: Record<string, unknown>;
-  associatedAccountsLocalIDs?: undefined
+  associatedAccountsLocalIDs?: never;
 }
 
 export interface EcoleDirecteAccount extends BaseAccount {
@@ -162,11 +173,11 @@ export interface EcoleDirecteAccount extends BaseAccount {
   service: AccountService.EcoleDirecte;
   instance: {};
   authentication: {
-    session: PawdirecteSession
-    account: PawdirecteAccount
+    session: PawdirecteSession;
+    account: PawdirecteAccount;
   }
-  identityProvider?: undefined
-  associatedAccountsLocalIDs?: undefined
+  identityProvider?: never;
+  associatedAccountsLocalIDs?: never;
   providers: string[];
   serviceData: Record<string, unknown>;
 }
@@ -176,23 +187,23 @@ export interface SkolengoAccount extends BaseAccount {
   instance?: ScolengoAPI.Skolengo;
   authentication: SkolengoAuthConfig;
   userInfo: ScolengoAPIUser;
-  identityProvider?: undefined;
+  identityProvider?: never;
   providers: string[];
   serviceData: Record<string, unknown>;
-  associatedAccountsLocalIDs?: undefined
+  associatedAccountsLocalIDs?: never;
 }
 
 export interface MultiAccount extends BaseAccount {
-  service: AccountService.Multi
-  instance?: MultiAPI.Multi
+  service: AccountService.Multi;
+  instance?: MultiAPI.Multi;
   authentication: {
-    instanceURL: string
-    refreshAuthToken: string
-  }
-  identityProvider?: undefined
-  associatedAccountsLocalIDs?: undefined
-  providers: string[]
-  serviceData: Record<string, unknown>
+    instanceURL: string;
+    refreshAuthToken: string;
+  };
+  identityProvider?: never;
+  associatedAccountsLocalIDs?: string[];
+  providers: string[];
+  serviceData: Record<string, unknown>;
 }
 
 export interface LocalAccount extends BaseAccount {
@@ -215,68 +226,68 @@ export interface LocalAccount extends BaseAccount {
 
   providers?: string[];
   serviceData: Record<string, unknown>;
-  associatedAccountsLocalIDs?: undefined
+  associatedAccountsLocalIDs?: never;
 }
 
 export interface PapillonMultiServiceSpace extends BaseAccount {
-  service: AccountService.PapillonMultiService
-  instance: null | string
-  authentication: null
+  service: AccountService.PapillonMultiService;
+  instance: null | string;
+  authentication: null;
   identityProvider: {
-    name: string,
-    identifier: undefined,
-    rawData: undefined
+    name: string;
+    identifier: undefined;
+    rawData: undefined;
   },
-  associatedAccountsLocalIDs: string[]
-  providers: string[]
-  serviceData: Record<string, unknown>
+  associatedAccountsLocalIDs: string[];
+  providers: string[];
+  serviceData: Record<string, unknown>;
 }
 
 
 export interface TurboselfAccount extends BaseExternalAccount {
-  service: AccountService.Turboself
-  instance: undefined
+  service: AccountService.Turboself;
+  instance: undefined;
   authentication: {
-    session: TurboselfClient
-    username: string
-    password: string
-  }
+    session: TurboselfClient;
+    username: string;
+    password: string;
+  };
 }
 
 export interface AliseAccount extends BaseExternalAccount {
-  service: AccountService.Alise
-  instance: undefined
+  service: AccountService.Alise;
+  instance: undefined;
   authentication: {
-    session: AliseClient
-    schoolID: string
-    username: string
-    password: string
-    bookings: BookingDay[]
-    mealPrice: number
-  }
+    session: AliseClient;
+    schoolID: string;
+    username: string;
+    password: string;
+    bookings: BookingDay[];
+    mealPrice: number;
+  };
 }
 
 export interface ARDAccount extends BaseExternalAccount {
-  service: AccountService.ARD
-  instance?: ARDClient
+  service: AccountService.ARD;
+  instance?: ARDClient;
   authentication: {
-    pid: string
-    username: string
-    password: string
-    schoolID: string
-    balances: OnlinePayments
-    mealPrice: number
-  }
+    pid: string;
+    username: string;
+    password: string;
+    schoolID: string;
+    balances: OnlinePayments;
+    mealPrice: number;
+  };
 }
 
 export interface IzlyAccount extends BaseExternalAccount {
-  service: AccountService.Izly
-  instance?: Identification
+  service: AccountService.Izly;
+  instance?: Identification;
   authentication: {
-    secret: string
-    identification: Identification
-    configuration: Configuration
-  }
+    secret: string;
+    identification: Identification;
+    configuration: Configuration;
+  };
 }
 
 export type PrimaryAccount = (
@@ -302,6 +313,7 @@ export type Account = (
 export interface AccountsStore {
   lastOpenedAccountID: string | null
   accounts: Account[]
+  setLastOpenedAccountID: (id: string | null) => void
   create: (account: Account) => void
   remove: (localID: string) => void
   update: <A extends Account, T extends keyof A = keyof A>(
