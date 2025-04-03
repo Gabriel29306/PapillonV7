@@ -1,4 +1,4 @@
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { Pizza } from "lucide-react-native";
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Text, View } from "react-native";
@@ -84,6 +84,19 @@ const RestaurantQRCodeWidget = forwardRef(({
       setLoading(false);
     }();
   }, [linkedAccounts, setHidden]);
+
+  useEffect(() => {
+    const updateVisibility = () => {
+      const currentHour = new Date().getHours();
+      const shouldShow = allCards?.some(card => card.cardnumber) && currentHour >= 11 && currentHour < 14;
+      setHidden(!shouldShow);
+    };
+
+    updateVisibility();
+    const interval = setInterval(updateVisibility, 60000);
+
+    return () => clearInterval(interval);
+  }, [linkedAccounts, allCards]);
 
   useEffect(() => {
     if (allCards && allCards.length > 1) {

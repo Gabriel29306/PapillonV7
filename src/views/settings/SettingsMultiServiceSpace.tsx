@@ -8,7 +8,7 @@ import {
   TextInput,
   View
 } from "react-native";
-import {useTheme} from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import type {Screen} from "@/router/helpers/types";
 import {NativeItem, NativeList, NativeListHeader, NativeText} from "@/components/Global/NativeComponents";
 import {BadgeHelp, Camera, ChevronDown, CircleAlert, TextCursorInput, Trash2, Type, Undo2, User2} from "lucide-react-native";
@@ -85,7 +85,7 @@ const SettingsMultiServiceSpace: Screen<"SettingsMultiServiceSpace"> = ({ naviga
 
   const deleteSpace = () => {
     showAlert({
-      title: "Es-tu sûr ?",
+      title: "Veux-tu vraiment continuer ?",
       message: "Cette action entrainera la suppression de ton espace multi-service.",
       icon: <BadgeHelp />,
       actions: [

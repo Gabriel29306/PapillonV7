@@ -1,7 +1,7 @@
 import React, { Fragment, useRef } from "react";
 import { ScrollView, TextInput, KeyboardAvoidingView, StyleSheet } from "react-native";
 import type { Screen } from "@/router/helpers/types";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import { BadgeHelp, Code, Trash2, Undo2 } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
@@ -9,7 +9,6 @@ import { useFlagsStore } from "@/stores/flags";
 import { useCurrentAccount } from "@/stores/account";
 import { AccountService } from "@/stores/account/types";
 import { useAlert } from "@/providers/AlertProvider";
-import ResponsiveTextInput from "@/components/FirstInstallation/ResponsiveTextInput";
 
 const SettingsFlags: Screen<"SettingsFlags"> = ({ navigation }) => {
   const { flags, remove, set } = useFlagsStore();
@@ -65,6 +64,8 @@ const SettingsFlags: Screen<"SettingsFlags"> = ({ navigation }) => {
   };
 
   const addFlag = (flag: string) => {
+    if (!flag.trim()) return;
+    console.log("Flag ajouté :", flag);
     set(flag);
     textInputRef.current?.clear();
   };
@@ -97,13 +98,13 @@ const SettingsFlags: Screen<"SettingsFlags"> = ({ navigation }) => {
         <NativeListHeader label="Ajouter un flag" />
         <NativeList>
           <NativeItem>
-            <ResponsiveTextInput
-              style={[styles.input, { color: colors.text,
-                fontFamily: "Menlo", }]}
+            <TextInput
+              style={[styles.input, { color: colors.text, fontFamily: "Menlo" }]}
               placeholder="Nouveau flag"
               placeholderTextColor={colors.text + "80"}
               ref={textInputRef}
               onSubmitEditing={(e) => addFlag(e.nativeEvent.text)}
+              onBlur={(e) => addFlag(e.nativeEvent.text)}
             />
           </NativeItem>
         </NativeList>
@@ -128,7 +129,8 @@ const SettingsFlags: Screen<"SettingsFlags"> = ({ navigation }) => {
         {renderAccountSection("Informations générales", {
           name: account.name,
           schoolName: account.schoolName,
-          className: account.className
+          className: account.className,
+          localID: account.localID,
         })}
 
         {renderAccountSection("Détails de l'authentification", account.authentication)}

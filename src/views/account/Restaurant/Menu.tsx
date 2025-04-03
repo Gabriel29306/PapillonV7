@@ -9,7 +9,7 @@ import {
   Text,
   Dimensions
 } from "react-native";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import {
   AlertTriangle,
   BadgeX,
@@ -219,12 +219,12 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
             newBookings.push(...booking);
 
             const newCard: ServiceCard = {
-              service: account.service,
-              identifier: account.username,
-              account: account,
-              balance: balance,
-              history: history,
-              cardnumber: cardnumber,
+              service: account.service ?? 0,
+              identifier: account.username ?? "",
+              account: account ?? null,
+              balance: balance ?? [],
+              history: history ?? [],
+              cardnumber: cardnumber ?? "",
               // @ts-ignore
               theme: STORE_THEMES.find((theme) => theme.id === AccountService[account.service]) ?? STORE_THEMES[0] as StoreTheme,
             };
@@ -407,7 +407,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
                       key={index}
                       card={card}
                       onPress={() => {
-                        navigation.navigate("RestaurantCardDetail", { card });
+                        navigation.navigate("RestaurantCardDetail", { card, outsideNav: true });
                       }}
                     />
                   </Reanimated.View>

@@ -1,7 +1,7 @@
 import React, {Suspense, useEffect, useMemo, useRef, useState} from "react";
 import {View, ScrollView, RefreshControl, Platform, ActivityIndicator} from "react-native";
 import type { Screen } from "@/router/helpers/types";
-import {useTheme} from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {PapillonHeaderSelector, PapillonModernHeader} from "@/components/Global/PapillonModernHeader";
 import {useCurrentAccount} from "@/stores/account";
@@ -126,7 +126,21 @@ const Evaluation: Screen<"Evaluation"> = ({ route, navigation }) => {
       <PapillonModernHeader outsideNav={outsideNav}>
         <PapillonPicker
           delay={0}
-          data={periods.map((period) => period.name)}
+          data={periods.map((period) => {
+            return {
+              label: period.name,
+              subtitle:
+              new Date(period.startTimestamp as number).toLocaleDateString(
+                "fr-FR",
+                {
+                  month: "long",
+                  day: "numeric",
+                }
+              ),
+              onPress: () => setUserSelectedPeriod(period.name),
+              checked: period.name === selectedPeriod,
+            };
+          })}
           selected={userSelectedPeriod ?? selectedPeriod}
           onSelectionChange={setUserSelectedPeriod}
         >

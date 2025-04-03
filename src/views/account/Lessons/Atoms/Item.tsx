@@ -1,4 +1,4 @@
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import React, { useMemo } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 
@@ -18,7 +18,6 @@ import NativeTouchable from "@/components/Global/NativeTouchable";
 import { getSubjectData } from "@/services/shared/Subject";
 import { animPapillon } from "@/utils/ui/animations";
 import { getDuration } from "@/utils/format/course_duration";
-import { MapPin } from "lucide-react-native";
 
 export const TimetableItem: React.FC<{
   item: TimetableClass
@@ -58,7 +57,7 @@ export const TimetableItem: React.FC<{
         <View style={[{ flex: 1, flexDirection: "column", overflow: "hidden", borderRadius: 10 }]}>
           {item.statusText && (
             <View style={[styles.statusContainer, {
-              backgroundColor: item.status === TimetableClassStatus.CANCELED ? "#E8BEBF" : item.status === TimetableClassStatus.TEST ? "#f4b490" : subjectData.color + "33" }]}>
+              backgroundColor: item.status === TimetableClassStatus.CANCELED ? "#E8BEBF" : item.status === TimetableClassStatus.TEST ? "#f4b490" : subjectData.color + "22" }]}>
               <Text style={[styles.statusText, { color: item.status === TimetableClassStatus.CANCELED ? "#B42828" : item.status === TimetableClassStatus.TEST ? "#d2691e" : subjectData.color}]}>{item.statusText}</Text>
             </View>
           )}
@@ -78,8 +77,6 @@ export const TimetableItem: React.FC<{
               )}
 
               <View style={[styles.roomTextContainer, { backgroundColor: subjectData.color + "33" }]}>
-                <MapPin size={18} strokeWidth={2.5} color={subjectData.color} />
-
                 <Text
                   numberOfLines={1}
                   style={[styles.roomText, { color: subjectData.color }]}

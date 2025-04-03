@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import type {Screen} from "@/router/helpers/types";
-import {useTheme} from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import {SafeAreaView, useSafeAreaInsets} from "react-native-safe-area-context";
 import { Alert, Keyboard, KeyboardAvoidingView, StyleSheet, TouchableWithoutFeedback, View} from "react-native";
 import PapillonShineBubble from "@/components/FirstInstallation/PapillonShineBubble";
@@ -136,7 +136,7 @@ const IzlyActivation: Screen<"IzlyActivation"> = ({ navigation, route }) => {
               value="Annuler"
               disabled={loading}
               onPress={() => {
-                Alert.alert("Annuler", "Es-tu sûr de vouloir annuler l'activation ?", [
+                Alert.alert("Annuler", "Veux-tu vraiment annuler l'activation ?", [
                   {
                     text: "Continuer",
                     style: "cancel",

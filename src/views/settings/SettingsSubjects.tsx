@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import Reanimated, { ZoomIn, ZoomOut } from "react-native-reanimated";
 import debounce from "lodash/debounce";
 import { NativeItem, NativeList, NativeText } from "@/components/Global/NativeComponents";
@@ -137,7 +137,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
           onPress={() => {
             showAlert({
               title: "Réinitialiser les matières",
-              message: "Tu es sûr de vouloir réinitialiser toutes les matières ?",
+              message: "Veux-tu vraiment réinitialiser toutes les matières ?",
               icon: <BadgeHelp />,
               actions: [
                 {
@@ -296,21 +296,20 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         width: 42,
                       }}
                     >
-                      <ResponsiveTextInput
-                        ref={emojiInput}
-                        style={{
-                          fontFamily: "medium",
-                          fontSize: 26,
-                          color: colors.text,
-                          textAlign: "center",
-                          textAlignVertical: "center",
-                          padding: 0,
-                          height: 46,
-                          width: 42,
-                        }}
-                        value={currentEmoji}
-                        onChangeText={(newEmoji) => handleSubjectEmojiChange(selectedSubject[0], newEmoji)}
-                      />
+                      <View style={{ justifyContent: "center", alignItems: "center", height: 46, width: 42 }}>
+                        <ResponsiveTextInput
+                          ref={emojiInput}
+                          style={{
+                            fontFamily: "medium",
+                            fontSize: 26,
+                            color: colors.text,
+                            textAlign: "center",
+                            height: "100%",
+                          }}
+                          value={currentEmoji}
+                          onChangeText={(newEmoji) => handleSubjectEmojiChange(selectedSubject[0], newEmoji)}
+                        />
+                      </View>
                     </MemoizedNativeItem>
                   </MemoizedNativeList>
 

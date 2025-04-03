@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {Check, Clock, Paperclip, Sparkles, WifiOff} from "lucide-react-native";
+import {Check, Clock, Paperclip, PencilLine, Sparkles, WifiOff} from "lucide-react-native";
 import { getSubjectData } from "@/services/shared/Subject";
 import { useRoute, useTheme} from "@react-navigation/native";
 import { NativeItem, NativeText } from "@/components/Global/NativeComponents";
@@ -30,11 +30,14 @@ interface HomeworkItemProps {
   total: number
   homework: Homework
   onDonePressHandler: () => unknown
-  navigation: NativeStackNavigationProp<RouteParameters, "HomeScreen" | "Homeworks", undefined>
+  navigation: NativeStackNavigationProp<RouteParameters, "HomeScreen" | "Homeworks", undefined>,
+  contentOpacity?: number,
+  entering?: any,
+  exiting?: any
 }
 
 
-const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total }: HomeworkItemProps) => {
+const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total, contentOpacity=1, entering, exiting }: HomeworkItemProps) => {
   const theme = useTheme();
   const [subjectData, setSubjectData] = useState(getSubjectData(homework.subject));
   const [category, setCategory] = useState<string | null>(null);
@@ -169,8 +172,8 @@ const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total }
       onPress={() => navigation.navigate("HomeworksDocument", { homework })}
       chevron={false}
       key={homework.content}
-      entering={FadeIn}
-      exiting={FadeOut}
+      entering={entering || FadeIn}
+      exiting={exiting || FadeOut}
       separator={index !== total - 1}
       style={{ backgroundColor: category ? (subjectData.color + "15") : undefined }}
       leading={
@@ -195,6 +198,9 @@ const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total }
       >
         <Reanimated.View style={{ flex: 1, gap: 4 }} layout={animPapillon(LinearTransition)}>
           <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+            {homework.personalizate && (
+              <PencilLine color={subjectData.color} size={20} strokeWidth={2} style={{marginRight: -4}} />
+            )}
             <NativeText variant="overtitle" style={{ color: subjectData.color, flex: 1 }} numberOfLines={1}>
               {subjectData.pretty}
             </NativeText>
@@ -229,6 +235,9 @@ const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total }
                     }}
                   />
                 }
+                style={{
+                  opacity: contentOpacity || 1,
+                }}
               >
                 <HTMLView
                   value={`<body>${parse_homeworks(homework.content).replace("\n", "")}</body>`}
@@ -236,17 +245,15 @@ const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total }
                 />
               </MaskedView>
             </View>
-            {route.name === "HomeScreen" && (
-              <View style={{ flex: 1, flexDirection: "row", gap: 4, paddingBottom: 4, paddingTop: 8, alignItems: "center", alignSelf: "flex-start" }}>
-                <Clock
-                  size={18}
-                  strokeWidth={2.5}
-                  opacity={0.6}
-                  color={theme.colors.text}
-                />
-                <NativeText style={{color: theme.colors.text, opacity:0.5}}>{timestampToString(homework.due)}</NativeText>
-              </View>
-            )}
+            <View style={{ flexDirection: "row", gap: 4, paddingBottom: 4, paddingTop: 8, alignItems: "center", alignSelf: "flex-start" }}>
+              <Clock
+                size={18}
+                strokeWidth={2.5}
+                opacity={0.6}
+                color={theme.colors.text}
+              />
+              <NativeText style={{color: theme.colors.text, opacity:0.5}}>{timestampToString(homework.due)}</NativeText>
+            </View>
           </Reanimated.View>
           {homework.attachments.length > 0 && (
             <Reanimated.View

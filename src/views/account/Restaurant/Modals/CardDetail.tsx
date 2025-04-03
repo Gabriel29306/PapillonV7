@@ -1,25 +1,26 @@
-import { Alert, Image, Linking, Platform, ScrollView, Text, View } from "react-native";
+import { Alert, Image, Linking, Platform, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import MenuCard from "../Cards/Card";
 import Reanimated from "react-native-reanimated";
 import React, { useState } from "react";
 import { NativeItem, NativeList, NativeText } from "@/components/Global/NativeComponents";
 
-import { formatDistance } from "date-fns";
+import { differenceInDays, formatDistance } from "date-fns";
 import { fr } from "date-fns/locale";
 import { defaultProfilePicture } from "@/utils/ui/default-profile-picture";
-import { useTheme } from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
 import { PressableScale } from "react-native-pressable-scale";
 import { useAccounts, useCurrentAccount } from "@/stores/account";
 import { AccountService, ExternalAccount } from "@/stores/account/types";
-import { ExternalLink, MoreHorizontal, QrCode, Trash2 } from "lucide-react-native";
+import { ExternalLink, MoreHorizontal, MoreVertical, QrCode, Trash2 } from "lucide-react-native";
 import { balanceFromExternal } from "@/services/balance";
 import { reservationHistoryFromExternal } from "@/services/reservation-history";
 import { Screen } from "@/router/helpers/types";
 import { LinearGradient } from "expo-linear-gradient";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import PapillonPicker from "@/components/Global/PapillonPicker";
 import { formatCardIdentifier } from "@/utils/external/restaurant";
+import PapillonHeader, { PapillonHeaderInsetHeight } from "@/components/Global/PapillonHeader";
+import PapillonPicker from "@/components/Global/PapillonPicker";
+import { PapillonHeaderAction } from "@/components/Global/PapillonModernHeader";
 
 const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigation }) => {
   try {
@@ -32,6 +33,68 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
     const removeAccount = useAccounts((state) => state.remove);
 
     const cardName = `Carte ${AccountService[route.params.card.service as AccountService]} ${account?.identity?.firstName ? "de " + account.identity.firstName : ""}`;
+
+    React.useLayoutEffect(() => {
+      if(Platform.OS === "ios") {
+        navigation.setOptions({
+          headerTitle: cardName ?? "Détail de la carte",
+          headerLargeTitleStyle: {
+            color: "transparent",
+          },
+          headerLargeStyle: {
+            backgroundColor: "transparent",
+          },
+          headerBlurEffect: "regular",
+          headerRight: () => (
+            <PapillonPicker
+              data={[
+                ...card.theme.links?.map((link) => ({
+                  label: link.label,
+                  subtitle: link.subtitle,
+                  sfSymbol: link.sfSymbol,
+                  icon: <ExternalLink />,
+                  onPress: () => Linking.openURL(link.url),
+                })) ?? [],
+                {
+                  label: "Supprimer",
+                  icon: <Trash2 />,
+                  sfSymbol: "trash",
+                  destructive: true,
+                  onPress: () => {
+                    Alert.alert(
+                      "Supprimer la carte",
+                      "Veux-tu vraiment supprimer la " + (cardName ?? "carte") + " ?",
+                      [
+                        { text: "Annuler", style: "cancel" },
+                        {
+                          text: "Supprimer",
+                          style: "destructive",
+                          onPress: () => {
+                            try {
+                              removeAccount(card.account?.localID as string);
+                              navigation.goBack();
+                            }
+                            catch (e) {
+                              console.log(e);
+                            }
+                          }
+                        }
+                      ]
+                    );
+                  }
+                }
+              ]}
+            >
+              <TouchableOpacity
+                activeOpacity={0.5}
+              >
+                <MoreHorizontal opacity={0.7} size={24} color={theme.colors.text} />
+              </TouchableOpacity>
+            </PapillonPicker>
+          ),
+        });
+      }
+    }, [navigation, theme]);
 
     const updateCardData = async () => {
       try {
@@ -67,71 +130,58 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
       return unsubscribe;
     }, []);
 
-    React.useLayoutEffect(() => {
-      navigation.setOptions({
-        headerTitle: cardName ?? "Détail de la carte",
-        headerLargeTitleStyle: {
-          color: "transparent",
-        },
-        headerLargeStyle: {
-          backgroundColor: "transparent",
-        },
-        headerStyle: {
-          backgroundColor: theme.colors.card + "55",
-        },
-        headerBlurEffect: "regular",
-        headerRight: () => (
-          <PapillonPicker
-            data={[
-              ...card.theme.links?.map((link) => ({
-                label: link.label,
-                subtitle: link.subtitle,
-                sfSymbol: link.sfSymbol,
-                icon: <ExternalLink />,
-                onPress: () => Linking.openURL(link.url),
-              })) ?? [],
-              {
-                label: "Supprimer",
-                icon: <Trash2 />,
-                sfSymbol: "trash",
-                destructive: true,
-                onPress: () => {
-                  Alert.alert(
-                    "Supprimer la carte",
-                    "Es-tu sûr de vouloir supprimer la " + (cardName ?? "carte") + " ?",
-                    [
-                      { text: "Annuler", style: "cancel" },
-                      {
-                        text: "Supprimer",
-                        style: "destructive",
-                        onPress: () => {
-                          try {
-                            removeAccount(card.account?.localID as string);
-                            navigation.goBack();
-                          }
-                          catch (e) {
-                            console.log(e);
-                          }
-                        }
-                      }
-                    ]
-                  );
-                }
-              }
-            ]}
-          >
-            <TouchableOpacity
-              activeOpacity={0.5}
-            >
-              <MoreHorizontal opacity={0.7} size={24} color={theme.colors.text} />
-            </TouchableOpacity>
-          </PapillonPicker>
-        ),
-      });
-    }, [navigation, theme]);
-
     return (
       <>
+        {Platform.OS === "android" && (
+          <PapillonHeader route={route} navigation={navigation} title={cardName ?? "Détail de la carte"}>
+            <PapillonPicker
+              animated
+              direction="right"
+              delay={0}
+              data={[
+                ...card.theme.links?.map((link) => ({
+                  label: link.label,
+                  subtitle: link.subtitle,
+                  sfSymbol: link.sfSymbol,
+                  icon: <ExternalLink />,
+                  onPress: () => Linking.openURL(link.url),
+                })) ?? [],
+                {
+                  label: "Supprimer",
+                  icon: <Trash2 />,
+                  sfSymbol: "trash",
+                  destructive: true,
+                  onPress: () => {
+                    Alert.alert(
+                      "Supprimer la carte",
+                      "Veux-tu vraiment supprimer la " + (cardName ?? "carte") + " ?",
+                      [
+                        { text: "Annuler", style: "cancel" },
+                        {
+                          text: "Supprimer",
+                          style: "destructive",
+                          onPress: () => {
+                            try {
+                              removeAccount(card.account?.localID as string);
+                              navigation.goBack();
+                            }
+                            catch (e) {
+                              console.log(e);
+                            }
+                          }
+                        }
+                      ]
+                    );
+                  }
+                }
+              ]}
+            >
+              <PapillonHeaderAction
+                icon={<MoreVertical />}
+              />
+            </PapillonPicker>
+          </PapillonHeader>
+        )}
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={{
@@ -141,6 +191,7 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
             padding: 16,
           }}
         >
+          <PapillonHeaderInsetHeight route={route} />
           <PressableScale
             weight="light"
             activeScale={0.95}
@@ -276,6 +327,38 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
             )}
           </View>
 
+          {card?.balance[0] &&
+           card?.balance[0].remaining !== null &&
+           card?.balance[0].remaining !== Infinity &&
+            (
+              <NativeList inline>
+                <NativeItem
+                  trailing={
+                    <NativeText
+                      variant="titleLarge"
+                      style={{
+                        marginRight: 10,
+                        fontFamily: "semibold",
+                        fontSize: 26,
+                        lineHeight: 28,
+                        color: card.balance[0].remaining > 1 ? "#00C853" : "#FF1744",
+                      }}
+                    >
+                      {card.balance[0].remaining.toFixed(0)}
+                    </NativeText>
+                  }
+                >
+                  <NativeText variant="title">
+                    Repas restants
+                  </NativeText>
+                  <NativeText variant="subtitle">
+                    Tarif estimé à {card.balance[0].price?.toFixed(2)} €
+                  </NativeText>
+                </NativeItem>
+              </NativeList>
+            )
+          }
+
           {card?.history.length > 0 && (
             <NativeList inline>
               {card.history
@@ -330,9 +413,25 @@ const RestaurantCardDetail: Screen<"RestaurantCardDetail"> = ({ route, navigatio
                     <NativeText variant="title">
                       {history.label}
                     </NativeText>
-                    <NativeText variant="subtitle">
-                      il y a {formatDistance(new Date(history.timestamp), new Date(), { locale: fr })}
-                    </NativeText>
+
+                    {new Date(history.timestamp) && differenceInDays(new Date(), new Date(history.timestamp)) < 30 ? (
+                      <NativeText variant="subtitle">
+                        il y a {formatDistance(new Date(history.timestamp), new Date(), { locale: fr })} • {new Date(history.timestamp).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          weekday: "short",
+                          month: "short",
+                        })}
+                      </NativeText>
+                    ) : (
+                      <NativeText variant="subtitle">
+                        {new Date(history.timestamp).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          weekday: "long",
+                          month: "long",
+                          year: new Date(history.timestamp).getFullYear() !== new Date().getFullYear() ? "numeric" : undefined,
+                        })}
+                      </NativeText>
+                    )}
                   </NativeItem>
                 ))}
             </NativeList>

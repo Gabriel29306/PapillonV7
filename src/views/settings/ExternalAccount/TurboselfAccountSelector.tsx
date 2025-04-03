@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type {Screen} from "@/router/helpers/types";
-import {useTheme} from "@react-navigation/native";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 import {SafeAreaView, useSafeAreaInsets} from "react-native-safe-area-context";
 import { Keyboard, KeyboardAvoidingView, StyleSheet, TouchableWithoutFeedback, View} from "react-native";
 import PapillonShineBubble from "@/components/FirstInstallation/PapillonShineBubble";
@@ -139,7 +139,7 @@ const TurboselfAccountSelector: Screen<"TurboselfAccountSelector"> = ({ navigati
               onPress={() => {
                 showAlert({
                   title: "Annuler",
-                  message: "Es-tu sûr de vouloir annuler la connexion ?",
+                  message: "Veux-tu vraiment annuler la connexion ?",
                   icon: <BadgeHelp />,
                   actions: [
                     {

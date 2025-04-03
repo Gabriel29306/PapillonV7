@@ -1,4 +1,4 @@
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, isYesterday, isToday, isTomorrow } from "date-fns";
 import { fr } from "date-fns/locale";
 
 function formatDate (date: string): string {
@@ -7,8 +7,21 @@ function formatDate (date: string): string {
   if (Number.isNaN(messageDate.getTime())) {
     return "Date invalide";
   }
+  let formattedDate = formatDistanceToNow(messageDate, { addSuffix: true, locale: fr });
 
-  return formatDistanceToNow(messageDate, { addSuffix: true, locale: fr });
+  if (isYesterday(messageDate)) {
+    return "Hier";
+  }
+
+  if (isToday(messageDate)) {
+    return "Aujourd’hui";
+  }
+
+  if (isTomorrow(messageDate)) {
+    return "Demain";
+  }
+
+  return formattedDate;
 }
 
 export default formatDate;
