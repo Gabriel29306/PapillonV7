@@ -6,8 +6,11 @@ import MagicContainerCard from "@/components/Settings/MagicContainerCard";
 import { NativeIconGradient, NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
 import { ArrowUpNarrowWide, BookDashed } from "lucide-react-native";
 import { useCurrentAccount } from "@/stores/account";
+import { usePapillonTheme as useTheme } from "@/utils/ui/theme";
 
 const SettingsMagic: Screen<"SettingsMagic"> = () => {
+  const theme = useTheme();
+  const colors = theme.colors;
   const account = useCurrentAccount((store) => store.account);
   const mutateProperty = useCurrentAccount((store) => store.mutateProperty);
 
@@ -24,6 +27,13 @@ const SettingsMagic: Screen<"SettingsMagic"> = () => {
         <NativeItem
           trailing={
             <Switch
+              trackColor={
+                {
+                  false: colors.border,
+                  true: colors.primary
+                }
+              }
+              thumbColor={theme.dark ? colors.text : colors.background}
               value={account?.personalization?.MagicNews ?? false}
               onValueChange={(value) => mutateProperty("personalization", { MagicNews: value })}
             />
@@ -49,6 +59,13 @@ const SettingsMagic: Screen<"SettingsMagic"> = () => {
         <NativeItem
           trailing={
             <Switch
+              trackColor={
+                {
+                  false: colors.border,
+                  true: colors.primary
+                }
+              }
+              thumbColor={theme.dark ? colors.text : colors.background}
               value={account?.personalization?.MagicHomeworks ?? false}
               onValueChange={(value) => mutateProperty("personalization", { MagicHomeworks: value })}
             />

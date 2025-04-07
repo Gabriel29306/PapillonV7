@@ -500,6 +500,13 @@ const SettingsTabs = () => {
               icon={<Captions />}
               trailing={
                 <Switch
+                  trackColor={
+                    {
+                      false: theme.colors.border,
+                      true: theme.colors.primary
+                    }
+                  }
+                  thumbColor={theme.dark ? theme.colors.text : theme.colors.background}
                   value={!hideTabTitles}
                   onValueChange={() => {
                     setHideTabTitles(!hideTabTitles);
@@ -521,6 +528,13 @@ const SettingsTabs = () => {
               icon={<SendToBack />}
               trailing={
                 <Switch
+                  trackColor={
+                    {
+                      false: theme.colors.border,
+                      true: theme.colors.primary
+                    }
+                  }
+                  thumbColor={theme.dark ? theme.colors.text : theme.colors.background}
                   value={showTabBackground}
                   onValueChange={() => {
                     setShowTabBackground(!showTabBackground);
