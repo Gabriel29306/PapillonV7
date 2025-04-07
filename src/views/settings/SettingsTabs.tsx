@@ -46,16 +46,6 @@ interface Tab {
   icon: any; // Should be updated if Lottie icon types are more specific
 }
 
-interface Personalization {
-  tabs: Array<{ name: string; enabled: boolean; installed: boolean }>;
-  hideTabTitles?: boolean;
-  showTabBackground?: boolean;
-}
-
-interface Account {
-  personalization: Personalization;
-}
-
 const SettingsTabs = () => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
@@ -439,7 +429,7 @@ const SettingsTabs = () => {
                               <PapillonCheckbox
                                 checked={item.enabled}
                                 onPress={() => {
-                                  if (!item.enabled && tabs.filter(t => t.enabled).length === 5) {
+                                  if (!item.enabled && tabs.filter((t) => t.enabled).length === 5) {
                                     showAlert({
                                       title: "Information",
                                       message: "Tu ne peux pas ajouter plus de 5 onglets sur la page d'accueil.",
@@ -510,6 +500,13 @@ const SettingsTabs = () => {
               icon={<Captions />}
               trailing={
                 <Switch
+                  trackColor={
+                    {
+                      false: theme.colors.border,
+                      true: theme.colors.primary
+                    }
+                  }
+                  thumbColor={theme.dark ? theme.colors.text : theme.colors.background}
                   value={!hideTabTitles}
                   onValueChange={() => {
                     setHideTabTitles(!hideTabTitles);
@@ -531,6 +528,13 @@ const SettingsTabs = () => {
               icon={<SendToBack />}
               trailing={
                 <Switch
+                  trackColor={
+                    {
+                      false: theme.colors.border,
+                      true: theme.colors.primary
+                    }
+                  }
+                  thumbColor={theme.dark ? theme.colors.text : theme.colors.background}
                   value={showTabBackground}
                   onValueChange={() => {
                     setShowTabBackground(!showTabBackground);
