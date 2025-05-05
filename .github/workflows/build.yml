@@ -96,8 +96,8 @@ jobs:
         IFS=',' read -ra PATCHES <<< "$SELECTED_PATCHES"
         for PATCH in "${PATCHES[@]}"; do
           # Extraire nom et branche (par exemple : Gabriel29306/branch-name)
-          NAME=$(echo "$PATCH" | cut -d'/' -f1)
-          BRANCH=$(echo "$PATCH" | cut -d'/' -f2)
+          NAME="${PATCH%%/*}"
+          BRANCH="${PATCH#*/}"
           echo "Merging patch: $NAME/$BRANCH"
           git fetch "$NAME" "$BRANCH"
           git merge "$NAME/$BRANCH" -s recursive || {
