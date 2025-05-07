@@ -47,6 +47,10 @@ export const HEADERS_IMAGE = [
   {
     label: "tictactoe",
     source: require("@/../assets/headers/tictactoe.png"),
+  },
+  {
+    label: "star",
+    source: require("@/../assets/headers/star.png"),
   }
 ];
 
@@ -61,8 +65,7 @@ const CustomizeHeader: Screen<"CustomizeHeader"> = ({ route, navigation }) => {
   };
 
   const [image, setImage] = React.useState<string | undefined>(account?.personalization?.header?.image);
-  // @ts-expect-error
-  const [gradient, setGradient] = React.useState<PersonalizationHeaderGradient>(account?.personalization?.header?.gradient);
+  const [gradient, setGradient] = React.useState<PersonalizationHeaderGradient>(account?.personalization?.header?.gradient || defaultGradient);
   const [darken, setDarken] = React.useState<boolean>(account?.personalization?.header?.darken || false);
   const [centerReset, setCenterReset] = React.useState<any>(undefined);
 
@@ -131,12 +134,10 @@ const CustomizeHeader: Screen<"CustomizeHeader"> = ({ route, navigation }) => {
                 header: {
                   image,
                   darken,
-                  // @ts-expect-error
-                  gradient: gradValue,
+                  gradient: gradValue || defaultGradient,
                 },
               });
-              // @ts-expect-error
-              setGradient(gradValue);
+              setGradient(gradValue || defaultGradient);
             }}
           />
         }
