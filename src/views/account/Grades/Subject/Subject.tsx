@@ -112,7 +112,11 @@ const Subject: React.FC<SubjectProps> = ({
                 textTransform: "uppercase",
               }}
             >
-              {sortings[sorting]?.label}
+              {
+                typeof sortings[sorting] === "object"
+                  ? sortings[sorting]?.label
+                  : sortings[sorting]
+              }
             </NativeText>
             {isLoading && (
               <PapillonSpinner
