@@ -114,7 +114,7 @@ jobs:
         if [[ "${{ inputs.install_new_deps }}" == "true" ]]; then
           npm install
         else
-          npm ci || npm install
+          npm ci --no-audit --prefer-offline --progress=false || npm install --no-audit --prefer-offline --progress=false
         fi
 
     # 10. 🛠️ Prebuild l'app avec Expo
