@@ -116,27 +116,47 @@ jobs:
         else
           npm ci --no-audit --prefer-offline --progress=false || npm install --no-audit --prefer-offline --progress=false
         fi
+    # 10. 🗄️ Chercher le cache Metro
+    - name: 🗄️ Find Metro cache
+      id: metro-cache-dir-path
+      uses: actions/github-script@v4
+      with:
+        result-encoding: string
+        script: |
+          const os = require('os');
+          const path = require('path');
+           return path.join(os.tmpdir(), 'metro-cache');
 
-    # 10. 🛠️ Prebuild l'app avec Expo
+    # 11. 🗄️ Restaurer le cache Metro si possible
+    - name: 🗄️ Restore Metro cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.metro-cache-dir-path.outputs.result }}
+        key: ${{ runner.os }}-metro-cache-${{ github.ref }}
+        restore-keys: |
+          ${{ runner.os }}-metro-cache-${{ github.base_ref }}
+          ${{ runner.os }}-metro-cache-
+
+    # 12. 🛠️ Prebuild l'app avec Expo
     - name: 🛠️ Prepare Android Build
       run: |
         cd target-repo
         npx expo prebuild -p android
 
-    # 11. ⚙️ Configurer gradle.properties pour générer des APKs par architecture
+    # 13. ⚙️ Configurer gradle.properties pour générer des APKs par architecture
     - name: ⚙️ Configure Build Gradle for Split APKs
       run: |
         sed -i "s/universalApk false/universalApk true/g" target-repo/android/app/build.gradle
         sed -i '/buildToolsVersion/d' target-repo/android/app/build.gradle
     
-    # 12. 🏗️ Configuration de Gradle pour la compilation
+    # 14. 🏗️ Configuration de Gradle pour la compilation
     - name: ⚙️ Configure Gradle Build Properties
       run: |
         echo "org.gradle.parallel=true" >> target-repo/android/gradle.properties
         echo "org.gradle.configureondemand=true" >> target-repo/android/gradle.properties
         echo "org.gradle.daemon=false" >> target-repo/android/gradle.properties
 
-    # 13. 🗄️ Configuration du cache Gradle
+    # 15. 🗄️ Configuration du cache Gradle
     - name: 🗄️ Cache Gradle dependencies
       uses: actions/cache@v3
       with:
@@ -148,7 +168,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    # 14. 🕵️‍♂️ Récupérer la dernière version distante, y compris les pré-releases
+    # 16. 🕵️‍♂️ Récupérer la dernière version distante, y compris les pré-releases
     - name: 🕵️‍♂️ Get Latest Release Version
       id: get_latest_release
       uses: actions/github-script@v6
@@ -183,7 +203,7 @@ jobs:
             core.setOutput("versionCode", 100);
           }
     
-    # 15. 🔢 Incrémentation de la version
+    # 17. 🔢 Incrémentation de la version
     - name: 🔢 Increment Version Code
       run: |
         cd target-repo
@@ -196,13 +216,13 @@ jobs:
         sed -i "s/versionCode [0-9]*/versionCode ${NEW_VERSION_CODE}/" android/app/build.gradle
         echo "VERSION_CODE=${NEW_VERSION_CODE}" >> $GITHUB_ENV
   
-    # 16. 🏗️ Build des apks
+    # 18. 🏗️ Build des apks
     - name: 🏗️ Build Release APK
       run: |
         cd target-repo/android
         ./gradlew :app:assembleRelease
 
-    # 17. 🏷️ Renommer les apks
+    # 19. 🏷️ Renommer les apks
     - name: 🏷️ Rename apks
       run: |
         cd target-repo/android/app/build/outputs/apk/release/
@@ -213,7 +233,7 @@ jobs:
         mv app-x86-release.apk Papillon-x86-release.apk
         mv app-x86_64-release.apk Papillon-x86_64-release.apk
 
-    # 18. 🚀 Publier les APKs dans une préversion
+    # 20. 🚀 Publier les APKs dans une préversion
     - name: 🚀 Create Pre-Release with APKs
       uses: ncipollo/release-action@v1
       with:
