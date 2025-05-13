@@ -132,7 +132,7 @@ jobs:
 
     # 11. 🗄️ Restaurer le cache Metro si possible
     - name: 🗄️ Restore Metro cache
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ${{ steps.metro-cache-dir-path.outputs.result }}
         key: ${{ runner.os }}-metro-cache-${{ github.ref }}
@@ -161,7 +161,7 @@ jobs:
 
     # 15. 🗄️ Configuration du cache Gradle
     - name: 🗄️ Cache Gradle dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           target-repo/android/.gradle
