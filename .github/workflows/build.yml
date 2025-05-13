@@ -15,6 +15,9 @@ on:
         default: false
         required: false
 
+env:
+  EXPO_USE_DEV_SERVER: true
+
 jobs:
   build-android:
     runs-on: ubuntu-latest
