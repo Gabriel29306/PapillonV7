@@ -17,6 +17,7 @@ on:
 
 env:
   EXPO_USE_DEV_SERVER: true
+  NODE_ENV: production
 
 jobs:
   build-android:
