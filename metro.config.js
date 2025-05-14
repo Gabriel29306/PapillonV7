@@ -1,4 +1,7 @@
-const { getDefaultConfig } = require("expo/metro-config");
+import { getDefaultConfig } from "expo/metro-config";
+import os from 'node:os';
+import path from 'node:path';
+
 
 const config = getDefaultConfig(__dirname);
 
@@ -16,4 +19,10 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   return context.resolveRequest(context, moduleName, platform);
 };
 
-module.exports = config;
+config.cacheStores = ({ FileStore }) => [
+  new FileStore({
+    root: path.join(os.tmpdir(), 'metro-cache'),
+  }),
+];
+
+export default config;
