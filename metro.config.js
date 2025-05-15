@@ -1,4 +1,4 @@
-import { getDefaultConfig } from "expo/metro-config";
+const { getDefaultConfig } = require("expo/metro-config");
 import os from 'node:os';
 import path from 'node:path';
 
