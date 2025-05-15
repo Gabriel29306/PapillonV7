@@ -238,12 +238,9 @@ jobs:
     - name: 🏷️ Rename apks
       run: |
         cd target-repo/android/app/build/outputs/apk/release/
-        ls
-        mv app-arm64-v8a-release.apk Papillon-arm64-v8a-release.apk
-        mv app-armeabi-v7a-release.apk Papillon-armeabi-v7a-release.apk
-        mv app-universal-release.apk Papillon-universal-release.apk
-        mv app-x86-release.apk Papillon-x86-release.apk
-        mv app-x86_64-release.apk Papillon-x86_64-release.apk
+        for file in app-*-release.apk; do
+          mv "$file" "${file/app-/Papillon-}"
+        done
 
     # 20. 🚀 Publier les APKs dans une préversion
     - name: 🚀 Create Pre-Release with APKs
