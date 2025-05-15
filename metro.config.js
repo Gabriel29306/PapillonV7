@@ -25,4 +25,4 @@ config.cacheStores = ({ FileStore }) => [
   }),
 ];
 
-export default config;
+module.exports = config;
