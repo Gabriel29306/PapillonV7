@@ -120,6 +120,14 @@ jobs:
         else
           npm ci --no-audit --prefer-offline --progress=false || npm install --no-audit --prefer-offline --progress=false
         fi
+
+    # 11a. 🔎 Cherche l'identifiant di dernier commit
+    - name: 🔎 Find last commit ID
+      run: |
+        COMMIT_ID=$(git rev-parse HEAD)
+        echo "COMMIT_ID=$COMMIT_ID" >> $GITHUB_ENV
+
+
     # 10. 🗄️ Chercher le cache Metro
     - name: 🗄️ Find Metro cache
       id: metro-cache-dir-path
@@ -131,15 +139,14 @@ jobs:
           const path = require('path');
            return path.join(os.tmpdir(), 'metro-cache');
 
-    # 11. 🗄️ Restaurer le cache Metro si possible
+    # 11b. 🗄️ Restaurer le cache Metro si possible
     - name: 🗄️ Restore Metro cache
       uses: actions/cache@v4
       with:
         path: ${{ steps.metro-cache-dir-path.outputs.result }}
-        key: ${{ runner.os }}-metro-cache-${{ github.ref }}
+        key: ${{ runner.os }}-metro-cache-${{ env.COMMIT_ID }}
         restore-keys: |
-          ${{ runner.os }}-metro-cache-${{ github.base_ref }}
-          ${{ runner.os }}-metro-cache-
+          ${{ runner.os }}-metro-cache-${{ env.COMMIT_ID }}
 
     # 12. 🛠️ Prebuild l'app avec Expo
     - name: 🛠️ Prepare Android Build
