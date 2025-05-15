@@ -124,6 +124,7 @@ jobs:
     # 11a. 🔎 Cherche l'identifiant di dernier commit
     - name: 🔎 Find last commit ID
       run: |
+        cd target-repo
         COMMIT_ID=$(git rev-parse HEAD)
         echo "COMMIT_ID=$COMMIT_ID" >> $GITHUB_ENV
 
