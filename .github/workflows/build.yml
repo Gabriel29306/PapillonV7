@@ -176,6 +176,7 @@ jobs:
           target-repo/android/.gradle
           ~/.gradle/caches
           ~/.gradle/wrapper
+          /usr/local/lib/android/sdk
         key: ${{ runner.os }}-gradle-${{ hashFiles('target-repo/android/gradle/wrapper/gradle-wrapper.properties', 'target-repo/android/build.gradle', 'target-repo/android/app/build.gradle') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
