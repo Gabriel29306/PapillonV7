@@ -43,7 +43,7 @@ jobs:
       id: parse_patch_list
       run: |
         echo "Parsing sources and patch list..."
-        MAIN_REPO="https://github.com/PapillonApp/Papillon.git"
+        MAIN_REPO="https://github.com/PapillonApp/papillon-v7.git"
         ALL_PATCHES=$(jq -r '.patchs | join(",")' patch_list.json)
         echo "MAIN_REPO=$MAIN_REPO" >> $GITHUB_ENV
         echo "ALL_PATCHES=$ALL_PATCHES" >> $GITHUB_ENV
