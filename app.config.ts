@@ -70,7 +70,7 @@ export default (): ExpoConfig => ({
         resizeMode: "cover",
       },
     },
-    package: "xyz.getpapillon.app",
+    package: "xyz.getpapillon.app.v7",
     permissions: [
       "android.permission.ACCESS_COARSE_LOCATION",
       "android.permission.ACCESS_FINE_LOCATION",
