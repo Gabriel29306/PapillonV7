@@ -120,6 +120,7 @@ jobs:
         else
           npm ci --no-audit --prefer-offline --progress=false || npm install --no-audit --prefer-offline --progress=false
         fi
+        npm i @react-native-community/cli-server-api
 
     # 11a. 🔎 Cherche l'identifiant di dernier commit
     - name: 🔎 Find last commit ID
